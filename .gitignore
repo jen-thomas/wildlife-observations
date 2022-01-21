@@ -1,4 +1,8 @@
 venv/
+database_backups/
+/WildlifeObservations/wildlife-observations-db.sqlite3
+/WildlifeObservations/wildlife-observations-db.sqlite3.*
+/WildlifeObservations/wildlife-observations-db.sqlite3-*
 
 .idea/
 
