@@ -35,3 +35,13 @@ class Visit(models.Model):
         return "{} {} {}{}".format(self.site_name, self.date, self.method, self.repeat)
 
 
+class Observation(models.Model):
+
+    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False)
+    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+    length_head_abdomen = models.FloatField()
+    length_head_tegmina = models.FloatField()
+
+    def __str__(self):
+        return "{}".format(self.specimen_id)
+

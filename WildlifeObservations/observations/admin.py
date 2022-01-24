@@ -16,5 +16,12 @@ class VisitAdmin(admin.ModelAdmin):
     search_fields = ('site_name', 'date', 'start_time', 'end_time', 'method',)
 
 
+class ObservationAdmin(admin.ModelAdmin):
+    list_display = ('specimen_id', 'visit', 'length_head_abdomen', 'length_head_tegmina',)
+    ordering = ('specimen_id', 'visit',)
+    search_fields = ('specimen_id', 'visit', 'length_head_abdomen',)
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
+admin.site.register(models.Observation, ObservationAdmin)
