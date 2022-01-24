@@ -7,3 +7,4 @@ database_backups/
 .idea/
 
 *.pyc
+__pycache__/
