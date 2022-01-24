@@ -17,3 +17,4 @@ class VisitAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Site, SiteAdmin)
+admin.site.register(models.Visit, VisitAdmin)
