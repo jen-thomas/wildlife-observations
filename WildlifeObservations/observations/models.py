@@ -45,3 +45,27 @@ class Observation(models.Model):
     def __str__(self):
         return "{}".format(self.specimen_id)
 
+
+class Identification(models.Model):
+
+    class Sex(models.TextChoices):
+        MALE = 'Male', _('Male')
+        FEMALE = 'Female', _('Female')
+
+    class Stage(models.TextChoices):
+        ADULT = 'Adult', _('Adult')
+        NYMPH = 'Nymph', _('Nymph')
+
+    class Confidence(models.TextChoices):
+        IN_PROGRESS = 'In_progress', _('In progress')
+        CHECK = 'Check', _('Check')
+        CONFIRMED = 'Confirmed', _('Confirmed')
+        REDO = 'Redo', _('Redo')
+
+    specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
+    species = models.CharField(max_length=20)
+    identification_notes = models.TextField(max_length=2048)
+    identification_guide = models.CharField(max_length=20)
+    sex = models.CharField(max_length=6, choices=Sex.choices)
+    stage = models.CharField(max_length=5, choices=Stage.choices)
+    confidence = models.CharField(max_length=11, choices=Confidence.choices)

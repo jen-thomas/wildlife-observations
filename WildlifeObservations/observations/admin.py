@@ -22,6 +22,13 @@ class ObservationAdmin(admin.ModelAdmin):
     search_fields = ('specimen_id', 'visit', 'length_head_abdomen',)
 
 
+class IdentificationAdmin(admin.ModelAdmin):
+    list_display = ('specimen_id', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
+    ordering = ('specimen_id', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
+    search_fields = ('specimen_id', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
+admin.site.register(models.Identification, IdentificationAdmin)
