@@ -10,4 +10,10 @@ class SiteAdmin(admin.ModelAdmin):
     search_fields = ('area', 'site_name', 'altitude_band',)
 
 
+class VisitAdmin(admin.ModelAdmin):
+    list_display = ('site_name', 'date', 'start_time', 'end_time', 'method', 'repeat',)
+    ordering = ('site_name', 'date', 'start_time', 'end_time',)
+    search_fields = ('site_name', 'date', 'start_time', 'end_time', 'method',)
+
+
 admin.site.register(models.Site, SiteAdmin)
