@@ -42,6 +42,20 @@ class Site(models.Model):
 
 
 class Visit(models.Model):
+
+    site_name = models.ForeignKey(Site, on_delete=models.PROTECT)
+    date = models.DateField(null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = (('site_name', 'date',),)
+
+    def __str__(self):
+        return "{} {}".format(self.site_name, self.date)
+
+
+class Survey(models.Model):
+
     class Method(models.TextChoices):
         NET = 'Net', _('Net')
         HAND = 'Hand', _('Hand')
@@ -50,19 +64,17 @@ class Visit(models.Model):
         ONE = '1', _('1')
         TWO = '2', _('2')
 
-    site_name = models.ForeignKey(Site, on_delete=models.PROTECT)
-    date = models.DateField(null=True, blank=True)
+    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     method = models.CharField(max_length=5, choices=Method.choices, null=True, blank=True)
     repeat = models.CharField(max_length=2, choices=Repeat.choices, null=True, blank=True)
-    created_on = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        unique_together = (('site_name', 'date', 'method', 'repeat'),)
 
     def __str__(self):
-        return "{} {} {}{}".format(self.site_name, self.date, self.method, self.repeat)
+        return "{} {} {}".format(self.visit, self.method, self.repeat)
+
+    class Meta:
+        unique_together = (('visit', 'method', 'repeat',),)
 
 
 class MeteorologyConditions(models.Model):

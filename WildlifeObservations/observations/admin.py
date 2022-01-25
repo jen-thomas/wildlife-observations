@@ -16,9 +16,15 @@ class SiteAdmin(admin.ModelAdmin):
 
 
 class VisitAdmin(admin.ModelAdmin):
-    list_display = ('site_name', 'date', 'start_time', 'end_time', 'method', 'repeat',)
-    ordering = ('site_name', 'date', 'start_time', 'end_time',)
-    search_fields = ('site_name', 'date', 'start_time', 'end_time', 'method',)
+    list_display = ('site_name', 'date',)
+    ordering = ('site_name', 'date',)
+    search_fields = ('site_name', 'date',)
+
+
+class SurveyAdmin(admin.ModelAdmin):
+    list_display = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
+    ordering = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
+    search_fields = ('visit', 'start_time', 'end_time', 'method',)
 
 
 class ObservationAdmin(admin.ModelAdmin):
@@ -115,3 +121,4 @@ admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
 admin.site.register(models.MeteorologyConditions, MeteorologyConditionsAdmin)
 admin.site.register(models.Plot, PlotAdmin)
 admin.site.register(models.VegetationStructure, VegetationStructureAdmin)
+admin.site.register(models.Survey, SurveyAdmin)
