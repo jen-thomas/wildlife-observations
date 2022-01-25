@@ -6,26 +6,30 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Site(models.Model):
-
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5, unique=True)
     altitude_band = models.IntegerField(validators=[MinValueValidator(0)])
 
-    gps_latitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    gps_longitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    gps_latitude_start = models.FloatField(null=True, blank=True,
+                                           validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    gps_longitude_start = models.FloatField(null=True, blank=True,
+                                            validators=[MinValueValidator(-180), MaxValueValidator(180)])
     gps_altitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_number_satellites_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_accuracy_start = models.IntegerField(null=True, blank=True)
     gps_aspect_start = models.FloatField(null=True, blank=True)
 
-    gps_latitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    gps_longitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    gps_latitude_end = models.FloatField(null=True, blank=True,
+                                         validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    gps_longitude_end = models.FloatField(null=True, blank=True,
+                                          validators=[MinValueValidator(-180), MaxValueValidator(180)])
     gps_altitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_number_satellites_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_accuracy_end = models.IntegerField(null=True, blank=True)
     gps_aspect_end = models.FloatField(null=True, blank=True)
 
-    transect_length = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    transect_length = models.FloatField(null=True, blank=True,
+                                        validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     transect_description = models.TextField(max_length=2048, null=True, blank=True)
 
@@ -38,7 +42,6 @@ class Site(models.Model):
 
 
 class Visit(models.Model):
-
     class Method(models.TextChoices):
         NET = 'Net', _('Net')
         HAND = 'Hand', _('Hand')
@@ -63,12 +66,13 @@ class Visit(models.Model):
 
 
 class MeteorologyConditions(models.Model):
-
     visit = models.OneToOneField(Visit, on_delete=models.PROTECT, unique=True)
-    cloud_coverage_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    cloud_coverage_start = models.IntegerField(null=True, blank=True,
+                                               validators=[MinValueValidator(0), MaxValueValidator(8)])
     wind_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     rain_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
-    cloud_coverage_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    cloud_coverage_end = models.IntegerField(null=True, blank=True,
+                                             validators=[MinValueValidator(0), MaxValueValidator(8)])
     wind_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     rain_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, null=True, blank=True)
@@ -78,10 +82,10 @@ class MeteorologyConditions(models.Model):
 
 
 class Observation(models.Model):
-
-    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
-                                                                      message='Format is sitename yyyymmdd methodrepeat specimen',
-                                                                      code='Invalid format')])
+    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[
+        RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
+                       message='Format is sitename yyyymmdd methodrepeat specimen',
+                       code='Invalid format')])
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
@@ -92,7 +96,6 @@ class Observation(models.Model):
 
 
 class TaxonomyClass(models.Model):
-
     taxclass = models.CharField(max_length=255, unique=True, null=False, blank=False)
 
     def __str__(self):
@@ -103,7 +106,6 @@ class TaxonomyClass(models.Model):
 
 
 class TaxonomyOrder(models.Model):
-
     order = models.CharField(max_length=255, unique=True, null=False, blank=False)
     taxclass = models.ForeignKey(TaxonomyClass, on_delete=models.PROTECT)
 
@@ -115,7 +117,6 @@ class TaxonomyOrder(models.Model):
 
 
 class TaxonomySuborder(models.Model):
-
     suborder = models.CharField(max_length=20, null=False, blank=False, unique=True)
     order = models.ForeignKey(TaxonomyOrder, on_delete=models.PROTECT)
 
@@ -127,7 +128,6 @@ class TaxonomySuborder(models.Model):
 
 
 class TaxonomyFamily(models.Model):
-
     family = models.CharField(max_length=20, null=False, blank=False, unique=True)
     suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT)
 
@@ -139,7 +139,6 @@ class TaxonomyFamily(models.Model):
 
 
 class TaxonomySpecies(models.Model):
-
     latin_name = models.CharField(max_length=255, unique=True, null=False, blank=False)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
 
@@ -151,7 +150,6 @@ class TaxonomySpecies(models.Model):
 
 
 class SpeciesName(models.Model):
-
     latin_name = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
     common_name_english = models.CharField(max_length=100, null=True, blank=True)
     common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
@@ -165,7 +163,6 @@ class SpeciesName(models.Model):
 
 
 class IdentificationGuide(models.Model):
-
     title = models.CharField(max_length=150, null=False, blank=False, unique=True)
     author = models.CharField(max_length=1024, null=False, blank=False)
 
@@ -174,7 +171,6 @@ class IdentificationGuide(models.Model):
 
 
 class Identification(models.Model):
-
     class Sex(models.TextChoices):
         MALE = 'Male', _('Male')
         FEMALE = 'Female', _('Female')
@@ -209,7 +205,6 @@ class Identification(models.Model):
 
 
 class Plot(models.Model):
-
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     position = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(0)])
 
@@ -218,11 +213,13 @@ class Plot(models.Model):
 
 
 class VegetationStructure(models.Model):
-
     plot = models.ForeignKey(Plot, on_delete=models.PROTECT)
-    percentage_vegetation_cover = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    percentage_bare_ground = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    percentage_rock = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    percentage_vegetation_cover = models.IntegerField(null=True, blank=True,
+                                                      validators=[MinValueValidator(0), MaxValueValidator(100)])
+    percentage_bare_ground = models.IntegerField(null=True, blank=True,
+                                                 validators=[MinValueValidator(0), MaxValueValidator(100)])
+    percentage_rock = models.IntegerField(null=True, blank=True,
+                                          validators=[MinValueValidator(0), MaxValueValidator(100)])
     height_75percent = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     max_height = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     density_01 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])

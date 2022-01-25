@@ -5,8 +5,13 @@ from . import models
 # Register your models here.
 
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start', 'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end', 'transect_length',)
-    ordering = ('site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end', 'transect_length',)
+    list_display = (
+    'area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start',
+    'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end',
+    'transect_length',)
+    ordering = (
+    'site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end',
+    'transect_length',)
     search_fields = ('area', 'site_name', 'altitude_band', 'transect_length',)
 
 
@@ -71,9 +76,12 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
 
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
-    list_display = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
-    ordering = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
-    search_fields = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    list_display = (
+    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
+    ordering = (
+    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    search_fields = (
+    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
 
 
 class PlotAdmin(admin.ModelAdmin):
@@ -83,9 +91,14 @@ class PlotAdmin(admin.ModelAdmin):
 
 
 class VegetationStructureAdmin(admin.ModelAdmin):
-    list_display = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent', 'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
-    ordering = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent', 'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
-    search_fields = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent', 'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
+    list_display = (
+    'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+    'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
+    ordering = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+                'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
+    search_fields = (
+    'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+    'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
 
 
 admin.site.register(models.Site, SiteAdmin)
