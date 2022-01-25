@@ -78,7 +78,7 @@ class Survey(models.Model):
 
 
 class MeteorologyConditions(models.Model):
-    visit = models.OneToOneField(Visit, on_delete=models.PROTECT, unique=True)
+    survey = models.OneToOneField(Survey, on_delete=models.PROTECT, unique=True)
     cloud_coverage_start = models.IntegerField(null=True, blank=True,
                                                validators=[MinValueValidator(0), MaxValueValidator(8)])
     wind_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
@@ -90,7 +90,7 @@ class MeteorologyConditions(models.Model):
     notes = models.TextField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(self.visit)
+        return "{}".format(self.survey)
 
     class Meta:
         verbose_name_plural = 'Meteorological conditions'
@@ -101,7 +101,7 @@ class Observation(models.Model):
         RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
                        message='Format is sitename yyyymmdd methodrepeat specimen',
                        code='Invalid format')])
-    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+    survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
     length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     created_on = models.DateTimeField(default=timezone.now)
