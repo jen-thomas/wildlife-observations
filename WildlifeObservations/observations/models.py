@@ -77,9 +77,9 @@ class Taxonomy(models.Model):
 
 class Species(models.Model):
     latin_name = models.OneToOneField(Taxonomy, on_delete=models.PROTECT, unique=True)
-    common_name_english = models.CharField(max_length=1024, null=True, blank=True)
-    common_name_catalan = models.CharField(max_length=1024, null=True, blank=True)
-    common_name_spanish = models.CharField(max_length=1024, null=True, blank=True)
+    common_name_english = models.CharField(max_length=100, null=True, blank=True)
+    common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
+    common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.common_name_english)
@@ -105,7 +105,7 @@ class Identification(models.Model):
         REDO = 'Redo', _('Redo')
 
     specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
-    species = models.CharField(max_length=20)
+    species = models.ForeignKey(Species, on_delete=models.PROTECT)
     identification_notes = models.TextField(max_length=2048)
     identification_guide = models.CharField(max_length=20)
     sex = models.CharField(max_length=6, choices=Sex.choices)
