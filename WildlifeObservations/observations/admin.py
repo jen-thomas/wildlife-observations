@@ -64,6 +64,12 @@ class SpeciesNameAdmin(admin.ModelAdmin):
     search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
+class IdentificationGuideAdmin(admin.ModelAdmin):
+    list_display = ('author', 'title',)
+    ordering = ('author', 'title',)
+    search_fields = ('author', 'title',)
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
@@ -74,3 +80,4 @@ admin.site.register(models.TaxonomySuborder, TaxonomySuborderAdmin)
 admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
 admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
 admin.site.register(models.SpeciesName, SpeciesNameAdmin)
+admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)

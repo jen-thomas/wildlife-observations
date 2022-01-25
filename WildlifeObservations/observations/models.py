@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Site(models.Model):
+
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5)
     altitude_band = models.IntegerField()
@@ -47,6 +48,7 @@ class Observation(models.Model):
 
 
 class TaxonomyClass(models.Model):
+
     taxclass = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -57,6 +59,7 @@ class TaxonomyClass(models.Model):
 
 
 class TaxonomyOrder(models.Model):
+
     order = models.CharField(max_length=255, unique=True)
     taxclass = models.ForeignKey(TaxonomyClass, on_delete=models.PROTECT)
 
@@ -92,6 +95,7 @@ class TaxonomyFamily(models.Model):
 
 
 class TaxonomySpecies(models.Model):
+
     latin_name = models.CharField(max_length=255, unique=True)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
 
@@ -103,6 +107,7 @@ class TaxonomySpecies(models.Model):
 
 
 class SpeciesName(models.Model):
+
     latin_name = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
     common_name_english = models.CharField(max_length=100, null=True, blank=True)
     common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
@@ -113,6 +118,15 @@ class SpeciesName(models.Model):
 
     class Meta:
         verbose_name_plural = 'Species names'
+
+
+class IdentificationGuide(models.Model):
+
+    title = models.CharField(max_length=150, null=False, blank=False)
+    author = models.CharField(max_length=1024, null=False, blank=False)
+
+    def __str__(self):
+        return "{} - {}".format(self.author, self.title)
 
 
 class Identification(models.Model):
@@ -138,3 +152,6 @@ class Identification(models.Model):
     sex = models.CharField(max_length=6, choices=Sex.choices)
     stage = models.CharField(max_length=5, choices=Stage.choices)
     confidence = models.CharField(max_length=11, choices=Confidence.choices)
+
+    def __str__(self):
+        return "{} - {} [{}]".format(self.specimen_id, self.species, self.confidence)
