@@ -63,20 +63,47 @@ class TaxonomyOrder(models.Model):
     def __str__(self):
         return "{}".format(self.order)
 
+    class Meta:
+        verbose_name_plural = 'Taxonomy orders'
 
-class Taxonomy(models.Model):
-    latin_name = models.CharField(max_length=255, unique=True)
+
+class TaxonomySuborder(models.Model):
+
+    suborder = models.CharField(max_length=20, null=False, blank=False, unique=True)
     order = models.ForeignKey(TaxonomyOrder, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.suborder)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomy sub-orders'
+
+
+class TaxonomyFamily(models.Model):
+
+    family = models.CharField(max_length=20, null=False, blank=False, unique=True)
+    suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.family)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomy families'
+
+
+class TaxonomySpecies(models.Model):
+    latin_name = models.CharField(max_length=255, unique=True)
+    family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
 
     def __str__(self):
         return "{}".format(self.latin_name)
 
     class Meta:
-        verbose_name_plural = 'Taxonomies'
+        verbose_name_plural = 'Taxonomy species'
 
 
-class Species(models.Model):
-    latin_name = models.OneToOneField(Taxonomy, on_delete=models.PROTECT, unique=True)
+class SpeciesName(models.Model):
+    latin_name = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
     common_name_english = models.CharField(max_length=100, null=True, blank=True)
     common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
     common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
@@ -85,7 +112,7 @@ class Species(models.Model):
         return "{}".format(self.common_name_english)
 
     class Meta:
-        verbose_name_plural = 'Species'
+        verbose_name_plural = 'Species names'
 
 
 class Identification(models.Model):
@@ -105,7 +132,7 @@ class Identification(models.Model):
         REDO = 'Redo', _('Redo')
 
     specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
-    species = models.ForeignKey(Species, on_delete=models.PROTECT)
+    species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT)
     identification_notes = models.TextField(max_length=2048)
     identification_guide = models.CharField(max_length=20)
     sex = models.CharField(max_length=6, choices=Sex.choices)

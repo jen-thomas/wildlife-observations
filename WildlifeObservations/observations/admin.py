@@ -40,13 +40,25 @@ class TaxonomyOrderAdmin(admin.ModelAdmin):
     search_fields = ('taxclass', 'order',)
 
 
-class TaxonomyAdmin(admin.ModelAdmin):
-    list_display = ('latin_name', 'order',)
-    ordering = ('latin_name', 'order',)
-    search_fields = ('latin_name', 'order',)
+class TaxonomySuborderAdmin(admin.ModelAdmin):
+    list_display = ('order', 'suborder',)
+    ordering = ('order', 'suborder',)
+    search_fields = ('order', 'suborder',)
 
 
-class SpeciesAdmin(admin.ModelAdmin):
+class TaxonomyFamilyAdmin(admin.ModelAdmin):
+    list_display = ('suborder', 'family',)
+    ordering = ('suborder', 'family',)
+    search_fields = ('suborder', 'family',)
+
+
+class TaxonomySpeciesAdmin(admin.ModelAdmin):
+    list_display = ('family', 'latin_name',)
+    ordering = ('family', 'latin_name',)
+    search_fields = ('family', 'latin_name',)
+
+
+class SpeciesNameAdmin(admin.ModelAdmin):
     list_display = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
     ordering = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
     search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
@@ -58,5 +70,7 @@ admin.site.register(models.Observation, ObservationAdmin)
 admin.site.register(models.Identification, IdentificationAdmin)
 admin.site.register(models.TaxonomyClass, TaxonomyClassAdmin)
 admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
-admin.site.register(models.Taxonomy, TaxonomyAdmin)
-admin.site.register(models.Species, SpeciesAdmin)
+admin.site.register(models.TaxonomySuborder, TaxonomySuborderAdmin)
+admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
+admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
+admin.site.register(models.SpeciesName, SpeciesNameAdmin)
