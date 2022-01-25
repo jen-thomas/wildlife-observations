@@ -76,6 +76,12 @@ class MeteorologyConditionsAdmin(admin.ModelAdmin):
     search_fields = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
 
 
+class PlotAdmin(admin.ModelAdmin):
+    list_display = ('visit', 'position',)
+    ordering = ('visit', 'position',)
+    search_fields = ('visit', 'position',)
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
@@ -88,3 +94,4 @@ admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
 admin.site.register(models.SpeciesName, SpeciesNameAdmin)
 admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
 admin.site.register(models.MeteorologyConditions, MeteorologyConditionsAdmin)
+admin.site.register(models.Plot, PlotAdmin)

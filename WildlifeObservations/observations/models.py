@@ -197,3 +197,12 @@ class Identification(models.Model):
 
     def __str__(self):
         return "{} - {} [{}]".format(self.specimen_id, self.species, self.confidence)
+
+
+class Plot(models.Model):
+
+    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+    position = models.IntegerField()
+
+    def __str__(self):
+        return "{} {}m".format(self.visit, self.position)
