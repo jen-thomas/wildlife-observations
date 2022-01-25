@@ -46,6 +46,48 @@ class Observation(models.Model):
         return "{}".format(self.specimen_id)
 
 
+class TaxonomyClass(models.Model):
+    taxclass = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return "{}".format(self.taxclass)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomy classes'
+
+
+class TaxonomyOrder(models.Model):
+    order = models.CharField(max_length=255, unique=True)
+    taxclass = models.ForeignKey(TaxonomyClass, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.order)
+
+
+class Taxonomy(models.Model):
+    latin_name = models.CharField(max_length=255, unique=True)
+    order = models.ForeignKey(TaxonomyOrder, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.latin_name)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomies'
+
+
+class Species(models.Model):
+    latin_name = models.OneToOneField(Taxonomy, on_delete=models.PROTECT, unique=True)
+    common_name_english = models.CharField(max_length=1024, null=True, blank=True)
+    common_name_catalan = models.CharField(max_length=1024, null=True, blank=True)
+    common_name_spanish = models.CharField(max_length=1024, null=True, blank=True)
+
+    def __str__(self):
+        return "{}".format(self.common_name_english)
+
+    class Meta:
+        verbose_name_plural = 'Species'
+
+
 class Identification(models.Model):
 
     class Sex(models.TextChoices):

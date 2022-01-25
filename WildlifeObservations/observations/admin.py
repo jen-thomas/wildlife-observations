@@ -28,7 +28,35 @@ class IdentificationAdmin(admin.ModelAdmin):
     search_fields = ('specimen_id', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
 
 
+class TaxonomyClassAdmin(admin.ModelAdmin):
+    list_display = ('taxclass',)
+    ordering = ('taxclass',)
+    search_fields = ('taxclass',)
+
+
+class TaxonomyOrderAdmin(admin.ModelAdmin):
+    list_display = ('taxclass', 'order')
+    ordering = ('taxclass', 'order')
+    search_fields = ('taxclass', 'order')
+
+
+class TaxonomyAdmin(admin.ModelAdmin):
+    list_display = ('latin_name', 'order')
+    ordering = ('latin_name', 'order')
+    search_fields = ('latin_name', 'order')
+
+
+class SpeciesAdmin(admin.ModelAdmin):
+    list_display = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish')
+    ordering = ['common_name_english']
+    search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish')
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
 admin.site.register(models.Identification, IdentificationAdmin)
+admin.site.register(models.TaxonomyClass, TaxonomyClassAdmin)
+admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
+admin.site.register(models.Taxonomy, TaxonomyAdmin)
+admin.site.register(models.Species, SpeciesAdmin)
