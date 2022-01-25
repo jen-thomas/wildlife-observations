@@ -134,10 +134,12 @@ class Identification(models.Model):
     class Sex(models.TextChoices):
         MALE = 'Male', _('Male')
         FEMALE = 'Female', _('Female')
+        UNKNOWN = 'Unknown', _('Unknown')
 
     class Stage(models.TextChoices):
         ADULT = 'Adult', _('Adult')
         NYMPH = 'Nymph', _('Nymph')
+        UNKNOWN = 'Unknown', _('Unknown')
 
     class Confidence(models.TextChoices):
         IN_PROGRESS = 'In_progress', _('In progress')
@@ -146,12 +148,14 @@ class Identification(models.Model):
         REDO = 'Redo', _('Redo')
 
     specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
-    species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT)
-    identification_notes = models.TextField(max_length=2048)
-    identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT)
-    sex = models.CharField(max_length=6, choices=Sex.choices)
-    stage = models.CharField(max_length=5, choices=Stage.choices)
-    confidence = models.CharField(max_length=11, choices=Confidence.choices)
+    species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT, null=True, blank=True)
+    identification_notes = models.TextField(max_length=2048, null=True, blank=True)
+    identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
+    sex = models.CharField(max_length=6, choices=Sex.choices, null=True, blank=True)
+    stage = models.CharField(max_length=5, choices=Stage.choices, null=True, blank=True)
+    confidence = models.CharField(max_length=11, choices=Confidence.choices, null=True, blank=True)
+    date_of_identification = models.DateField(null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{} - {} [{}]".format(self.specimen_id, self.species, self.confidence)
