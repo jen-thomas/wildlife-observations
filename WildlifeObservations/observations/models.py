@@ -33,7 +33,7 @@ class Site(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{}".format(self.site_name)
+        return "{} - {}".format(self.site_name, self.altitude_band)
 
 
 class Visit(models.Model):
