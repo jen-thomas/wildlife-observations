@@ -28,9 +28,9 @@ class SurveyAdmin(admin.ModelAdmin):
 
 
 class ObservationAdmin(admin.ModelAdmin):
-    list_display = ('specimen_id', 'visit', 'length_head_abdomen', 'length_head_tegmina',)
-    ordering = ('specimen_id', 'visit',)
-    search_fields = ('specimen_id', 'visit', 'length_head_abdomen',)
+    list_display = ('specimen_id', 'survey', 'length_head_abdomen', 'length_head_tegmina',)
+    ordering = ('specimen_id', 'survey',)
+    search_fields = ('specimen_id', 'survey', 'length_head_abdomen',)
 
 
 class IdentificationAdmin(admin.ModelAdmin):
@@ -83,11 +83,11 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
     list_display = (
-    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
+    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
     ordering = (
-    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
     search_fields = (
-    'visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
 
 
 class PlotAdmin(admin.ModelAdmin):
