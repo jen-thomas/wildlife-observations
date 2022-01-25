@@ -206,3 +206,22 @@ class Plot(models.Model):
 
     def __str__(self):
         return "{} {}m".format(self.visit, self.position)
+
+
+class VegetationStructure(models.Model):
+
+    plot = models.ForeignKey(Plot, on_delete=models.PROTECT)
+    percentage_vegetation_cover = models.IntegerField(null=True, blank=True)
+    percentage_bare_ground = models.IntegerField(null=True, blank=True)
+    percentage_rock = models.IntegerField(null=True, blank=True)
+    height_75percent = models.IntegerField(null=True, blank=True)
+    max_height = models.IntegerField(null=True, blank=True)
+    density_01 = models.IntegerField(null=True, blank=True)
+    density_02 = models.IntegerField(null=True, blank=True)
+    density_03 = models.IntegerField(null=True, blank=True)
+    density_04 = models.IntegerField(null=True, blank=True)
+    density_05 = models.IntegerField(null=True, blank=True)
+    notes = models.TextField(max_length=2048, null=True, blank=True)
+
+    def __str__(self):
+        return "{}".format(self.plot)
