@@ -80,6 +80,9 @@ class MeteorologyConditions(models.Model):
     def __str__(self):
         return "{}".format(self.visit)
 
+    class Meta:
+        verbose_name_plural = 'Meteorological conditions'
+
 
 class Observation(models.Model):
     specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[
@@ -156,7 +159,7 @@ class SpeciesName(models.Model):
     common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(self.common_name_english)
+        return "{} {}".format(self.latin_name, self.common_name_english)
 
     class Meta:
         verbose_name_plural = 'Species names'
@@ -206,10 +209,10 @@ class Identification(models.Model):
 
 class Plot(models.Model):
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
-    position = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(0)])
+    position = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
-        return "{} {}m".format(self.visit, self.position)
+        return "{} {}".format(self.visit, self.position)
 
 
 class VegetationStructure(models.Model):
