@@ -5,9 +5,9 @@ from . import models
 # Register your models here.
 
 class SiteAdmin(admin.ModelAdmin):
-    list_display = ('area', 'site_name', 'altitude_band',)
-    ordering = ('site_name', 'altitude_band',)
-    search_fields = ('area', 'site_name', 'altitude_band',)
+    list_display = ('area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start', 'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end', 'transect_length',)
+    ordering = ('site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end', 'transect_length',)
+    search_fields = ('area', 'site_name', 'altitude_band', 'transect_length',)
 
 
 class VisitAdmin(admin.ModelAdmin):
