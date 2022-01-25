@@ -70,6 +70,12 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
     search_fields = ('author', 'title',)
 
 
+class MeteorologyConditionsAdmin(admin.ModelAdmin):
+    list_display = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
+    ordering = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    search_fields = ('visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+
+
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
@@ -81,3 +87,4 @@ admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
 admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
 admin.site.register(models.SpeciesName, SpeciesNameAdmin)
 admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
+admin.site.register(models.MeteorologyConditions, MeteorologyConditionsAdmin)

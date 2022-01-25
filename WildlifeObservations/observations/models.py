@@ -58,6 +58,21 @@ class Visit(models.Model):
         return "{} {} {}{}".format(self.site_name, self.date, self.method, self.repeat)
 
 
+class MeteorologyConditions(models.Model):
+
+    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
+    cloud_coverage_start = models.IntegerField(null=True, blank=True)
+    wind_start = models.IntegerField(null=True, blank=True)
+    rain_start = models.IntegerField(null=True, blank=True)
+    cloud_coverage_end = models.IntegerField(null=True, blank=True)
+    wind_end = models.IntegerField(null=True, blank=True)
+    rain_end = models.IntegerField(null=True, blank=True)
+    notes = models.TextField(max_length=2048, null=True, blank=True)
+
+    def __str__(self):
+        return "{}".format(self.visit)
+
+
 class Observation(models.Model):
 
     specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False)
