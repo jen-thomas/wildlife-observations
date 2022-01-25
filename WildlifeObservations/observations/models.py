@@ -9,6 +9,27 @@ class Site(models.Model):
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5)
     altitude_band = models.IntegerField()
+
+    gps_latitude_start = models.FloatField(null=True, blank=True)
+    gps_longitude_start = models.FloatField(null=True, blank=True)
+    gps_altitude_start = models.FloatField(null=True, blank=True)
+    gps_number_satellites_start = models.FloatField(null=True, blank=True)
+    gps_accuracy_start = models.FloatField(null=True, blank=True)
+    gps_aspect_start = models.FloatField(null=True, blank=True)
+
+    gps_latitude_end = models.FloatField(null=True, blank=True)
+    gps_longitude_end = models.FloatField(null=True, blank=True)
+    gps_altitude_end = models.FloatField(null=True, blank=True)
+    gps_number_satellites_end = models.FloatField(null=True, blank=True)
+    gps_accuracy_end = models.FloatField(null=True, blank=True)
+    gps_aspect_end = models.FloatField(null=True, blank=True)
+
+    transect_length = models.FloatField(null=True, blank=True)
+
+    transect_description = models.TextField(max_length=2048, null=True, blank=True)
+
+    notes = models.TextField(max_length=2048, null=True, blank=True)
+
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
