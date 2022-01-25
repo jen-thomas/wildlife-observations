@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -7,24 +8,24 @@ from django.utils.translation import gettext_lazy as _
 class Site(models.Model):
 
     area = models.CharField(max_length=30)
-    site_name = models.CharField(max_length=5)
-    altitude_band = models.IntegerField()
+    site_name = models.CharField(max_length=5, unique=True)
+    altitude_band = models.IntegerField(validators=[MinValueValidator(0)])
 
-    gps_latitude_start = models.FloatField(null=True, blank=True)
-    gps_longitude_start = models.FloatField(null=True, blank=True)
-    gps_altitude_start = models.FloatField(null=True, blank=True)
-    gps_number_satellites_start = models.FloatField(null=True, blank=True)
-    gps_accuracy_start = models.FloatField(null=True, blank=True)
+    gps_latitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    gps_longitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    gps_altitude_start = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
+    gps_number_satellites_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    gps_accuracy_start = models.IntegerField(null=True, blank=True)
     gps_aspect_start = models.FloatField(null=True, blank=True)
 
-    gps_latitude_end = models.FloatField(null=True, blank=True)
-    gps_longitude_end = models.FloatField(null=True, blank=True)
-    gps_altitude_end = models.FloatField(null=True, blank=True)
-    gps_number_satellites_end = models.FloatField(null=True, blank=True)
-    gps_accuracy_end = models.FloatField(null=True, blank=True)
+    gps_latitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    gps_longitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    gps_altitude_end = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
+    gps_number_satellites_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    gps_accuracy_end = models.IntegerField(null=True, blank=True)
     gps_aspect_end = models.FloatField(null=True, blank=True)
 
-    transect_length = models.FloatField(null=True, blank=True)
+    transect_length = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     transect_description = models.TextField(max_length=2048, null=True, blank=True)
 
@@ -47,12 +48,15 @@ class Visit(models.Model):
         TWO = '2', _('2')
 
     site_name = models.ForeignKey(Site, on_delete=models.PROTECT)
-    date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    method = models.CharField(max_length=5, choices=Method.choices)
-    repeat = models.CharField(max_length=2, choices=Repeat.choices)
+    date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    method = models.CharField(max_length=5, choices=Method.choices, null=True, blank=True)
+    repeat = models.CharField(max_length=2, choices=Repeat.choices, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = (('site_name', 'date', 'method', 'repeat'),)
 
     def __str__(self):
         return "{} {} {}{}".format(self.site_name, self.date, self.method, self.repeat)
@@ -60,13 +64,13 @@ class Visit(models.Model):
 
 class MeteorologyConditions(models.Model):
 
-    visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
-    cloud_coverage_start = models.IntegerField(null=True, blank=True)
-    wind_start = models.IntegerField(null=True, blank=True)
-    rain_start = models.IntegerField(null=True, blank=True)
-    cloud_coverage_end = models.IntegerField(null=True, blank=True)
-    wind_end = models.IntegerField(null=True, blank=True)
-    rain_end = models.IntegerField(null=True, blank=True)
+    visit = models.OneToOneField(Visit, on_delete=models.PROTECT, unique=True)
+    cloud_coverage_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    wind_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    rain_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    cloud_coverage_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    wind_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    rain_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
@@ -75,10 +79,12 @@ class MeteorologyConditions(models.Model):
 
 class Observation(models.Model):
 
-    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False)
+    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
+                                                                      message='Format is sitename yyyymmdd methodrepeat specimen',
+                                                                      code='Invalid format')])
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
-    length_head_abdomen = models.FloatField(null=True, blank=True)
-    length_head_tegmina = models.FloatField(null=True, blank=True)
+    length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
+    length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -87,7 +93,7 @@ class Observation(models.Model):
 
 class TaxonomyClass(models.Model):
 
-    taxclass = models.CharField(max_length=255, unique=True)
+    taxclass = models.CharField(max_length=255, unique=True, null=False, blank=False)
 
     def __str__(self):
         return "{}".format(self.taxclass)
@@ -98,7 +104,7 @@ class TaxonomyClass(models.Model):
 
 class TaxonomyOrder(models.Model):
 
-    order = models.CharField(max_length=255, unique=True)
+    order = models.CharField(max_length=255, unique=True, null=False, blank=False)
     taxclass = models.ForeignKey(TaxonomyClass, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -134,7 +140,7 @@ class TaxonomyFamily(models.Model):
 
 class TaxonomySpecies(models.Model):
 
-    latin_name = models.CharField(max_length=255, unique=True)
+    latin_name = models.CharField(max_length=255, unique=True, null=False, blank=False)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -160,7 +166,7 @@ class SpeciesName(models.Model):
 
 class IdentificationGuide(models.Model):
 
-    title = models.CharField(max_length=150, null=False, blank=False)
+    title = models.CharField(max_length=150, null=False, blank=False, unique=True)
     author = models.CharField(max_length=1024, null=False, blank=False)
 
     def __str__(self):
@@ -198,11 +204,14 @@ class Identification(models.Model):
     def __str__(self):
         return "{} - {} [{}]".format(self.specimen_id, self.species, self.confidence)
 
+    class Meta:
+        unique_together = (('specimen_id', 'identification_guide', 'species', 'date_of_identification'),)
+
 
 class Plot(models.Model):
 
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
-    position = models.IntegerField()
+    position = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(0)])
 
     def __str__(self):
         return "{} {}m".format(self.visit, self.position)
@@ -211,16 +220,16 @@ class Plot(models.Model):
 class VegetationStructure(models.Model):
 
     plot = models.ForeignKey(Plot, on_delete=models.PROTECT)
-    percentage_vegetation_cover = models.IntegerField(null=True, blank=True)
-    percentage_bare_ground = models.IntegerField(null=True, blank=True)
-    percentage_rock = models.IntegerField(null=True, blank=True)
-    height_75percent = models.IntegerField(null=True, blank=True)
-    max_height = models.IntegerField(null=True, blank=True)
-    density_01 = models.IntegerField(null=True, blank=True)
-    density_02 = models.IntegerField(null=True, blank=True)
-    density_03 = models.IntegerField(null=True, blank=True)
-    density_04 = models.IntegerField(null=True, blank=True)
-    density_05 = models.IntegerField(null=True, blank=True)
+    percentage_vegetation_cover = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    percentage_bare_ground = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    percentage_rock = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    height_75percent = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    max_height = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    density_01 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    density_02 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    density_03 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    density_04 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
+    density_05 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
