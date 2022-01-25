@@ -9,7 +9,7 @@ class Site(models.Model):
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5)
     altitude_band = models.IntegerField()
-    created_date = models.DateTimeField(default=timezone.now)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{}".format(self.site_name)
@@ -31,6 +31,7 @@ class Visit(models.Model):
     end_time = models.TimeField()
     method = models.CharField(max_length=5, choices=Method.choices)
     repeat = models.CharField(max_length=2, choices=Repeat.choices)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{} {} {}{}".format(self.site_name, self.date, self.method, self.repeat)
@@ -42,6 +43,7 @@ class Observation(models.Model):
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     length_head_abdomen = models.FloatField(null=True, blank=True)
     length_head_tegmina = models.FloatField(null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{}".format(self.specimen_id)
