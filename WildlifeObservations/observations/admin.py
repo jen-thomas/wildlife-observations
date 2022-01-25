@@ -35,21 +35,21 @@ class TaxonomyClassAdmin(admin.ModelAdmin):
 
 
 class TaxonomyOrderAdmin(admin.ModelAdmin):
-    list_display = ('taxclass', 'order')
-    ordering = ('taxclass', 'order')
-    search_fields = ('taxclass', 'order')
+    list_display = ('taxclass', 'order',)
+    ordering = ('taxclass', 'order',)
+    search_fields = ('taxclass', 'order',)
 
 
 class TaxonomyAdmin(admin.ModelAdmin):
-    list_display = ('latin_name', 'order')
-    ordering = ('latin_name', 'order')
-    search_fields = ('latin_name', 'order')
+    list_display = ('latin_name', 'order',)
+    ordering = ('latin_name', 'order',)
+    search_fields = ('latin_name', 'order',)
 
 
 class SpeciesAdmin(admin.ModelAdmin):
-    list_display = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish')
-    ordering = ['common_name_english']
-    search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish')
+    list_display = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    ordering = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
 admin.site.register(models.Site, SiteAdmin)
