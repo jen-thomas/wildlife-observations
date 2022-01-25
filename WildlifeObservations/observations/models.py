@@ -148,7 +148,7 @@ class Identification(models.Model):
     specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT)
     identification_notes = models.TextField(max_length=2048)
-    identification_guide = models.CharField(max_length=20)
+    identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT)
     sex = models.CharField(max_length=6, choices=Sex.choices)
     stage = models.CharField(max_length=5, choices=Stage.choices)
     confidence = models.CharField(max_length=11, choices=Confidence.choices)
