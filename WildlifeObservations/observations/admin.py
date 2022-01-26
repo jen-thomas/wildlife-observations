@@ -22,9 +22,9 @@ class VisitAdmin(admin.ModelAdmin):
 
 
 class SurveyAdmin(admin.ModelAdmin):
-    list_display = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
+    list_display = ('visit', 'start_time', 'end_time', 'method', 'repeat', 'observer',)
     ordering = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
-    search_fields = ('visit', 'start_time', 'end_time', 'method',)
+    search_fields = ('visit', 'start_time', 'end_time', 'method', 'observer',)
 
 
 class ObservationAdmin(admin.ModelAdmin):
