@@ -69,6 +69,8 @@ class Survey(models.Model):
     end_time = models.TimeField(null=True, blank=True)
     method = models.CharField(max_length=5, choices=Method.choices, null=True, blank=True)
     repeat = models.CharField(max_length=2, choices=Repeat.choices, null=True, blank=True)
+    observer = models.CharField(max_length=100, null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{} {} {}".format(self.visit, self.method, self.repeat)
@@ -88,6 +90,7 @@ class MeteorologyConditions(models.Model):
     wind_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     rain_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{}".format(self.survey)
@@ -222,6 +225,7 @@ class Identification(models.Model):
 class Plot(models.Model):
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     position = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{} {}".format(self.visit, self.position)
@@ -243,6 +247,7 @@ class VegetationStructure(models.Model):
     density_04 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     density_05 = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, null=True, blank=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "{}".format(self.plot)
