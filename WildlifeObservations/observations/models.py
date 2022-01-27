@@ -114,7 +114,7 @@ class Observation(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
     length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
-    status = models.CharField(max_length=10, choices=Status, null=False, blank=False)
+    status = models.CharField(max_length=10, choices=Status.choices, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
