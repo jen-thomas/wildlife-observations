@@ -38,7 +38,7 @@ class Site(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{} - {}".format(self.site_name, self.altitude_band)
+        return "{} ({}m)".format(self.site_name, self.altitude_band)
 
 
 class Visit(models.Model):
@@ -228,7 +228,7 @@ class Plot(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{} {}".format(self.visit, self.position)
+        return "{} ({}m)".format(self.visit, self.position)
 
 
 class VegetationStructure(models.Model):
