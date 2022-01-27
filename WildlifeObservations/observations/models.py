@@ -107,7 +107,7 @@ class Observation(models.Model):
         SPECIMEN = 'Specimen', _('Specimen')
         LOST = 'Lost', _('Lost')
 
-    specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[
+    specimen_label = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[
         RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
                        message='Format is sitename yyyymmdd methodrepeat specimen',
                        code='Invalid format')])
@@ -118,7 +118,7 @@ class Observation(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{}".format(self.specimen_id)
+        return "{}".format(self.specimen_label)
 
 
 class TaxonomyClass(models.Model):
@@ -213,7 +213,7 @@ class Identification(models.Model):
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
 
-    specimen_id = models.ForeignKey(Observation, on_delete=models.PROTECT)
+    specimen_label = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT, null=True, blank=True)
     identification_notes = models.TextField(max_length=2048, null=True, blank=True)
     identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
@@ -224,10 +224,10 @@ class Identification(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{} - {} [{}]".format(self.specimen_id, self.species, self.confidence)
+        return "{} - {} [{}]".format(self.specimen_label, self.species, self.confidence)
 
     class Meta:
-        unique_together = (('specimen_id', 'identification_guide', 'species', 'date_of_identification'),)
+        unique_together = (('specimen_label', 'identification_guide', 'species', 'date_of_identification'),)
 
 
 class Plot(models.Model):

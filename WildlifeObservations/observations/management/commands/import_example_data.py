@@ -30,13 +30,13 @@ def import_visits():
     survey_sept_hand = Survey.objects.create(visit=visit_sept, start_time='13:10:00', end_time='13:20:00',
                                              method='Hand', repeat='1', observer='Person A')
 
-    Observation.objects.create(survey=survey_sept_net, specimen_id='CAT01 20210917 N1 C001', status='Specimen')
-    Observation.objects.create(survey=survey_july_hand, specimen_id='CAT01 20210717 H1 E001', status='Specimen')
-    Observation.objects.create(survey=survey_sept_hand, specimen_id='CAT01 20210917 H1 E001', status='Specimen')
-    Observation.objects.create(survey=survey_sept_hand, specimen_id='CAT01 20210917 H1 E002', status='Specimen')
-    Observation.objects.create(survey=survey_july_net, specimen_id='CAT01 20210717 N1 C001', status='Specimen')
-    Observation.objects.create(survey=survey_july_net, specimen_id='CAT01 20210717 N1 C002', status='Specimen')
-    Observation.objects.create(survey=survey_july_net, specimen_id='CAT01 20210717 N1 C003', status='Specimen')
+    Observation.objects.create(survey=survey_sept_net, specimen_label='CAT01 20210917 N1 C001', status='Specimen')
+    Observation.objects.create(survey=survey_july_hand, specimen_label='CAT01 20210717 H1 E001', status='Specimen')
+    Observation.objects.create(survey=survey_sept_hand, specimen_label='CAT01 20210917 H1 E001', status='Specimen')
+    Observation.objects.create(survey=survey_sept_hand, specimen_label='CAT01 20210917 H1 E002', status='Specimen')
+    Observation.objects.create(survey=survey_july_net, specimen_label='CAT01 20210717 N1 C001', status='Specimen')
+    Observation.objects.create(survey=survey_july_net, specimen_label='CAT01 20210717 N1 C002', status='Specimen')
+    Observation.objects.create(survey=survey_july_net, specimen_label='CAT01 20210717 N1 C003', status='Specimen')
 
 
 def import_species():
@@ -56,9 +56,12 @@ def import_identifications():
     id_guide = IdentificationGuide.objects.create(title='Grasshoppers of Britain and Western Europe',
                                                   author='Sardet, Roesti and Braud')
 
-    Identification.objects.create(specimen_id='CAT01 20210917 N1 C001', species='Omocestus antigai', sex='Male',
+    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
+                                  species=SpeciesName.objects.get(species='Omocestus antigai'), sex='Male',
                                   stage='Adult', identification_guide=id_guide)
-    Identification.objects.create(specimen_id='CAT01 20210917 H1 E001', species='Leptophyes punctatissima',
+    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
+                                  species=SpeciesName.objects.get(species='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide)
-    Identification.objects.create(specimen_id='CAT01 20210917 H1 E002', species='Leptophyes punctatissima',
+    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
+                                  species=SpeciesName.objects.get(species='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide)
