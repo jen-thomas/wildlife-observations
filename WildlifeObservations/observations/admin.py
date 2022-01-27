@@ -28,9 +28,9 @@ class SurveyAdmin(admin.ModelAdmin):
 
 
 class ObservationAdmin(admin.ModelAdmin):
-    list_display = ('specimen_id', 'survey', 'length_head_abdomen', 'length_head_tegmina',)
-    ordering = ('specimen_id', 'survey',)
-    search_fields = ('specimen_id', 'survey', 'length_head_abdomen',)
+    list_display = ('specimen_id', 'survey', 'status', 'length_head_abdomen', 'length_head_tegmina',)
+    ordering = ('specimen_id', 'survey', 'status',)
+    search_fields = ('specimen_id', 'survey', 'status', 'length_head_abdomen',)
 
 
 class IdentificationAdmin(admin.ModelAdmin):

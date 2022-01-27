@@ -100,6 +100,13 @@ class MeteorologyConditions(models.Model):
 
 
 class Observation(models.Model):
+
+    class Status(models.TextChoices):
+
+        OBSERVED = 'Observed', _('Observed')
+        SPECIMEN = 'Specimen', _('Specimen')
+        LOST = 'Lost', _('Lost')
+
     specimen_id = models.CharField(max_length=22, unique=True, null=False, blank=False, validators=[
         RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
                        message='Format is sitename yyyymmdd methodrepeat specimen',
@@ -107,6 +114,7 @@ class Observation(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
     length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
     length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)])
+    status = models.CharField(max_length=10, choices=Status, null=False, blank=False)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
