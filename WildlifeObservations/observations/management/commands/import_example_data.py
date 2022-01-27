@@ -3,10 +3,12 @@ from django.core.management.base import BaseCommand
 from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, SpeciesName, \
     Site, Visit, Survey, Observation, Identification, IdentificationGuide
 
+from django.db import transaction
 
 class Command(BaseCommand):
     help = 'Adds a set of example data'
 
+    @transaction.atomic
     def handle(self, *args, **options):
         import_species()
         import_visits()
@@ -57,11 +59,11 @@ def import_identifications():
                                                   author='Sardet, Roesti and Braud')
 
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
-                                  species=SpeciesName.objects.get(species='Omocestus antigai'), sex='Male',
+                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai')), sex='Male',
                                   stage='Adult', identification_guide=id_guide)
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
-                                  species=SpeciesName.objects.get(species='Leptophyes punctatissima'),
+                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima')),
                                   sex='Female', stage='Adult', identification_guide=id_guide)
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
-                                  species=SpeciesName.objects.get(species='Leptophyes punctatissima'),
+                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima')),
                                   sex='Female', stage='Adult', identification_guide=id_guide)
