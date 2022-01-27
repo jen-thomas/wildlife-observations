@@ -70,9 +70,9 @@ class TaxonomySpeciesAdmin(admin.ModelAdmin):
 
 
 class SpeciesNameAdmin(admin.ModelAdmin):
-    list_display = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    ordering = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    search_fields = ('latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    list_display = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    ordering = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    search_fields = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
 class IdentificationGuideAdmin(admin.ModelAdmin):

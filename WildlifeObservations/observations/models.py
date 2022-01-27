@@ -176,13 +176,13 @@ class TaxonomySpecies(models.Model):
 
 
 class SpeciesName(models.Model):
-    latin_name = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
+    species = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
     common_name_english = models.CharField(max_length=100, null=True, blank=True)
     common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
     common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return "{} {}".format(self.latin_name, self.common_name_english)
+        return "{} - {}".format(self.species, self.common_name_english)
 
     class Meta:
         verbose_name_plural = 'Species names'
