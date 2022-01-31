@@ -5,6 +5,7 @@ from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFa
 
 from django.db import transaction
 
+
 class Command(BaseCommand):
     help = 'Adds a set of example data'
 
@@ -16,9 +17,18 @@ class Command(BaseCommand):
 
 
 def import_visits():
-    catalonia_a = Site.objects.create(area='Catalonia', site_name='CAT01', altitude_band='1800')
-    catalonia_b = Site.objects.create(area='Catalonia', site_name='CAT02', altitude_band='1900')
-    catalonia_c = Site.objects.create(area='Catalonia', site_name='CAT03', altitude_band='2000')
+    catalonia_a = Site.objects.create(area='Catalonia', site_name='CAT01', altitude_band='1800',
+                                      gps_latitude_start=42.2669, gps_longitude_start=1.7812, gps_altitude_start=1826,
+                                      gps_latitude_end=42.3, gps_longitude_end=1.7822, gps_altitude_end=1885,
+                                      transect_length=100)
+    catalonia_b = Site.objects.create(area='Catalonia', site_name='CAT02', altitude_band='1900',
+                                      gps_latitude_start=42.2626, gps_longitude_start=1.8015, gps_altitude_start=1986,
+                                      gps_latitude_end=42.28, gps_longitude_end=1.8035, gps_altitude_end=1974,
+                                      transect_length=100)
+    catalonia_c = Site.objects.create(area='Catalonia', site_name='CAT03', altitude_band='2000',
+                                      gps_latitude_start=42.2795, gps_longitude_start=1.7857, gps_altitude_start=2014,
+                                      gps_latitude_end=42.3, gps_longitude_end=1.8, gps_altitude_end=2015,
+                                      transect_length=100)
 
     visit_sept = Visit.objects.create(site_name=catalonia_a, date='2021-09-17')
     visit_july = Visit.objects.create(site_name=catalonia_b, date='2021-07-17')
@@ -48,8 +58,10 @@ def import_species():
     suborder_caelifera = TaxonomySuborder.objects.create(order=order, suborder='Caelifera')
     family_tett = TaxonomyFamily.objects.create(suborder=suborder_ensifera, family='Tettigoniidae')
     family_acrididae = TaxonomyFamily.objects.create(suborder=suborder_caelifera, family='Acrididae')
-    TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima', common_name_english='Speckled bush-cricket')
-    TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai', common_name_english='Pyrenean grasshopper')
+    TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima',
+                                   common_name_english='Speckled bush-cricket')
+    TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai',
+                                   common_name_english='Pyrenean grasshopper')
 
 
 def import_identifications():
@@ -58,10 +70,10 @@ def import_identifications():
 
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai'), sex='Male',
-                                  stage='Adult', identification_guide=id_guide)
+                                  stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
-                                  sex='Female', stage='Adult', identification_guide=id_guide)
+                                  sex='Female', stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
-                                  sex='Female', stage='Adult', identification_guide=id_guide)
+                                  sex='Female', stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')

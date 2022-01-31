@@ -4,7 +4,7 @@ from django import forms
 from . import models
 
 # Register your models here.
-from .models import VegetationStructure
+from .models import VegetationStructure, Survey
 
 
 class SiteAdmin(admin.ModelAdmin):
@@ -76,6 +76,18 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
     list_display = ('author', 'title',)
     ordering = ('author', 'title',)
     search_fields = ('author', 'title',)
+
+
+class SurveyForm(forms.ModelForm):
+    class Meta:
+        model = Survey
+        fields = "__all__"
+
+    def clean(self):
+        if self.cleaned_data['repeat'] > 1 and Survey.objects.filter('method' == self.cleaned_data['method'])['repeat'] != self.cleaned_data['repeat']-1:
+            raise forms.ValidationError("Check there is an earlier repeat using this survey method")
+
+        return self.cleaned_data
 
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
