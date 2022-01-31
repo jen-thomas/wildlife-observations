@@ -1,17 +1,20 @@
 from django.contrib import admin
+from django import forms
+
 from . import models
 
-
 # Register your models here.
+from .models import VegetationStructure
+
 
 class SiteAdmin(admin.ModelAdmin):
     list_display = (
-    'area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start',
-    'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end',
-    'transect_length',)
+        'area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start',
+        'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end',
+        'transect_length',)
     ordering = (
-    'site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end',
-    'transect_length',)
+        'site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end',
+        'transect_length',)
     search_fields = ('area', 'site_name', 'altitude_band', 'transect_length',)
 
 
@@ -83,11 +86,13 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
     list_display = (
-    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end', 'notes',)
+        'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',
+        'notes',)
     ordering = (
-    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+        'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
     search_fields = (
-    'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+        'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
+    raw_id_fields = ('survey',)
 
 
 class PlotAdmin(admin.ModelAdmin):
@@ -96,15 +101,29 @@ class PlotAdmin(admin.ModelAdmin):
     search_fields = ('visit', 'position',)
 
 
+class VegetationStructureForm(forms.ModelForm):
+    class Meta:
+        model = VegetationStructure
+        fields = "__all__"
+
+    def clean(self):
+        if self.cleaned_data['percentage_rock'] + self.cleaned_data['percentage_bare_ground'] + self.cleaned_data[
+            'percentage_vegetation_cover'] != 100:
+            raise forms.ValidationError("Ground cover percentages do not add up to 100")
+
+        return self.cleaned_data
+
+
 class VegetationStructureAdmin(admin.ModelAdmin):
+    form = VegetationStructureForm
     list_display = (
-    'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
-    'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
+        'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+        'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
     ordering = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
                 'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
     search_fields = (
-    'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
-    'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
+        'plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+        'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
 
 
 admin.site.register(models.Site, SiteAdmin)
