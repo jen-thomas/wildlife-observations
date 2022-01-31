@@ -67,15 +67,9 @@ class TaxonomyFamilyAdmin(admin.ModelAdmin):
 
 
 class TaxonomySpeciesAdmin(admin.ModelAdmin):
-    list_display = ('family', 'latin_name',)
-    ordering = ('family', 'latin_name',)
-    search_fields = ('family', 'latin_name',)
-
-
-class SpeciesNameAdmin(admin.ModelAdmin):
-    list_display = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    ordering = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    search_fields = ('species', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    list_display = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    ordering = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    search_fields = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
 class IdentificationGuideAdmin(admin.ModelAdmin):
@@ -135,7 +129,6 @@ admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
 admin.site.register(models.TaxonomySuborder, TaxonomySuborderAdmin)
 admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
 admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
-admin.site.register(models.SpeciesName, SpeciesNameAdmin)
 admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
 admin.site.register(models.MeteorologyConditions, MeteorologyConditionsAdmin)
 admin.site.register(models.Plot, PlotAdmin)

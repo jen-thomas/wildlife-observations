@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, SpeciesName, \
+from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, \
     Site, Visit, Survey, Observation, Identification, IdentificationGuide
 
 from django.db import transaction
@@ -48,10 +48,8 @@ def import_species():
     suborder_caelifera = TaxonomySuborder.objects.create(order=order, suborder='Caelifera')
     family_tett = TaxonomyFamily.objects.create(suborder=suborder_ensifera, family='Tettigoniidae')
     family_acrididae = TaxonomyFamily.objects.create(suborder=suborder_caelifera, family='Acrididae')
-    species_leptophyes = TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima')
-    species_omocestus = TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai')
-    SpeciesName.objects.create(species=species_leptophyes, common_name_english='Speckled bush-cricket')
-    SpeciesName.objects.create(species=species_omocestus, common_name_english='Pyrenean grasshopper')
+    TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima', common_name_english='Speckled bush-cricket')
+    TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai', common_name_english='Pyrenean grasshopper')
 
 
 def import_identifications():
@@ -59,11 +57,11 @@ def import_identifications():
                                                   author='Sardet, Roesti and Braud')
 
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
-                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai')), sex='Male',
+                                  species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai'), sex='Male',
                                   stage='Adult', identification_guide=id_guide)
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
-                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima')),
+                                  species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide)
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
-                                  species=SpeciesName.objects.get(species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima')),
+                                  species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide)

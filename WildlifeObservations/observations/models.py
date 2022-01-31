@@ -160,25 +160,15 @@ class TaxonomyFamily(models.Model):
 class TaxonomySpecies(models.Model):
     latin_name = models.CharField(max_length=255, unique=True)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
+    common_name_english = models.CharField(max_length=100, null=True, blank=True)
+    common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
+    common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.latin_name)
 
     class Meta:
         verbose_name_plural = 'Taxonomy species'
-
-
-class SpeciesName(models.Model):
-    species = models.OneToOneField(TaxonomySpecies, on_delete=models.PROTECT, unique=True)
-    common_name_english = models.CharField(max_length=100, null=True, blank=True)
-    common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
-    common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return "{} - {}".format(self.species, self.common_name_english)
-
-    class Meta:
-        verbose_name_plural = 'Species names'
 
 
 class IdentificationGuide(models.Model):
@@ -207,7 +197,7 @@ class Identification(models.Model):
         REDO = 'Redo', _('Redo')
 
     specimen_label = models.ForeignKey(Observation, on_delete=models.PROTECT)
-    species = models.ForeignKey(SpeciesName, on_delete=models.PROTECT, null=True, blank=True)
+    species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
     identification_notes = models.TextField(max_length=2048, null=True, blank=True)
     identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
     sex = models.CharField(max_length=7, choices=Sex.choices, null=True, blank=True)
