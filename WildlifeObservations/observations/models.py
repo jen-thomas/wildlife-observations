@@ -73,7 +73,9 @@ class Survey(models.Model):
         return "{} {} {}".format(self.visit, self.method, self.repeat)
 
     class Meta:
-        unique_together = (('visit', 'method', 'repeat',),)
+        constraints = [models.UniqueConstraint(
+            name="%(app_label)s_%(class)s_visit_method_repeat_unique_relationships",
+            fields=['visit', 'method', 'repeat'])]
 
 
 class MeteorologyConditions(models.Model):
@@ -138,7 +140,7 @@ class TaxonomyOrder(models.Model):
 
 
 class TaxonomySuborder(models.Model):
-    suborder = models.CharField(max_length=20, null=False)
+    suborder = models.CharField(max_length=20, unique=True)
     order = models.ForeignKey(TaxonomyOrder, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -149,7 +151,7 @@ class TaxonomySuborder(models.Model):
 
 
 class TaxonomyFamily(models.Model):
-    family = models.CharField(max_length=20, null=False)
+    family = models.CharField(max_length=20, unique=True)
     suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -213,7 +215,9 @@ class Identification(models.Model):
         return "{} - {} [{}]".format(self.specimen_label, self.species, self.confidence)
 
     class Meta:
-        unique_together = (('specimen_label', 'identification_guide', 'species', 'date_of_identification'),)
+        constraints = [models.UniqueConstraint(
+            name="%(app_label)s_%(class)s_specimen_guide_species_date_unique_relationships",
+            fields=['specimen_label', 'identification_guide', 'species', 'date_of_identification'])]
 
 
 class Plot(models.Model):
@@ -223,6 +227,11 @@ class Plot(models.Model):
 
     def __str__(self):
         return "{} ({}m)".format(self.visit, self.position)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            name="%(app_label)s_%(class)s_visit_position_unique_relationships",
+            fields=['visit', 'position'])]
 
 
 class VegetationStructure(models.Model):
