@@ -37,13 +37,15 @@ class ObservationAdmin(admin.ModelAdmin):
 
 
 class IdentificationAdmin(admin.ModelAdmin):
-    list_display = ('specimen_label', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence',)
+    list_display = (
+    'specimen_label', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence',)
     ordering = ('specimen_label', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
-    search_fields = ('specimen_label__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
+    search_fields = (
+    'specimen_label__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
 
     def specimen_status(self, obj):
         return "{}".format(obj.specimen_label.status)
-    
+
 
 class TaxonomyClassAdmin(admin.ModelAdmin):
     list_display = ('taxclass',)
@@ -72,7 +74,8 @@ class TaxonomyFamilyAdmin(admin.ModelAdmin):
 class TaxonomySpeciesAdmin(admin.ModelAdmin):
     list_display = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
     ordering = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    search_fields = ('family__family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    search_fields = (
+    'family__family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
 class IdentificationGuideAdmin(admin.ModelAdmin):
@@ -100,8 +103,8 @@ class MeteorologyConditionsAdmin(admin.ModelAdmin):
     ordering = (
         'survey', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
     search_fields = (
-        'survey__visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end',)
-    raw_id_fields = ('survey',)
+        'survey__visit', 'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end',
+        'rain_end',)
 
 
 class PlotAdmin(admin.ModelAdmin):
