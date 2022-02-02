@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 
 from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, \
-    Site, Visit, Survey, Observation, Identification, IdentificationGuide
+    Site, Visit, Survey, Observation, Identification, IdentificationGuide, Plot, MeteorologyConditions, \
+    VegetationStructure
 
 from django.db import transaction
 
@@ -50,6 +51,15 @@ def import_visits():
     Observation.objects.create(survey=survey_july_net, specimen_label='CAT01 20210717 N1 C002', status='Specimen')
     Observation.objects.create(survey=survey_july_net, specimen_label='CAT01 20210717 N1 C003', status='Specimen')
 
+    plot10_survey_july = Plot.objects.create(visit=visit_july, position=10)
+
+    VegetationStructure.objects.create(plot=plot10_survey_july, percentage_vegetation_cover=10, percentage_rock=10,
+                                       percentage_bare_ground=80, height_75percent=30, max_height=40, density_01=5,
+                                       density_02=5, density_03=10, density_04=1, density_05=7)
+
+    MeteorologyConditions.objects.create(survey=survey_july_hand, cloud_coverage_start=0, wind_start=0, rain_start=0,
+                                         cloud_coverage_end=1, wind_end=1, rain_end=0)
+
 
 def import_species():
     insecta_class = TaxonomyClass.objects.create(taxclass='Insecta')
@@ -61,7 +71,8 @@ def import_species():
     TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima',
                                    common_name_english='Speckled bush-cricket')
     TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai',
-                                   common_name_english='Pyrenean grasshopper')
+                                   common_name_english='Pyrenean grasshopper',
+                                   common_name_catalan='Saltamartí català')
 
 
 def import_identifications():
@@ -70,10 +81,13 @@ def import_identifications():
 
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai'), sex='Male',
-                                  stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')
+                                  stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01',
+                                  confidence='Check')
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
-                                  sex='Female', stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')
+                                  sex='Female', stage='Adult', identification_guide=id_guide,
+                                  date_of_identification='2021-12-01', confidence='Confirmed')
     Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
-                                  sex='Female', stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01')
+                                  sex='Female', stage='Adult', identification_guide=id_guide,
+                                  date_of_identification='2021-12-01', confidence='Confirmed')
