@@ -63,7 +63,7 @@ class Survey(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     method = models.CharField(max_length=5, choices=Method.choices)
-    repeat = models.CharField(max_length=2, choices=Repeat.choices)
+    repeat = models.IntegerField(choices=Repeat.choices)
     observer = models.CharField(max_length=100)
     created_on = models.DateTimeField(default=timezone.now)
 

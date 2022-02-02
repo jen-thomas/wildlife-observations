@@ -89,6 +89,16 @@ class SurveyForm(forms.ModelForm):
         model = Survey
         fields = "__all__"
 
+    def clean(self):
+        if self.cleaned_data['repeat'] == 2:
+            exists_repeat1 = Survey.objects.\
+                filter(visit=self.cleaned_data['visit']).\
+                filter(method=self.cleaned_data['method']). \
+                filter(repeat=Survey.Repeat.ONE). \
+                exists()
+            if not exists_repeat1:
+                raise forms.ValidationError("Check there is an earlier repeat using this survey method")
+
     # def clean(self):
     #     if self.cleaned_data['repeat'] > 1 and Survey.objects.get('method' == self.cleaned_data['method'])['repeat'] != self.cleaned_data['repeat']-1:
     #         raise forms.ValidationError("Check there is an earlier repeat using this survey method")
