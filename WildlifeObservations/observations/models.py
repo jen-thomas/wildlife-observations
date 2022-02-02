@@ -235,7 +235,7 @@ class Plot(models.Model):
 
 
 class VegetationStructure(models.Model):
-    plot = models.ForeignKey(Plot, on_delete=models.PROTECT)
+    plot = models.OneToOneField(Plot, on_delete=models.PROTECT)
     percentage_vegetation_cover = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     percentage_bare_ground = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     percentage_rock = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
