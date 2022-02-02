@@ -110,7 +110,7 @@ TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
@@ -125,3 +125,9 @@ STATIC_ROOT = BASE_DIR / 'static'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Set up datetime format
+
+DATETIME_FORMAT = "Y-m-d H:i:s"
+DATE_FORMAT = 'Y-m-d'
+TIME_FORMAT = 'H:i:s'
