@@ -203,7 +203,8 @@ class Identification(models.Model):
     sex = models.CharField(max_length=7, choices=Sex.choices, null=True, blank=True)
     stage = models.CharField(max_length=7, choices=Stage.choices, null=True, blank=True)
     confidence = models.CharField(max_length=11, choices=Confidence.choices)
-    date_of_identification = models.DateField()
+    date_of_identification = models.DateField(null=True, blank=True)
+    notebook = models.CharField(max_length=10)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
