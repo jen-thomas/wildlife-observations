@@ -24,7 +24,24 @@ class VisitAdmin(admin.ModelAdmin):
     search_fields = ('site_name__site_name', 'date',)
 
 
+class SurveyForm(forms.ModelForm):
+    class Meta:
+        model = Survey
+        fields = "__all__"
+
+    def clean(self):
+        if self.cleaned_data['repeat'] == Survey.Repeat.TWO:
+            exists_repeat1 = Survey.objects.\
+                filter(visit=self.cleaned_data['visit']).\
+                filter(method=self.cleaned_data['method']). \
+                filter(repeat=Survey.Repeat.ONE). \
+                exists()
+            if not exists_repeat1:
+                raise forms.ValidationError("Check there is an earlier repeat using this survey method")
+
+
 class SurveyAdmin(admin.ModelAdmin):
+    form = SurveyForm
     list_display = ('visit', 'start_time', 'end_time', 'method', 'repeat', 'observer',)
     ordering = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
     search_fields = ('visit__site_name', 'start_time', 'end_time', 'method', 'observer',)
@@ -82,28 +99,6 @@ class IdentificationGuideAdmin(admin.ModelAdmin):
     list_display = ('author', 'title',)
     ordering = ('author', 'title',)
     search_fields = ('author', 'title',)
-
-
-class SurveyForm(forms.ModelForm):
-    class Meta:
-        model = Survey
-        fields = "__all__"
-
-    def clean(self):
-        if self.cleaned_data['repeat'] == 2:
-            exists_repeat1 = Survey.objects.\
-                filter(visit=self.cleaned_data['visit']).\
-                filter(method=self.cleaned_data['method']). \
-                filter(repeat=Survey.Repeat.ONE). \
-                exists()
-            if not exists_repeat1:
-                raise forms.ValidationError("Check there is an earlier repeat using this survey method")
-
-    # def clean(self):
-    #     if self.cleaned_data['repeat'] > 1 and Survey.objects.get('method' == self.cleaned_data['method'])['repeat'] != self.cleaned_data['repeat']-1:
-    #         raise forms.ValidationError("Check there is an earlier repeat using this survey method")
-    #
-    #     return self.cleaned_data
 
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
