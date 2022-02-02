@@ -43,7 +43,9 @@ class Visit(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = (('site_name', 'date',),)
+        constraints = [models.UniqueConstraint(
+            name="%(app_label)s_%(class)s_site_name_date_unique_relationships",
+            fields=['site_name', 'date'])]
 
     def __str__(self):
         return "{} {}".format(self.site_name, self.date)
