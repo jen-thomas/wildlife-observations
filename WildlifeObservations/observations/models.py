@@ -55,9 +55,9 @@ class Survey(models.Model):
         NET = 'Net', _('Net')
         HAND = 'Hand', _('Hand')
 
-    class Repeat(models.TextChoices):
-        ONE = '1', _('1')
-        TWO = '2', _('2')
+    class Repeat(models.IntegerChoices):
+        ONE = 1
+        TWO = 2
 
     visit = models.ForeignKey(Visit, on_delete=models.PROTECT)
     start_time = models.TimeField()

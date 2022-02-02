@@ -89,11 +89,11 @@ class SurveyForm(forms.ModelForm):
         model = Survey
         fields = "__all__"
 
-    # def clean(self):
-    #     if self.cleaned_data['repeat'] > 1 and Survey.objects.filter('method' == self.cleaned_data['method'])['repeat'] != self.cleaned_data['repeat']-1:
-    #         raise forms.ValidationError("Check there is an earlier repeat using this survey method")
-    #
-    #     return self.cleaned_data
+    def clean(self):
+        if self.cleaned_data['repeat'] > 1 and Survey.objects.get('method' == self.cleaned_data['method'])['repeat'] != self.cleaned_data['repeat']-1:
+            raise forms.ValidationError("Check there is an earlier repeat using this survey method")
+
+        return self.cleaned_data
 
 
 class MeteorologyConditionsAdmin(admin.ModelAdmin):
