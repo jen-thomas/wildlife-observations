@@ -27,4 +27,4 @@ I will most likely be using R for data analysis, therefore once I have the other
 
 # Acknowledgements
 
-A huge thanks to @cpina for sanity-checking models, answering questions about Django and generally improving the code and functionality.  
+A huge thanks to [@cpina](https://github.com/cpina) for sanity-checking models, answering questions about Django and generally improving the code and functionality.  
