@@ -1,5 +1,6 @@
 venv/
 database_backups/
+test_data/
 /WildlifeObservations/wildlife-observations-db.sqlite3
 /WildlifeObservations/wildlife-observations-db.sqlite3.*
 /WildlifeObservations/wildlife-observations-db.sqlite3-*
