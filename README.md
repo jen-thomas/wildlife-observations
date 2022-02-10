@@ -6,7 +6,7 @@ This application provides the user interface and database (SQLite) for entering 
 
 My primary reason for building this application is that I have several normalised spreadsheets which contain the data of a large number of observations of Orthoptera. This is becoming unwieldy and I am worried about a) losing information at some point, and b) making typos or entering incorrect information. On top of that, it is very hard to see how much progress I am making with data entry and some of the work I am doing, therefore I want to get it into a database as soon as possible. I should have done this to begin with, but because of other priorities, I had been putting it off. 
 
-## Basic structure 
+### Basic structure 
 
 The basic structure of an observation is as follows: 
 * a **survey** was undertaken on a **visit** to a particular **site**;
