@@ -18,8 +18,6 @@ class Command(BaseCommand):
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
 
-            #country_uid, created = Site.objects.get_or_create(uid=None, source=source)
-
             for row in reader:
                 site = Site()
                 site.area = row['area']
