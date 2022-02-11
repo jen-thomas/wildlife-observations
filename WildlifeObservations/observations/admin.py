@@ -19,9 +19,9 @@ class SiteAdmin(admin.ModelAdmin):
 
 
 class VisitAdmin(admin.ModelAdmin):
-    list_display = ('site_name', 'date',)
-    ordering = ('site_name', 'date',)
-    search_fields = ('site_name__site_name', 'date',)
+    list_display = ('site', 'date',)
+    ordering = ('site', 'date',)
+    search_fields = ('site__site_name', 'date',)
 
 
 class SurveyForm(forms.ModelForm):

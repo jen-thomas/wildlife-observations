@@ -38,17 +38,17 @@ class Site(models.Model):
 
 class Visit(models.Model):
 
-    site_name = models.ForeignKey(Site, on_delete=models.PROTECT)
+    site = models.ForeignKey(Site, on_delete=models.PROTECT)
     date = models.DateField()
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
         constraints = [models.UniqueConstraint(
-            name="%(app_label)s_%(class)s_site_name_date_unique_relationships",
-            fields=['site_name', 'date'])]
+            name="%(app_label)s_%(class)s_site_date_unique_relationships",
+            fields=['site', 'date'])]
 
     def __str__(self):
-        return "{} {}".format(self.site_name, self.date)
+        return "{} {}".format(self.site, self.date)
 
 
 class Survey(models.Model):

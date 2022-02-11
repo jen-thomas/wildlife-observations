@@ -31,8 +31,8 @@ def import_visits():
                                       gps_latitude_end=42.3, gps_longitude_end=1.8, gps_altitude_end=2015,
                                       transect_length=100)
 
-    visit_sept = Visit.objects.create(site_name=catalonia_a, date='2021-09-17')
-    visit_july = Visit.objects.create(site_name=catalonia_b, date='2021-07-17')
+    visit_sept = Visit.objects.create(site=catalonia_a, date='2021-09-17')
+    visit_july = Visit.objects.create(site=catalonia_b, date='2021-07-17')
 
     survey_july_net = Survey.objects.create(visit=visit_july, start_time='12:10:00', end_time='12:20:00', method='Net',
                                             repeat='1', observer='Person B')
