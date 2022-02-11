@@ -228,17 +228,17 @@ class Identification(models.Model):
     comments = models.TextField(max_length=1000, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
 
-    # def save(self, *args, **kwargs):
-    #     if self.species is not None:
-    #         self.genus = self.species.genus
-    #
-    #     if self.genus is not None:
-    #         self.family = self.genus.family
-    #
-    #     if self.family is not None:
-    #         self.suborder = self.family.suborder
-    #
-    #     return super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.species is not None:
+            self.genus = self.species.genus
+
+        if self.genus is not None:
+            self.family = self.genus.family
+
+        if self.family is not None:
+            self.suborder = self.family.suborder
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return "{} - {} [{}]".format(self.observation, self.species, self.confidence)
