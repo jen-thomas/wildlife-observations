@@ -12,9 +12,7 @@ class Command(BaseCommand):
         parser.add_argument('filename', type=str)
 
     @transaction.atomic
-
     def handle(self, *args, **options):
-
         print(options['filename'])
         self.import_visit_from_csv(options['filename'])
 
