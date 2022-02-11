@@ -18,7 +18,7 @@ class Command(BaseCommand):
         print(options['filename'])
         self.import_observation_from_csv(options['filename'])
 
-    def import_observation_from_csv(self, row_data, observation):
+    def import_identification_from_csv(self, row_data, observation):
         identification = Identification()
 
         identification.observation = observation
@@ -72,6 +72,8 @@ class Command(BaseCommand):
         identification.notebook = row_data['notebook']
         identification.comments = row_data['comments']
 
+        identification.save()
+
     def import_observation_from_csv(self, filename):
 
         with open(filename) as csvfile:
@@ -107,8 +109,8 @@ class Command(BaseCommand):
 
                 observation.save()
 
-                identification_data = select_columns(row, ["suborder", "genus", "species", "id_notes", "sure", "sex", "stage", "guide", "notebook", "id_date", "comments"])
-                self.import_observation_from_csv(identification_data, observation)
+                identification_data = select_columns(row, ["suborder", "family", "genus", "species", "id_notes", "sure", "sex", "stage", "guide", "notebook", "id_date", "comments"])
+                self.import_identification_from_csv(identification_data, observation)
 
 
 def select_columns(row, list_of_columns) -> dict:
