@@ -79,15 +79,15 @@ def import_identifications():
     id_guide = IdentificationGuide.objects.create(title='Grasshoppers of Britain and Western Europe',
                                                   author='Sardet, Roesti and Braud')
 
-    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
+    Identification.objects.create(observation=Observation.objects.get(specimen_label='CAT01 20210917 N1 C001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Omocestus antigai'), sex='Male',
                                   stage='Adult', identification_guide=id_guide, date_of_identification='2021-12-01',
                                   confidence='Check')
-    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
+    Identification.objects.create(observation=Observation.objects.get(specimen_label='CAT01 20210917 H1 E001'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide,
                                   date_of_identification='2021-12-01', confidence='Confirmed')
-    Identification.objects.create(specimen_label=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
+    Identification.objects.create(observation=Observation.objects.get(specimen_label='CAT01 20210917 H1 E002'),
                                   species=TaxonomySpecies.objects.get(latin_name='Leptophyes punctatissima'),
                                   sex='Female', stage='Adult', identification_guide=id_guide,
                                   date_of_identification='2021-12-01', confidence='Confirmed')

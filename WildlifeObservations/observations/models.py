@@ -200,7 +200,7 @@ class Identification(models.Model):
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
 
-    specimen_label = models.ForeignKey(Observation, on_delete=models.PROTECT)
+    observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
     identification_notes = models.TextField(max_length=2048, null=True, blank=True)
     identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
@@ -212,12 +212,12 @@ class Identification(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "{} - {} [{}]".format(self.specimen_label, self.species, self.confidence)
+        return "{} - {} [{}]".format(self.observation, self.species, self.confidence)
 
     class Meta:
         constraints = [models.UniqueConstraint(
             name="%(app_label)s_%(class)s_specimen_guide_species_date_unique_relationships",
-            fields=['specimen_label', 'identification_guide', 'species', 'date_of_identification'])]
+            fields=['observation', 'identification_guide', 'species', 'date_of_identification'])]
 
 
 class Plot(models.Model):

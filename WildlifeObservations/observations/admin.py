@@ -55,13 +55,13 @@ class ObservationAdmin(admin.ModelAdmin):
 
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
-    'specimen_label', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence',)
-    ordering = ('specimen_label', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
+    'observation', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence',)
+    ordering = ('observation', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
-    'specimen_label__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
+    'observation__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
 
     def specimen_status(self, obj):
-        return "{}".format(obj.specimen_label.status)
+        return "{}".format(obj.observation.status)
 
 
 class TaxonomyClassAdmin(admin.ModelAdmin):
