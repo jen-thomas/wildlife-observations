@@ -199,6 +199,8 @@ class Identification(models.Model):
         CHECK = 'Check', _('Check')
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
+        YES = 'Yes', _('Yes')
+        REVIEW = 'Review', _('Review')
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
@@ -209,6 +211,7 @@ class Identification(models.Model):
     confidence = models.CharField(max_length=11, choices=Confidence.choices)
     date_of_identification = models.DateField(null=True, blank=True)
     notebook = models.CharField(max_length=10)
+    comments = models.TextField(max_length=1000, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

@@ -55,7 +55,7 @@ class ObservationAdmin(admin.ModelAdmin):
 
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
-    'observation', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence',)
+    'observation', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
     ordering = ('observation', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
     'observation__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
