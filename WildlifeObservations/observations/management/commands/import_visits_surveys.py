@@ -40,6 +40,7 @@ class Command(BaseCommand):
         survey.end_time = row_data['end_time']
         survey.method = row_data['method']
         survey.repeat = row_data['repeat']
+        survey.observer = 'Jen Thomas' # all of the surveys were done by the same person in this case
 
         survey.save()
 
