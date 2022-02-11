@@ -21,7 +21,7 @@ class Command(BaseCommand):
             for row in reader:
                 site = Site()
                 site.area = row['area']
-                site.site_name = row['sitename']
+                site.site_name = row['sitename'] = Site.objects.get_or_create()
                 site.altitude_band = row['altitude_band']
                 site.transect_length = row['transect_length']
                 site.transect_description = row['transect_description']
