@@ -2,7 +2,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from datetime import datetime
 
-from ...models import Survey, Observation, IdentificationGuide, Identification, Visit, Site, TaxonomySpecies
+from ...models import Survey, Observation, IdentificationGuide, Identification, Visit, Site, TaxonomySpecies, \
+    TaxonomyGenus, TaxonomySuborder, TaxonomyFamily
 import csv
 
 
@@ -21,7 +22,16 @@ class Command(BaseCommand):
         identification = Identification()
 
         identification.observation = observation
-        identification.species = TaxonomySpecies.objects.get(latin_name=row_data['species'])
+
+        if row_data['species'] != '':
+            identification.species = TaxonomySpecies.objects.get(latin_name=row_data['species'])
+        elif row_data['genus'] != '':
+            identification.genus = TaxonomyGenus.objects.get(genus=row_data['genus'])
+        elif row_data['family'] != '':
+            identification.family = TaxonomyFamily.objects.get(family=row_data['family'])
+        elif row_data['suborder'] != '':
+            identification.suborder = TaxonomySuborder.objects.get(suborder=row_data['suborder'])
+
         identification.identification_notes = row_data['id_notes']
 
         if row_data['guide'] == 'Sardet et al':
@@ -97,8 +107,7 @@ class Command(BaseCommand):
 
                 observation.save()
 
-                identification_data = select_columns(row, ["genus", "species", "id_notes", "sure", "sex", "stage", "guide", "notebook", "id_date", "comments"])
-
+                identification_data = select_columns(row, ["suborder", "genus", "species", "id_notes", "sure", "sex", "stage", "guide", "notebook", "id_date", "comments"])
                 self.import_observation_from_csv(identification_data, observation)
 
 
