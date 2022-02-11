@@ -140,7 +140,7 @@ class TaxonomyOrder(models.Model):
 
 
 class TaxonomySuborder(models.Model):
-    suborder = models.CharField(max_length=20, unique=True)
+    suborder = models.CharField(max_length=255, unique=True)
     order = models.ForeignKey(TaxonomyOrder, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -151,7 +151,7 @@ class TaxonomySuborder(models.Model):
 
 
 class TaxonomyFamily(models.Model):
-    family = models.CharField(max_length=20, unique=True)
+    family = models.CharField(max_length=255, unique=True)
     suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -161,9 +161,20 @@ class TaxonomyFamily(models.Model):
         verbose_name_plural = 'Taxonomy families'
 
 
+class TaxonomyGenus(models.Model):
+    genus = models.CharField(max_length=255, unique=True)
+    family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.genus)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomy genera'
+
+
 class TaxonomySpecies(models.Model):
     latin_name = models.CharField(max_length=255, unique=True)
-    family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
+    genus = models.ForeignKey(TaxonomyGenus, on_delete=models.PROTECT)
     common_name_english = models.CharField(max_length=100, null=True, blank=True)
     common_name_catalan = models.CharField(max_length=100, null=True, blank=True)
     common_name_spanish = models.CharField(max_length=100, null=True, blank=True)
@@ -204,6 +215,9 @@ class Identification(models.Model):
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
+    genus = models.ForeignKey(TaxonomyGenus, on_delete=models.PROTECT, null=True, blank=True)
+    family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT, null=True, blank=True)
+    suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT, null=True, blank=True)
     identification_notes = models.TextField(max_length=2048, null=True, blank=True)
     identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
     sex = models.CharField(max_length=7, choices=Sex.choices, null=True, blank=True)

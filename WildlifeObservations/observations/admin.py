@@ -31,8 +31,8 @@ class SurveyForm(forms.ModelForm):
 
     def clean(self):
         if self.cleaned_data['repeat'] == Survey.Repeat.TWO:
-            exists_repeat1 = Survey.objects.\
-                filter(visit=self.cleaned_data['visit']).\
+            exists_repeat1 = Survey.objects. \
+                filter(visit=self.cleaned_data['visit']). \
                 filter(method=self.cleaned_data['method']). \
                 filter(repeat=Survey.Repeat.ONE). \
                 exists()
@@ -55,10 +55,13 @@ class ObservationAdmin(admin.ModelAdmin):
 
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
-    'observation', 'species', 'specimen_status', 'identification_guide', 'sex', 'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
-    ordering = ('observation', 'species', 'identification_guide', 'sex', 'stage', 'confidence',)
+        'observation', 'species', 'genus', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
+        'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
+    ordering = (
+    'observation', 'species', 'genus', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
-    'observation__specimen_label', 'species', 'identification_guide__title', 'sex', 'stage', 'confidence',)
+        'observation__specimen_label', 'species', 'genus__genus', 'family__family', 'suborder__suborder',
+        'identification_guide__title', 'sex', 'stage', 'confidence',)
 
     def specimen_status(self, obj):
         return "{}".format(obj.observation.status)
@@ -88,11 +91,17 @@ class TaxonomyFamilyAdmin(admin.ModelAdmin):
     search_fields = ('suborder__suborder', 'family',)
 
 
+class TaxonomyGenusAdmin(admin.ModelAdmin):
+    list_display = ('family', 'genus',)
+    ordering = ('family', 'genus',)
+    search_fields = ('family__family', 'genus',)
+
+
 class TaxonomySpeciesAdmin(admin.ModelAdmin):
-    list_display = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
-    ordering = ('family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    list_display = ('genus', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+    ordering = ('genus', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
     search_fields = (
-    'family__family', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
+        'genus__genus', 'latin_name', 'common_name_english', 'common_name_catalan', 'common_name_spanish',)
 
 
 class IdentificationGuideAdmin(admin.ModelAdmin):
@@ -151,6 +160,7 @@ admin.site.register(models.TaxonomyClass, TaxonomyClassAdmin)
 admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
 admin.site.register(models.TaxonomySuborder, TaxonomySuborderAdmin)
 admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
+admin.site.register(models.TaxonomyGenus, TaxonomyGenusAdmin)
 admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
 admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
 admin.site.register(models.MeteorologyConditions, MeteorologyConditionsAdmin)
