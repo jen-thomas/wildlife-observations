@@ -97,7 +97,7 @@ class Command(BaseCommand):
 
                 observation.save()
 
-                identification_data = select_columns(row, [])
+                identification_data = select_columns(row, ["genus", "species", "id_notes", "sure", "sex", "stage", "guide", "notebook", "id_date", "comments"])
 
                 self.import_observation_from_csv(identification_data, observation)
 
