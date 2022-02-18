@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, \
     Site, Visit, Survey, Observation, Identification, IdentificationGuide, Plot, MeteorologyConditions, \
-    VegetationStructure, TaxonomyGenus
+    VegetationStructure, TaxonomyGenus, Source
 
 from django.db import transaction
 
@@ -18,23 +18,29 @@ class Command(BaseCommand):
 
 
 def import_visits():
+
+    gps = Source.objects.create(name='GPS')
+    osmand = Source.objects.create(name='OsmAnd')
+    Source.objects.create(name='DEM')
+    Source.objects.create(name='Viking Topo')
+
     catalonia_a = Site.objects.create(area='Catalonia', site_name='CAT01', altitude_band='1800',
-                                      latitude_start=42.2669, latitude_start_source='GPS', longitude_start=1.7812,
-                                      longitude_start_source='GPS', altitude_start=1826, altitude_start_source='GPS',
-                                      latitude_end=42.3, latitude_end_source='GPS', longitude_end=1.7822,
-                                      longitude_end_source='GPS', altitude_end=1885, altitude_end_source='GPS',
+                                      latitude_start=42.2669, latitude_start_source=gps, longitude_start=1.7812,
+                                      longitude_start_source=gps, altitude_start=1826, altitude_start_source=gps,
+                                      latitude_end=42.3, latitude_end_source=gps, longitude_end=1.7822,
+                                      longitude_end_source=gps, altitude_end=1885, altitude_end_source=gps,
                                       transect_length=100)
     catalonia_b = Site.objects.create(area='Catalonia', site_name='CAT02', altitude_band='1900',
-                                      latitude_start=42.2626, latitude_start_source='GPS', longitude_start=1.8015,
-                                      longitude_start_source='GPS', altitude_start=1986, altitude_start_source='GPS',
-                                      latitude_end=42.28, latitude_end_source='GPS', longitude_end=1.8035,
-                                      longitude_end_source='GPS', altitude_end=1974, altitude_end_source='GPS',
+                                      latitude_start=42.2626, latitude_start_source=gps, longitude_start=1.8015,
+                                      longitude_start_source=gps, altitude_start=1986, altitude_start_source=gps,
+                                      latitude_end=42.28, latitude_end_source=gps, longitude_end=1.8035,
+                                      longitude_end_source=gps, altitude_end=1974, altitude_end_source=gps,
                                       transect_length=100)
     catalonia_c = Site.objects.create(area='Catalonia', site_name='CAT03', altitude_band='2000',
-                                      latitude_start=42.2795, latitude_start_source='OSMAND', longitude_start=1.7857,
-                                      longitude_start_source='GPS', altitude_start=2014, altitude_start_source='GPS',
-                                      latitude_end=42.3, latitude_end_source='GPS', longitude_end=1.8,
-                                      longitude_end_source='GPS', altitude_end=2015, altitude_end_source='OSMAND',
+                                      latitude_start=42.2795, latitude_start_source=osmand, longitude_start=1.7857,
+                                      longitude_start_source=gps, altitude_start=2014, altitude_start_source=gps,
+                                      latitude_end=42.3, latitude_end_source=gps, longitude_end=1.8,
+                                      longitude_end_source=gps, altitude_end=2015, altitude_end_source=osmand,
                                       transect_length=100)
 
     visit_sept = Visit.objects.create(site=catalonia_a, date='2021-09-17')
