@@ -6,6 +6,11 @@ from . import models
 # Register your models here.
 from .models import VegetationStructure, Survey
 
+class SourceAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    ordering = ('name',)
+    search_fields = ('name',)
+
 
 class SiteAdmin(admin.ModelAdmin):
     list_display = (
@@ -152,6 +157,7 @@ class VegetationStructureAdmin(admin.ModelAdmin):
         'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
 
 
+admin.site.register(models.Source, SourceAdmin)
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)

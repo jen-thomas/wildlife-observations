@@ -5,26 +5,49 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
+class Source(models.Model):
+
+    class PositionSource(models.TextChoices):
+        VIKINGTOPO = 'Viking Topo', _('Viking Topo')
+        GPS = 'GPS', _('GPS')
+        DEM = 'DEM', _('DEM')
+        OSMAND = 'OsmAnd', _('OsmAnd')
+        
+    name = models.CharField(max_length=20, choices=PositionSource)
+        
+    def __str__(self):
+        return "{}".format(self.name)
+        
+        
 class Site(models.Model):
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5, unique=True)
     altitude_band = models.IntegerField(validators=[MinValueValidator(0)])
 
     latitude_start = models.FloatField(validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    latitude_start_source = models.ForeignKey(Source, on_delete=models.PROTECT)
     longitude_start = models.FloatField(validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    longitude_start_source = models.ForeignKey(Source, on_delete=models.PROTECT)
     altitude_start = models.FloatField(validators=[MinValueValidator(0)])
+    altitude_start_source = models.ForeignKey(Source, on_delete=models.PROTECT)
+
     gps_number_satellites_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_accuracy_start = models.IntegerField(null=True, blank=True)
     gps_aspect_start = models.FloatField(null=True, blank=True)
 
     latitude_end = models.FloatField(validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    latitude_end_source = models.ForeignKey(Source, on_delete=models.PROTECT)
     longitude_end = models.FloatField(validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    longitude_end_source = models.ForeignKey(Source, on_delete=models.PROTECT)
     altitude_end = models.FloatField(validators=[MinValueValidator(0)])
+    altitude_end_source = models.ForeignKey(Source, on_delete=models.PROTECT)
+
     gps_number_satellites_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     gps_accuracy_end = models.IntegerField(null=True, blank=True)
     gps_aspect_end = models.FloatField(null=True, blank=True)
 
     transect_length = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+    transect_length_source = models.ForeignKey(Source, on_delete=models.PROTECT)
 
     transect_description = models.TextField(max_length=2048, default='', blank=True)
 
