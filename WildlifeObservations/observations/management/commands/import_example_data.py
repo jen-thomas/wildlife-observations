@@ -19,16 +19,22 @@ class Command(BaseCommand):
 
 def import_visits():
     catalonia_a = Site.objects.create(area='Catalonia', site_name='CAT01', altitude_band='1800',
-                                      latitude_start=42.2669, longitude_start=1.7812, altitude_start=1826,
-                                      latitude_end=42.3, longitude_end=1.7822, altitude_end=1885,
+                                      latitude_start=42.2669, latitude_start_source='GPS', longitude_start=1.7812,
+                                      longitude_start_source='GPS', altitude_start=1826, altitude_start_source='GPS',
+                                      latitude_end=42.3, latitude_end_source='GPS', longitude_end=1.7822,
+                                      longitude_end_source='GPS', altitude_end=1885, altitude_end_source='GPS',
                                       transect_length=100)
     catalonia_b = Site.objects.create(area='Catalonia', site_name='CAT02', altitude_band='1900',
-                                      latitude_start=42.2626, longitude_start=1.8015, altitude_start=1986,
-                                      latitude_end=42.28, longitude_end=1.8035, altitude_end=1974,
+                                      latitude_start=42.2626, latitude_start_source='GPS', longitude_start=1.8015,
+                                      longitude_start_source='GPS', altitude_start=1986, altitude_start_source='GPS',
+                                      latitude_end=42.28, latitude_end_source='GPS', longitude_end=1.8035,
+                                      longitude_end_source='GPS', altitude_end=1974, altitude_end_source='GPS',
                                       transect_length=100)
     catalonia_c = Site.objects.create(area='Catalonia', site_name='CAT03', altitude_band='2000',
-                                      latitude_start=42.2795, longitude_start=1.7857, altitude_start=2014,
-                                      latitude_end=42.3, longitude_end=1.8, altitude_end=2015,
+                                      latitude_start=42.2795, latitude_start_source='OSMAND', longitude_start=1.7857,
+                                      longitude_start_source='GPS', altitude_start=2014, altitude_start_source='GPS',
+                                      latitude_end=42.3, latitude_end_source='GPS', longitude_end=1.8,
+                                      longitude_end_source='GPS', altitude_end=2015, altitude_end_source='OSMAND',
                                       transect_length=100)
 
     visit_sept = Visit.objects.create(site=catalonia_a, date='2021-09-17')

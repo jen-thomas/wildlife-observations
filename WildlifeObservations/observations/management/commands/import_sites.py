@@ -30,8 +30,11 @@ class Command(BaseCommand):
                 site.notes = row['notes']
 
                 site.latitude_start = row['start_latitude']
+                site.latitude_start_source = row['start_latitude_source']
                 site.longitude_start = row['start_longitude']
+                site.longitude_start_source = row['start_longitude_source']
                 site.altitude_start = row['start_altitude']
+                site.altitude_start_source = row['start_altitude_source']
 
                 if row['start_number_satellites'] != '':
                     site.gps_number_satellites_start = row['start_number_satellites']
@@ -41,8 +44,11 @@ class Command(BaseCommand):
                     site.gps_aspect_start = row['start_orientation']
 
                 site.latitude_end = row['end_latitude']
+                site.latitude_end_source = row['end_latitude_source']
                 site.longitude_end = row['end_longitude']
+                site.longitude_end_source = row['end_longitude_source']
                 site.altitude_end = row['end_altitude']
+                site.altitude_end_source = row['end_altitude_source']
 
                 if row['end_number_satellites'] != '':
                     site.gps_number_satellites_end = row['end_number_satellites']
