@@ -6,19 +6,18 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Source(models.Model):
-
     class PositionSource(models.TextChoices):
         VIKINGTOPO = 'Viking Topo', _('Viking Topo')
         GPS = 'GPS', _('GPS')
         DEM = 'DEM', _('DEM')
         OSMAND = 'OsmAnd', _('OsmAnd')
-        
+
     name = models.CharField(max_length=20, choices=PositionSource)
-        
+
     def __str__(self):
         return "{}".format(self.name)
-        
-        
+
+
 class Site(models.Model):
     area = models.CharField(max_length=30)
     site_name = models.CharField(max_length=5, unique=True)
@@ -60,7 +59,6 @@ class Site(models.Model):
 
 
 class Visit(models.Model):
-
     site = models.ForeignKey(Site, on_delete=models.PROTECT)
     date = models.DateField()
     created_on = models.DateTimeField(default=timezone.now)
@@ -75,7 +73,6 @@ class Visit(models.Model):
 
 
 class Survey(models.Model):
-
     class Method(models.TextChoices):
         NET = 'Net', _('Net')
         HAND = 'Hand', _('Hand')
@@ -103,10 +100,12 @@ class Survey(models.Model):
 
 class MeteorologyConditions(models.Model):
     survey = models.OneToOneField(Survey, on_delete=models.PROTECT, unique=True)
-    cloud_coverage_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    cloud_coverage_start = models.IntegerField(null=True, blank=True,
+                                               validators=[MinValueValidator(0), MaxValueValidator(8)])
     wind_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     rain_start = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
-    cloud_coverage_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    cloud_coverage_end = models.IntegerField(null=True, blank=True,
+                                             validators=[MinValueValidator(0), MaxValueValidator(8)])
     wind_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     rain_end = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
     notes = models.TextField(max_length=2048, default='', blank=True)
@@ -120,9 +119,7 @@ class MeteorologyConditions(models.Model):
 
 
 class Observation(models.Model):
-
     class Status(models.TextChoices):
-
         OBSERVED = 'Observed', _('Observed')
         SPECIMEN = 'Specimen', _('Specimen')
         LOST = 'Lost', _('Lost')
