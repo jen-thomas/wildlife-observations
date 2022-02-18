@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from ...models import TaxonomyClass, TaxonomyOrder, TaxonomySuborder, TaxonomyFamily, TaxonomySpecies, \
     Site, Visit, Survey, Observation, Identification, IdentificationGuide, Plot, MeteorologyConditions, \
-    VegetationStructure
+    VegetationStructure, TaxonomyGenus
 
 from django.db import transaction
 
@@ -68,9 +68,11 @@ def import_species():
     suborder_caelifera = TaxonomySuborder.objects.create(order=order, suborder='Caelifera')
     family_tett = TaxonomyFamily.objects.create(suborder=suborder_ensifera, family='Tettigoniidae')
     family_acrididae = TaxonomyFamily.objects.create(suborder=suborder_caelifera, family='Acrididae')
-    TaxonomySpecies.objects.create(family=family_tett, latin_name='Leptophyes punctatissima',
+    genus_leptophyes = TaxonomyGenus.objects.create(family=family_tett, genus='Leptophyes')
+    genus_omocestus = TaxonomyGenus.objects.create(family=family_acrididae, genus='Omocestus')
+    TaxonomySpecies.objects.create(genus=genus_leptophyes, latin_name='Leptophyes punctatissima',
                                    common_name_english='Speckled bush-cricket')
-    TaxonomySpecies.objects.create(family=family_acrididae, latin_name='Omocestus antigai',
+    TaxonomySpecies.objects.create(genus=genus_omocestus, latin_name='Omocestus antigai',
                                    common_name_english='Pyrenean grasshopper',
                                    common_name_catalan='Saltamartí català')
 
