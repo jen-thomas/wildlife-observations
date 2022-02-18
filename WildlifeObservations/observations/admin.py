@@ -9,11 +9,11 @@ from .models import VegetationStructure, Survey
 
 class SiteAdmin(admin.ModelAdmin):
     list_display = (
-        'area', 'site_name', 'altitude_band', 'gps_latitude_start', 'gps_longitude_start', 'gps_altitude_start',
-        'gps_aspect_start', 'gps_latitude_end', 'gps_longitude_end', 'gps_altitude_end', 'gps_aspect_end',
+        'area', 'site_name', 'altitude_band', 'latitude_start', 'longitude_start', 'altitude_start',
+        'gps_aspect_start', 'latitude_end', 'longitude_end', 'altitude_end', 'gps_aspect_end',
         'transect_length',)
     ordering = (
-        'site_name', 'altitude_band', 'gps_altitude_start', 'gps_altitude_end', 'gps_aspect_start', 'gps_aspect_end',
+        'site_name', 'altitude_band', 'altitude_start', 'altitude_end', 'gps_aspect_start', 'gps_aspect_end',
         'transect_length',)
     search_fields = ('area', 'site_name', 'altitude_band', 'transect_length',)
 

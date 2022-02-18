@@ -29,9 +29,9 @@ class Command(BaseCommand):
                 site.transect_description = row['transect_description']
                 site.notes = row['notes']
 
-                site.gps_latitude_start = row['start_latitude']
-                site.gps_longitude_start = row['start_longitude']
-                site.gps_altitude_start = row['start_altitude']
+                site.latitude_start = row['start_latitude']
+                site.longitude_start = row['start_longitude']
+                site.altitude_start = row['start_altitude']
 
                 if row['start_number_satellites'] != '':
                     site.gps_number_satellites_start = row['start_number_satellites']
@@ -40,9 +40,9 @@ class Command(BaseCommand):
                 if row['start_orientation'] != '':
                     site.gps_aspect_start = row['start_orientation']
 
-                site.gps_latitude_end = row['end_latitude']
-                site.gps_longitude_end = row['end_longitude']
-                site.gps_altitude_end = row['end_altitude']
+                site.latitude_end = row['end_latitude']
+                site.longitude_end = row['end_longitude']
+                site.altitude_end = row['end_altitude']
 
                 if row['end_number_satellites'] != '':
                     site.gps_number_satellites_end = row['end_number_satellites']

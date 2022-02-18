@@ -19,16 +19,16 @@ class Command(BaseCommand):
 
 def import_visits():
     catalonia_a = Site.objects.create(area='Catalonia', site_name='CAT01', altitude_band='1800',
-                                      gps_latitude_start=42.2669, gps_longitude_start=1.7812, gps_altitude_start=1826,
-                                      gps_latitude_end=42.3, gps_longitude_end=1.7822, gps_altitude_end=1885,
+                                      latitude_start=42.2669, longitude_start=1.7812, altitude_start=1826,
+                                      latitude_end=42.3, longitude_end=1.7822, altitude_end=1885,
                                       transect_length=100)
     catalonia_b = Site.objects.create(area='Catalonia', site_name='CAT02', altitude_band='1900',
-                                      gps_latitude_start=42.2626, gps_longitude_start=1.8015, gps_altitude_start=1986,
-                                      gps_latitude_end=42.28, gps_longitude_end=1.8035, gps_altitude_end=1974,
+                                      latitude_start=42.2626, longitude_start=1.8015, altitude_start=1986,
+                                      latitude_end=42.28, longitude_end=1.8035, altitude_end=1974,
                                       transect_length=100)
     catalonia_c = Site.objects.create(area='Catalonia', site_name='CAT03', altitude_band='2000',
-                                      gps_latitude_start=42.2795, gps_longitude_start=1.7857, gps_altitude_start=2014,
-                                      gps_latitude_end=42.3, gps_longitude_end=1.8, gps_altitude_end=2015,
+                                      latitude_start=42.2795, longitude_start=1.7857, altitude_start=2014,
+                                      latitude_end=42.3, longitude_end=1.8, altitude_end=2015,
                                       transect_length=100)
 
     visit_sept = Visit.objects.create(site=catalonia_a, date='2021-09-17')
