@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from ...models import Site
+from ...models import Site, Source
 import csv
 
 
@@ -15,6 +15,27 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print(options['filename'])
         self.import_data_from_csv(options['filename'])
+        self.import_sources()
+
+    def import_sources(self):
+
+        source = Source()
+        source.objects.create(name='GPS')
+        source.objects.create(name='OsmAnd')
+        source.objects.create(name='DEM')
+        source.objects.create(name='Viking Topo')
+
+        source.save()
+
+    def source_string_to_choice(self, source_string):
+        if source_string == 'GPS':
+            return Source.PositionSource.GPS
+        elif source_string == 'Osmand':
+            return Source.PositionSource.OSMAND
+        elif source_string == 'DEM':
+            return Source.PositionSource.DEM
+        elif source_string == 'Viking':
+            return Source.PositionSource.VIKINGTOPO
 
     def import_data_from_csv(self, filename):
         with open(filename) as csvfile:
@@ -30,11 +51,12 @@ class Command(BaseCommand):
                 site.notes = row['notes']
 
                 site.latitude_start = row['start_latitude']
-                site.latitude_start_source = row['start_latitude_source']
                 site.longitude_start = row['start_longitude']
-                site.longitude_start_source = row['start_longitude_source']
                 site.altitude_start = row['start_altitude']
-                site.altitude_start_source = row['start_altitude_source']
+
+                site.latitude_start_source = self.source_string_to_choice(row['start_latitude_source'])
+                site.longitude_start_source = self.source_string_to_choice(row['start_longitude_source'])
+                site.altitude_start_source = self.source_string_to_choice(row['start_altitude_source'])
 
                 if row['start_number_satellites'] != '':
                     site.gps_number_satellites_start = row['start_number_satellites']
@@ -44,11 +66,12 @@ class Command(BaseCommand):
                     site.gps_aspect_start = row['start_orientation']
 
                 site.latitude_end = row['end_latitude']
-                site.latitude_end_source = row['end_latitude_source']
                 site.longitude_end = row['end_longitude']
-                site.longitude_end_source = row['end_longitude_source']
                 site.altitude_end = row['end_altitude']
-                site.altitude_end_source = row['end_altitude_source']
+                
+                site.latitude_end_source = self.source_string_to_choice(row['end_latitude_source'])
+                site.longitude_end_source = self.source_string_to_choice(row['end_longitude_source'])
+                site.altitude_end_source = self.source_string_to_choice(row['end_altitude_source'])
 
                 if row['end_number_satellites'] != '':
                     site.gps_number_satellites_end = row['end_number_satellites']
