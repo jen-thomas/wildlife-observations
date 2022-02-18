@@ -32,15 +32,23 @@ class Command(BaseCommand):
                 site.gps_latitude_start = row['start_latitude']
                 site.gps_longitude_start = row['start_longitude']
                 site.gps_altitude_start = row['start_altitude']
-                site.gps_number_satellites_start = row['start_number_satellites']
-                site.gps_accuracy_start = row['start_gps_accuracy']
-                site.gps_aspect_start = row['start_orientation']
+
+                if row['start_number_satellites'] != '':
+                    site.gps_number_satellites_start = row['start_number_satellites']
+                if row['start_gps_accuracy'] != '':
+                    site.gps_accuracy_start = row['start_gps_accuracy']
+                if row['start_orientation'] != '':
+                    site.gps_aspect_start = row['start_orientation']
 
                 site.gps_latitude_end = row['end_latitude']
                 site.gps_longitude_end = row['end_longitude']
                 site.gps_altitude_end = row['end_altitude']
-                site.gps_number_satellites_end = row['end_number_satellites']
-                site.gps_accuracy_end = row['end_gps_accuracy']
-                site.gps_aspect_end = row['end_orientation']
+
+                if row['end_number_satellites'] != '':
+                    site.gps_number_satellites_end = row['end_number_satellites']
+                if row['end_gps_accuracy'] != '':
+                    site.gps_accuracy_end = row['end_gps_accuracy']
+                if row['end_orientation'] != '':
+                    site.gps_aspect_end = row['end_orientation']
 
                 site.save()
