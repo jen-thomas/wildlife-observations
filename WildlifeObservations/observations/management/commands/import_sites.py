@@ -14,28 +14,29 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         print(options['filename'])
-        self.import_data_from_csv(options['filename'])
         self.import_sources()
+        self.import_data_from_csv(options['filename'])
 
     def import_sources(self):
 
-        source = Source()
-        source.objects.create(name='GPS')
-        source.objects.create(name='OsmAnd')
-        source.objects.create(name='DEM')
-        source.objects.create(name='Viking Topo')
-
-        source.save()
+        Source.objects.get_or_create(name=Source.PositionSource.GPS)
+        Source.objects.get_or_create(name=Source.PositionSource.OSMAND)
+        Source.objects.get_or_create(name=Source.PositionSource.DEM)
+        Source.objects.get_or_create(name=Source.PositionSource.VIKINGTOPO)
 
     def source_string_to_choice(self, source_string):
         if source_string == 'GPS':
-            return Source.PositionSource.GPS
+            name = Source.PositionSource.GPS
         elif source_string == 'Osmand':
-            return Source.PositionSource.OSMAND
+            name = Source.PositionSource.OSMAND
         elif source_string == 'DEM':
-            return Source.PositionSource.DEM
+            name = Source.PositionSource.DEM
         elif source_string == 'Viking':
-            return Source.PositionSource.VIKINGTOPO
+            name = Source.PositionSource.VIKINGTOPO
+        else:
+            assert False
+
+        return Source.objects.get(name=name)
 
     def import_data_from_csv(self, filename):
         with open(filename) as csvfile:
