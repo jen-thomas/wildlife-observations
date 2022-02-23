@@ -17,10 +17,15 @@ class Command(BaseCommand):
         self.import_taxonomy_from_csv(options['filename'])
 
     def import_species_from_csv(self, row_data, genus):
+        
+        catalan = string_or_none(row_data['catalan'])
+        english = string_or_none(row_data['english'])
+        spanish = string_or_none(row_data['spanish'])
+
         species, created = TaxonomySpecies.objects.get_or_create(genus=genus, latin_name=row_data['species'],
-                                                                 common_name_catalan=row_data['catalan'],
-                                                                 common_name_english=row_data['english'],
-                                                                 common_name_spanish=row_data['spanish'])
+                                                                 common_name_catalan=catalan,
+                                                                 common_name_english=english,
+                                                                 common_name_spanish=spanish)
 
         return species
 
@@ -75,3 +80,12 @@ def select_columns(row, list_of_columns) -> dict:
         selected[column_name] = row[column_name]
 
     return selected
+
+
+def string_or_none(string):
+    if string != '':
+        output = string
+    else:
+        output = None
+
+    return output
