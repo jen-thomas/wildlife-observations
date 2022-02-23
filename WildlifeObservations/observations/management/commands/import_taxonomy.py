@@ -17,7 +17,7 @@ class Command(BaseCommand):
         self.import_taxonomy_from_csv(options['filename'])
 
     def import_species_from_csv(self, row_data, genus):
-        
+        print(row_data)
         catalan = string_or_none(row_data['catalan'])
         english = string_or_none(row_data['english'])
         spanish = string_or_none(row_data['spanish'])
@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 genus_data = select_columns(row, ["genus"])
                 genus = self.import_genus_from_csv(genus_data, family)
 
-                species_data = select_columns(row, ["species"])
+                species_data = select_columns(row, ["species", "catalan", "english", "spanish"])
                 self.import_species_from_csv(species_data, genus)
 
 
