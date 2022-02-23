@@ -244,7 +244,7 @@ class Identification(models.Model):
     identification_guide = models.ForeignKey(IdentificationGuide, on_delete=models.PROTECT, null=True, blank=True)
     sex = models.CharField(max_length=7, choices=Sex.choices, null=True, blank=True)
     stage = models.CharField(max_length=7, choices=Stage.choices, null=True, blank=True)
-    confidence = models.CharField(max_length=11, choices=Confidence.choices)
+    confidence = models.CharField(max_length=11, choices=Confidence.choices, null=True, blank=True)
     date_of_identification = models.DateField(null=True, blank=True)
     notebook = models.CharField(max_length=10)
     comments = models.TextField(max_length=1000, null=True, blank=True)

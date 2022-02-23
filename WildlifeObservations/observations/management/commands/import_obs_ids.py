@@ -63,8 +63,10 @@ class Command(BaseCommand):
             identification.confidence = Identification.Confidence.IN_PROGRESS
         elif row_data['sure'] == 'review':
             identification.confidence = Identification.Confidence.REVIEW
-        elif row_data['sure'] == '':
+        elif row_data['sure'] == '' and row_data['species'] != '':
             identification.confidence = Identification.Confidence.REVIEW
+        elif row_data['sure'] == '':
+            identification.confidence = None
 
         if row_data['id_date'] != '':
             identification.date_of_identification = datetime.strptime(row_data['id_date'], '%Y-%m-%d').date()
