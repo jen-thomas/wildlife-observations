@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Source(models.Model):
-
     class PositionSource(models.TextChoices):
         VIKINGTOPO = 'Viking Topo', _('Viking Topo')
         GPS = 'GPS', _('GPS')
@@ -94,9 +93,11 @@ class Survey(models.Model):
         return "{} {} {}".format(self.visit, self.method, self.repeat)
 
     class Meta:
-        constraints = [models.UniqueConstraint(
-            name="%(app_label)s_%(class)s_visit_method_repeat_unique_relationships",
-            fields=['visit', 'method', 'repeat'])]
+        constraints = [
+            models.UniqueConstraint(name="%(app_label)s_%(class)s_visit_method_repeat_unique_relationships",
+                                    fields=['visit', 'method', 'repeat']),
+            models.UniqueConstraint(name="%(app_label)s_%(class)s_visit_start_unique_relationships",
+                                    fields=['visit', 'start_time'])]
 
 
 class MeteorologyConditions(models.Model):
