@@ -95,7 +95,7 @@ class Command(BaseCommand):
                     method = Survey.Method.HAND
 
                 survey_repeat = survey_details[2][1]
-
+                print(site)
                 visit = Visit.objects.get(site=Site.objects.get(site_name=site), date=visit_date_time_obj)
                 survey = Survey.objects.get(visit=visit, method=method, repeat=survey_repeat)
 

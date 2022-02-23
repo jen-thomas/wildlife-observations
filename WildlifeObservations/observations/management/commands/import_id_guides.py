@@ -16,4 +16,9 @@ class Command(BaseCommand):
         id_guide = IdentificationGuide.objects.create(title='The Orthoptera fauna of the Pyrenean region - a field guide',
                                                       author='Poniatowski, Defaut, Llucià-Pomares and Fartmann')
         id_guide = IdentificationGuide.objects.create(title='Atles dels Ortòpters de Catalunya',
-                                                      author='Josep Maria Olmo Vidal')
+                                                      author='Olmo Vidal')
+        id_guide = IdentificationGuide.objects.create(title='Revisión de los Ortópteros (Insecta: Orthoptera) de Cataluña (España)',
+                                                      author='Llucià Pomares')
+        id_guide = IdentificationGuide.objects.create(
+            title='Saltamontes, Grillos y Langostas',
+            author='Bellmann, Rutschmann, Roesti and Hochkirch')
