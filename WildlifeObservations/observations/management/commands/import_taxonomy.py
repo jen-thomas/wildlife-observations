@@ -4,6 +4,7 @@ from django.db import transaction
 from ...models import TaxonomySpecies, TaxonomyGenus, TaxonomySuborder, TaxonomyFamily, TaxonomyClass, TaxonomyOrder
 import csv
 
+
 class Command(BaseCommand):
     help = 'Adds taxonomy'
 
@@ -16,37 +17,35 @@ class Command(BaseCommand):
         self.import_taxonomy_from_csv(options['filename'])
 
     def import_species_from_csv(self, row_data, genus):
-
-        species, created = TaxonomySpecies.objects.get_or_create(genus=genus, latin_name=row_data['species'])
+        species, created = TaxonomySpecies.objects.get_or_create(genus=genus, latin_name=row_data['species'],
+                                                                 common_name_catalan=row_data['catalan'],
+                                                                 common_name_english=row_data['english'],
+                                                                 common_name_spanish=row_data['spanish'])
 
         return species
 
     def import_genus_from_csv(self, row_data, family):
-
         genus, created = TaxonomyGenus.objects.get_or_create(family=family, genus=row_data['genus'])
 
         return genus
 
     def import_family_from_csv(self, row_data, suborder):
-
         family, created = TaxonomyFamily.objects.get_or_create(suborder=suborder, family=row_data['family'])
 
         return family
 
     def import_class(self):
-
         taxclass, created = TaxonomyClass.objects.get_or_create(taxclass='Insecta')
 
         taxclass.save()
 
     def import_order(self):
-
-        order, created = TaxonomyOrder.objects.get_or_create(order='Orthoptera', taxclass=TaxonomyClass.objects.get(taxclass='Insecta'))
+        order, created = TaxonomyOrder.objects.get_or_create(order='Orthoptera',
+                                                             taxclass=TaxonomyClass.objects.get(taxclass='Insecta'))
 
         order.save()
 
     def import_taxonomy_from_csv(self, filename):
-
         self.import_class()
         self.import_order()
 
@@ -54,8 +53,9 @@ class Command(BaseCommand):
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-
-                suborder, created = TaxonomySuborder.objects.get_or_create(suborder=row['suborder'], order=TaxonomyOrder.objects.get(order='Orthoptera'))
+                suborder, created = TaxonomySuborder.objects.get_or_create(suborder=row['suborder'],
+                                                                           order=TaxonomyOrder.objects.get(
+                                                                               order='Orthoptera'))
                 suborder.save()
 
                 family_data = select_columns(row, ["family"])

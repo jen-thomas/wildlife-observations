@@ -49,6 +49,7 @@ class Command(BaseCommand):
                 site.altitude_band = row['altitude_band']
                 site.transect_length = row['transect_length']
                 site.transect_description = row['transect_description']
+                site.transect_length_source = self.source_string_to_choice(row['transect_length_source'])
                 site.notes = row['notes']
 
                 site.latitude_start = row['start_latitude']

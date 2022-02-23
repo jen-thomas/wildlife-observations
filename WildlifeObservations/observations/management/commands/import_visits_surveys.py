@@ -38,9 +38,18 @@ class Command(BaseCommand):
         survey.visit = visit
         survey.start_time = row_data['start_time']
         survey.end_time = row_data['end_time']
-        survey.method = row_data['method']
         survey.repeat = row_data['repeat']
         survey.observer = 'Jen Thomas' # all of the surveys were done by the same person in this case
+
+        if row_data['method'] == 'net':
+            survey.method = Survey.Method.NET
+        elif row_data['method'] == 'hand':
+            survey.method = Survey.Method.HAND
+
+        if row_data['repeat'] == '1':
+            survey.repeat = Survey.Repeat.ONE
+        elif row_data['repeat'] == '2':
+            survey.repeat = Survey.Repeat.TWO
 
         survey.save()
 
