@@ -43,15 +43,19 @@ class Command(BaseCommand):
             identification.sex = Identification.Sex.FEMALE
         elif row_data['sex'] == 'male':
             identification.sex = Identification.Sex.MALE
-        elif row_data['sex'] == '':
+        elif row_data['sex'] == '' and row_data['id_notes'] != '':
             identification.sex = Identification.Sex.UNKNOWN
+        elif row_data['sex'] == '':
+            identification.sex = None
 
         if row_data['stage'] == 'adult':
             identification.stage = Identification.Stage.ADULT
         elif row_data['stage'] == 'nymph':
             identification.stage = Identification.Stage.NYMPH
-        elif row_data['stage'] == '':
+        elif row_data['stage'] == '' and row_data['id_notes'] != '':
             identification.stage = Identification.Stage.UNKNOWN
+        elif row_data['stage'] == '':
+            identification.stage = None
 
         if row_data['sure'] == 'yes':
             identification.confidence = Identification.Confidence.YES
