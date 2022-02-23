@@ -81,6 +81,7 @@ class Command(BaseCommand):
 
             for row in reader:
                 observation = Observation()
+                print(row)
 
                 survey_details = row['specimen_id'].split(' ')
                 site = survey_details[0]
@@ -95,7 +96,7 @@ class Command(BaseCommand):
                     method = Survey.Method.HAND
 
                 survey_repeat = survey_details[2][1]
-                print(site)
+
                 visit = Visit.objects.get(site=Site.objects.get(site_name=site), date=visit_date_time_obj)
                 survey = Survey.objects.get(visit=visit, method=method, repeat=survey_repeat)
 

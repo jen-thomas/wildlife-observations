@@ -49,7 +49,7 @@ class SurveyAdmin(admin.ModelAdmin):
     form = SurveyForm
     list_display = ('visit', 'start_time', 'end_time', 'method', 'repeat', 'observer',)
     ordering = ('visit', 'start_time', 'end_time', 'method', 'repeat',)
-    search_fields = ('visit__site_name', 'start_time', 'end_time', 'method', 'observer',)
+    search_fields = ('visit__site__site_name', 'start_time', 'end_time', 'method', 'observer',)
 
 
 class ObservationAdmin(admin.ModelAdmin):
@@ -65,7 +65,7 @@ class IdentificationAdmin(admin.ModelAdmin):
     ordering = (
     'observation', 'species', 'genus', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
-        'observation__specimen_label', 'species', 'genus__genus', 'family__family', 'suborder__suborder',
+        'observation__specimen_label', 'species__latin_name', 'genus__genus', 'family__family', 'suborder__suborder',
         'identification_guide__title', 'sex', 'stage', 'confidence',)
 
     def specimen_status(self, obj):
