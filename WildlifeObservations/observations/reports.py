@@ -7,7 +7,7 @@ class SpeciesReport:
     def __init__(self):
         pass
 
-    def species_count(self):
+    def species_identified_count(self):
         """Returns list of dictionaries with species name and count
 
         For example:
