@@ -21,6 +21,12 @@ class Command(BaseCommand):
         print("\n---------- Number of individual observations identified ----------")
         print(species_reports.identified_observations_count())
 
+        done = (species_reports.identified_observations_count()/species_reports.observations_count())*100
+        to_do = 100-done
+
+        print("Done:", done, "%")
+        print("To do:", to_do, "%")
+
         print("\n---------- Number of each species identified ----------")
         for row in species_reports.species_identified_count():
             print(row["species_name"], row["count"])
