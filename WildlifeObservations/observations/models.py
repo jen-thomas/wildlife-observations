@@ -131,8 +131,8 @@ class Observation(models.Model):
                        message='Format is sitename yyyymmdd methodrepeat specimen',
                        code='Invalid format')])
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
-    length_head_abdomen = models.FloatField(null=True, validators=[MinValueValidator(0)])
-    length_head_tegmina = models.FloatField(null=True, validators=[MinValueValidator(0)])
+    length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
     status = models.CharField(max_length=10, choices=Status.choices)
     created_on = models.DateTimeField(default=timezone.now)
 
