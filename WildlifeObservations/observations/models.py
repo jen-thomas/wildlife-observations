@@ -192,6 +192,7 @@ class TaxonomyGenus(models.Model):
 
     class Meta:
         verbose_name_plural = 'Taxonomy genera'
+        ordering = ['genus']
 
 
 class TaxonomySpecies(models.Model):
