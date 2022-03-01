@@ -31,3 +31,9 @@ class Command(BaseCommand):
         for row in species_reports.species_identified_count():
             print(row["species_name"], row["count"])
 
+        number_confirmed_species = species_reports.number_confirmed_species_observed()
+        print("Total number of confirmed species observed: ", number_confirmed_species)
+
+        number_unconfirmed_species = species_reports.number_unconfirmed_species_observed()
+        print("Total number of unconfirmed species observed: ", number_unconfirmed_species)
+

@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from .models import Identification, Observation
 
@@ -16,7 +16,8 @@ class SpeciesReport:
          ]
         """
 
-        qs = Identification.objects.filter(species__isnull=False).values("species__latin_name").annotate(total=Count("species")).order_by("-total")
+        qs = Identification.objects.filter(species__isnull=False).values("species__latin_name").annotate(
+            total=Count("species")).order_by("-total")
 
         result = []
 
@@ -24,6 +25,21 @@ class SpeciesReport:
             result.append({"species_name": identification["species__latin_name"], "count": identification["total"]})
 
         return result
+
+    def number_confirmed_species_observed(self):
+        """Returns the number of confirmed species (integer) that have been recorded."""
+
+        qs = len(set(Identification.objects.filter(Q(confidence=Identification.Confidence.YES) | Q(
+            confidence=Identification.Confidence.CONFIRMED)).values_list("species__latin_name", flat=True)))
+
+        return qs
+
+    def number_unconfirmed_species_observed(self):
+        """Returns the number of unconfirmed species (integer) that have been recorded."""
+
+        qs = len(set(Identification.objects.values_list("species__latin_name", flat=True)))
+
+        return qs
 
     def identified_observations_count(self):
         """Return total number (integer) of individual observations identified."""
