@@ -67,6 +67,7 @@ class IdentificationAdmin(admin.ModelAdmin):
     search_fields = (
         'observation__specimen_label', 'species__latin_name', 'genus__genus', 'family__family', 'suborder__suborder',
         'identification_guide__title', 'sex', 'stage', 'confidence',)
+    raw_id_fields = ('observation',)
 
     def specimen_status(self, obj):
         return "{}".format(obj.observation.status)
