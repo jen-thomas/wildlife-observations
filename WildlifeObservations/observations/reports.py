@@ -79,7 +79,20 @@ class VisitReport:
         pass
 
     def summarise_sites(self):
-        pass
+        """Return a list of dictionaries of the number of sites within each study area.
+
+        For example:
+        [{'area': 'area1', 'count':10},
+        {'area': 'area2', 'count':80}]"""
+
+        qs = Site.objects.values("area").annotate(total=Count("area"))
+
+        result = []
+
+        for site in qs:
+            result.append({"area": site["area"], "count": site["total"]})
+
+        return result
 
     def summarise_visits(self):
         """Return a list of dictionaries of the number of visits to each site.
@@ -131,12 +144,19 @@ class VisitReport:
         return result
 
     def summarise_survey(self):
-        """Return a list of dictionaries of the number of each suborder on each visit to each site.
+        """Return a list of dictionaries of the number of each observations recorded during each survey.
 
         For example:
-        [{'survey': 'TOR03 20210719 N1', 'Caelifera':7, 'Ensifera':2, 'Unknown':2},
-        {'survey': 'TOR05 20210719 H1', 'Caelifera':17, 'Ensifera':5, 'Unknown':5}]"""
+        [{'survey': 'TOR03 20210719 N1', 'count':15},
+        {'survey': 'TOR05 20210719 H1', 'count':23}]"""
 
-        qs = Identification.objects.values("observation__survey").annotate(total=Count("suborder"))
+        qs = Observation.objects.values("survey").annotate(total=Count("survey"))
 
-        return qs
+        result = []
+
+        for survey in qs:
+            survey_id = survey["observation__survey"]
+            survey_obj = Survey.objects.get(id=survey_id)
+            result.append({"survey": survey_obj, "count": survey["total"]})
+
+        return result
