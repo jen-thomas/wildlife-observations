@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ...reports import SpeciesReport
+from ...reports import SpeciesReport, VisitReport
 
 
 class Command(BaseCommand):
@@ -11,6 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         species_reports = SpeciesReport()
+        visit_reports = VisitReport()
 
         print("---------- Number of observations ----------")
         print("Total:", species_reports.observations_count())
@@ -36,4 +37,13 @@ class Command(BaseCommand):
 
         number_unconfirmed_species = species_reports.number_unconfirmed_species_observed()
         print("Total number of unconfirmed species observed: ", number_unconfirmed_species)
+
+        print("\n------------ Sites visited ------------")
+
+        print("\nTotal number of sites in each area.")
+
+
+        print("\nTotal number of visits to each site.")
+        for row in visit_reports.summarise_visits():
+            print(row['site_name'], row["count"])
 

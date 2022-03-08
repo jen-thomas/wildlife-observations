@@ -1,6 +1,6 @@
 from django.db.models import Count, Q
 
-from .models import Identification, Observation
+from .models import Identification, Observation, Visit, Site
 
 
 class SpeciesReport:
@@ -70,3 +70,36 @@ class SpeciesReport:
             result.append({"suborder": identification["suborder__suborder"], "count": identification["total"]})
 
         return result
+
+
+class VisitReport:
+    def __init__(self):
+        pass
+
+    def summarise_sites(self):
+        pass
+    
+    def summarise_visits(self):
+        """Return a list of dictionaries of the number of visits to each site.
+
+        For example:
+        [{'site_name': 'TOR01', 'count':3},
+        {'site_name': 'TOR02', 'count':4}]"""
+
+        qs = Visit.objects.values("site__site_name").annotate(total=Count("date"))
+
+        result = []
+
+        for visit in qs:
+            result.append({"site_name": visit["site__site_name"], "count": visit["total"]})
+
+        return result
+
+    def summarise_suborder_survey(self):
+        """Return a list of dictionaries of the number of each suborder on each visit to each site.
+
+        For example:
+        [{'visit': 'TOR03 20210719 N1', 'Caelifera':7, 'Ensifera':2, 'Unknown':2},
+        {'visit': 'TOR05 20210719 H1', 'Caelifera':17, 'Ensifera':5, 'Unknown':5}]"""
+
+        qs = Identification.objects.values("observation__survey")
