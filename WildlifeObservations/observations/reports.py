@@ -1,6 +1,8 @@
+from re import sub
+
 from django.db.models import Count, Q
 
-from .models import Identification, Observation, Visit, Site
+from .models import Identification, Observation, Visit, Site, Survey
 
 
 class SpeciesReport:
@@ -78,7 +80,7 @@ class VisitReport:
 
     def summarise_sites(self):
         pass
-    
+
     def summarise_visits(self):
         """Return a list of dictionaries of the number of visits to each site.
 
@@ -99,7 +101,42 @@ class VisitReport:
         """Return a list of dictionaries of the number of each suborder on each visit to each site.
 
         For example:
-        [{'visit': 'TOR03 20210719 N1', 'Caelifera':7, 'Ensifera':2, 'Unknown':2},
-        {'visit': 'TOR05 20210719 H1', 'Caelifera':17, 'Ensifera':5, 'Unknown':5}]"""
+        [{'survey': 'TOR03 20210719 N1', 'Caelifera':7, 'Ensifera':2, 'Unknown':2},
+        {'survey': 'TOR05 20210719 H1', 'Caelifera':17, 'Ensifera':5, 'Unknown':5}]"""
 
-        qs = Identification.objects.values("observation__survey")
+        # qs = Identification.objects.values("observation__survey").annotate(total=Count("suborder"))
+
+        result = []
+
+        for survey in Survey.objects.all().order_by('visit__date'):
+            row = {}
+
+            row['survey'] = str(survey)
+            row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Caelifera').count()
+            row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Ensifera').count()
+
+            # row['todo'] = Observation.objects.filter(survey=survey).count() - survey.count()
+            # row['todo'] = Identification.objects.filter(observation__survey=survey) -
+
+            all_observation_db_ids_for_this_survey = set(Observation.objects.filter(survey=survey).values_list('id', flat=True))
+            all_observation_db_ids_for_this_survey_identified = set(Identification.objects.filter(observation__survey=survey).values_list('observation__id', flat=True))
+
+            observations_not_identified_db_ids = all_observation_db_ids_for_this_survey - all_observation_db_ids_for_this_survey_identified
+
+            # row['observations_not_identified'] = Observation.objects.filter(id__in=list(observations_not_identified_db_ids))
+            row['observations_not_identified'] = len(observations_not_identified_db_ids)
+
+            result.append(row)
+
+        return result
+
+    def summarise_survey(self):
+        """Return a list of dictionaries of the number of each suborder on each visit to each site.
+
+        For example:
+        [{'survey': 'TOR03 20210719 N1', 'Caelifera':7, 'Ensifera':2, 'Unknown':2},
+        {'survey': 'TOR05 20210719 H1', 'Caelifera':17, 'Ensifera':5, 'Unknown':5}]"""
+
+        qs = Identification.objects.values("observation__survey").annotate(total=Count("suborder"))
+
+        return qs
