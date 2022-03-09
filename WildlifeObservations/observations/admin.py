@@ -6,6 +6,7 @@ from . import models
 # Register your models here.
 from .models import VegetationStructure, Survey
 
+
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('name',)
     ordering = ('name',)
@@ -53,8 +54,10 @@ class SurveyAdmin(admin.ModelAdmin):
 
 
 class ObservationAdmin(admin.ModelAdmin):
-    list_display = ('specimen_label', 'survey', 'status', 'length_head_abdomen', 'length_head_tegmina', 'notes',)
-    ordering = ('specimen_label', 'survey', 'status',)
+    list_display = (
+    'specimen_label', 'survey', 'status', 'length_head_abdomen', 'length_head_tegmina', 'original_preservation',
+    'current_preservation', 'notes',)
+    ordering = ('specimen_label', 'survey', 'status', 'original_preservation', 'current_preservation',)
     search_fields = ('specimen_label', 'survey__visit__site__site_name', 'status', 'length_head_abdomen',)
 
 
@@ -63,7 +66,7 @@ class IdentificationAdmin(admin.ModelAdmin):
         'observation', 'species', 'genus', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
         'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
     ordering = (
-    'observation', 'species', 'genus', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
+        'observation', 'species', 'genus', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
         'observation__specimen_label', 'species__latin_name', 'genus__genus', 'family__family', 'suborder__suborder',
         'identification_guide__title', 'sex', 'stage', 'confidence',)

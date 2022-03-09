@@ -126,13 +126,25 @@ class Observation(models.Model):
         SPECIMEN = 'Specimen', _('Specimen')
         LOST = 'Lost', _('Lost')
 
+    class PreservationType(models.TextChoices):
+        FROZEN = 'Frozen', _('Frozen')
+        ALCOHOL = 'Alcohol', _('Alcohol')
+        PINNED = 'Pinned', _('Pinned')
+        NA = 'NA', _('NA')
+
     specimen_label = models.CharField(max_length=22, unique=True, validators=[
         RegexValidator(regex='^[A-Z]{3}[0-9]{2} [0-9]{8} [A-Z]{1}[0-9]{1} [A-Z]{1}[0-9]{3}$',
                        message='Format is sitename yyyymmdd methodrepeat specimen',
                        code='Invalid format')])
     survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
-    length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    length_head_abdomen = models.FloatField(null=True, blank=True,
+                                            validators=[MinValueValidator(0), MaxValueValidator(100)])
+    length_head_tegmina = models.FloatField(null=True, blank=True,
+                                            validators=[MinValueValidator(0), MaxValueValidator(100)])
+    original_preservation = models.CharField(max_length=10, choices=PreservationType.choices,
+                                             default=PreservationType.FROZEN)
+    current_preservation = models.CharField(max_length=10, choices=PreservationType.choices,
+                                            default=PreservationType.FROZEN)
     status = models.CharField(max_length=10, choices=Status.choices)
     notes = models.TextField(max_length=1024, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
