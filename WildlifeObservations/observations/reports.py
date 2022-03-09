@@ -121,12 +121,12 @@ class VisitReport:
 
         result = []
 
-        for survey in Survey.objects.all().order_by('visit__date'):
+        for survey in Survey.objects.all().order_by('visit__date', 'visit__site__site_name'):
             row = {}
 
             row['survey'] = str(survey)
-            row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Caelifera').count()
-            row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Ensifera').count()
+            row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Caelifera').count() # all identifications of Caelifera
+            row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Ensifera').count() # all identifications of Ensifera
 
             # row['todo'] = Observation.objects.filter(survey=survey).count() - survey.count()
             # row['todo'] = Identification.objects.filter(observation__survey=survey) -
