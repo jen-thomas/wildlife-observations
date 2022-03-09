@@ -134,6 +134,7 @@ class Observation(models.Model):
     length_head_abdomen = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
     length_head_tegmina = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
     status = models.CharField(max_length=10, choices=Status.choices)
+    notes = models.TextField(max_length=1024, null=True, blank=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
