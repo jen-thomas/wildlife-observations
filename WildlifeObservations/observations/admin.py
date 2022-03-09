@@ -61,6 +61,12 @@ class ObservationAdmin(admin.ModelAdmin):
     search_fields = ('specimen_label', 'survey__visit__site__site_name', 'status', 'length_head_abdomen',)
 
 
+class PhotographAdmin(admin.ModelAdmin):
+    list_display = ('filepath', 'observation',)
+    ordering = ('filepath', 'observation',)
+    search_fields = ('filepath', 'observation__specimen_label',)
+
+
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
         'observation', 'species', 'genus', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
@@ -165,6 +171,7 @@ admin.site.register(models.Source, SourceAdmin)
 admin.site.register(models.Site, SiteAdmin)
 admin.site.register(models.Visit, VisitAdmin)
 admin.site.register(models.Observation, ObservationAdmin)
+admin.site.register(models.Photograph, PhotographAdmin)
 admin.site.register(models.Identification, IdentificationAdmin)
 admin.site.register(models.TaxonomyClass, TaxonomyClassAdmin)
 admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
