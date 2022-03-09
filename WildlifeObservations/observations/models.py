@@ -153,6 +153,15 @@ class Observation(models.Model):
         return "{}".format(self.specimen_label)
 
 
+class Photograph(models.Model):
+    filepath = models.FilePathField(path=None, match=None, recursive=False, max_length=300, unique=True)
+    observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
+    created_on = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return "{}".format(self.filepath)
+
+
 class TaxonomyClass(models.Model):
     taxclass = models.CharField(max_length=255, unique=True)
 
