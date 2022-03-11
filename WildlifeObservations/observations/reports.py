@@ -124,6 +124,7 @@ class VisitReport:
         for survey in Survey.objects.all().order_by('visit__date', 'visit__site__site_name'):
             row = {}
 
+            # TODO count these identifications of Caelifera and Ensifera for unique observation specimen labels.
             row['survey'] = str(survey)
             row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Caelifera').count() # all identifications of Caelifera
             row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Ensifera').count() # all identifications of Ensifera

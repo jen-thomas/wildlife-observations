@@ -17,7 +17,7 @@ class Command(BaseCommand):
         print("Total:", species_reports.observations_count())
 
         for row in species_reports.observations_suborder_count():
-            print(row["suborder"], row["count"])
+            print("\n", row["suborder"], row["count"], (100*row["count"]/species_reports.observations_count()).__round__(1), "%")
 
         print("\n---------- Number of individual observations identified ----------")
         print(species_reports.identified_observations_count())
