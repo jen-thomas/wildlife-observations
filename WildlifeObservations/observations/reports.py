@@ -46,10 +46,12 @@ class SpeciesReport:
     def identified_observations_count(self):
         """Return total number (integer) of individual (unique) observations identified to taxonomic level of family, genus or species."""
 
-        qs_identified_to_family = Identification.objects.filter(family__isnull=False).filter(confidence__isnull=False).exclude(
+        qs_identified_to_family = Identification.objects.filter(family__isnull=False).filter(
+            confidence__isnull=False).exclude(
             confidence__exact=Identification.Confidence.IN_PROGRESS)
 
-        distinct_observations_identified = qs_identified_to_family.values_list("observation__specimen_label", flat=True).distinct()
+        distinct_observations_identified = qs_identified_to_family.values_list("observation__specimen_label",
+                                                                               flat=True).distinct()
 
         distinct_observations_identified_count = distinct_observations_identified.count()
 
@@ -74,6 +76,23 @@ class SpeciesReport:
         identified_to_genus_count = qs_identified_to_genus.distinct().count()
 
         return identified_to_genus_count
+
+    def identified_observations_to_genus_not_species_count(self):
+        """Return total number (integer) of individual observations that have been identified to genus, not species.
+
+        Note that this query will likely need to be improved to take into account the identification confidence, given that not all will be certain and some will no doubt be counted here that are incorrect."""
+
+        qs_identified_to_genus = Identification.objects.filter(genus__isnull=False).values_list(
+            "observation__specimen_label", flat=True)
+        qs_identified_to_species = Identification.objects.filter(species__isnull=False).values_list(
+            "observation__specimen_label", flat=True)
+        obs_genus_set = set(qs_identified_to_genus)
+        obs_species_set = set(qs_identified_to_species)
+
+        genus_not_species = obs_genus_set - obs_species_set
+        species_not_genus = obs_species_set - obs_genus_set  # being used as a check only. In theory, this should be 0 if the command to complete the taxonomic hierarchy when selecting the lowest possible in an identification, is working correctly
+
+        return len(genus_not_species)
 
     def observations_count(self):
         """Return total number (integer) of individual observations made."""

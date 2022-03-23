@@ -29,6 +29,7 @@ class Command(BaseCommand):
 
         print("\nNumber of unique observations identified to species:", species_reports.identified_observations_to_species_count())
         print("Number of unique observations identified to genus:", species_reports.identified_observations_to_genus_count())
+        print("Number of observations only identified to genus:", species_reports.identified_observations_to_genus_not_species_count())
 
 
         print("\n---------- Number of each species identified ----------")
@@ -36,7 +37,7 @@ class Command(BaseCommand):
             print(row["species_name"], row["count"])
 
         number_confirmed_species = species_reports.number_confirmed_species_observed()
-        print("Total number of confirmed species observed: ", number_confirmed_species)
+        print("\nTotal number of confirmed species observed: ", number_confirmed_species)
 
         number_unconfirmed_species = species_reports.number_unconfirmed_species_observed()
         print("Total number of unconfirmed species observed: ", number_unconfirmed_species)
