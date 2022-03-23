@@ -44,11 +44,36 @@ class SpeciesReport:
         return qs
 
     def identified_observations_count(self):
-        """Return total number (integer) of individual observations identified."""
+        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family, genus or species."""
 
-        qs = Identification.objects.filter(species__isnull=False).values("observation__specimen_label").count()
+        qs_identified_to_family = Identification.objects.filter(family__isnull=False).filter(confidence__isnull=False).exclude(
+            confidence__exact=Identification.Confidence.IN_PROGRESS)
 
-        return qs
+        distinct_observations_identified = qs_identified_to_family.values_list("observation__specimen_label", flat=True).distinct()
+
+        distinct_observations_identified_count = distinct_observations_identified.count()
+
+        return distinct_observations_identified_count
+
+    def identified_observations_to_species_count(self):
+        """Return total number (integer) of individual observations identified to species."""
+
+        qs_identified_to_species = Identification.objects.filter(species__isnull=False).values(
+            "observation__specimen_label")
+
+        identified_to_species_count = qs_identified_to_species.distinct().count()
+
+        return identified_to_species_count
+
+    def identified_observations_to_genus_count(self):
+        """Return total number (integer) of individual observations identified to genus."""
+
+        qs_identified_to_genus = Identification.objects.filter(genus__isnull=False).values(
+            "observation__specimen_label")
+
+        identified_to_genus_count = qs_identified_to_genus.distinct().count()
+
+        return identified_to_genus_count
 
     def observations_count(self):
         """Return total number (integer) of individual observations made."""
@@ -126,14 +151,18 @@ class VisitReport:
 
             # TODO count these identifications of Caelifera and Ensifera for unique observation specimen labels.
             row['survey'] = str(survey)
-            row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Caelifera').count() # all identifications of Caelifera
-            row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(suborder__suborder='Ensifera').count() # all identifications of Ensifera
+            row['Caelifera'] = Identification.objects.filter(observation__survey=survey).filter(
+                suborder__suborder='Caelifera').count()  # all identifications of Caelifera
+            row['Ensifera'] = Identification.objects.filter(observation__survey=survey).filter(
+                suborder__suborder='Ensifera').count()  # all identifications of Ensifera
 
             # row['todo'] = Observation.objects.filter(survey=survey).count() - survey.count()
             # row['todo'] = Identification.objects.filter(observation__survey=survey) -
 
-            all_observation_db_ids_for_this_survey = set(Observation.objects.filter(survey=survey).values_list('id', flat=True))
-            all_observation_db_ids_for_this_survey_identified = set(Identification.objects.filter(observation__survey=survey).values_list('observation__id', flat=True))
+            all_observation_db_ids_for_this_survey = set(
+                Observation.objects.filter(survey=survey).values_list('id', flat=True))
+            all_observation_db_ids_for_this_survey_identified = set(
+                Identification.objects.filter(observation__survey=survey).values_list('observation__id', flat=True))
 
             observations_not_identified_db_ids = all_observation_db_ids_for_this_survey - all_observation_db_ids_for_this_survey_identified
 
