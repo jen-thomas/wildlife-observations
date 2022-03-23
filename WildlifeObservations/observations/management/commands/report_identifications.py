@@ -1,17 +1,16 @@
 from django.core.management.base import BaseCommand
 
-from ...reports import SpeciesReport, VisitReport
+from ...reports import SpeciesReport
 
 
 class Command(BaseCommand):
-    help = 'Print reports'
+    help = 'Print reports about observations and identifications'
 
     def add_arguments(self, parser):
         pass
 
     def handle(self, *args, **options):
         species_reports = SpeciesReport()
-        visit_reports = VisitReport()
 
         print("---------- Number of observations ----------")
         print("Total:", species_reports.observations_count())
@@ -41,22 +40,3 @@ class Command(BaseCommand):
 
         number_unconfirmed_species = species_reports.number_unconfirmed_species_observed()
         print("Total number of unconfirmed species observed: ", number_unconfirmed_species)
-
-        print("\n------------ Sites visited ------------")
-
-        print("\nTotal number of sites in each area.")
-        for row in visit_reports.summarise_sites():
-            print(row['area'], row['count'])
-
-        print("\nTotal number of visits to each site.")
-        for row in visit_reports.summarise_visits():
-            print(row['site_name'], row["count"])
-
-        # print("\nSummary of observations from each survey.")
-        # for row in visit_reports.summarise_survey():
-        #     print(row['survey'], ":", row['count'])
-
-        print("\nSummary of suborders observed during each survey.")
-        for row in visit_reports.summarise_suborder_survey():
-            print(row['survey'], 'Caelifera:', row['Caelifera'], 'Ensifera:', row['Ensifera'], 'Unknown:', row['observations_not_identified'])
-
