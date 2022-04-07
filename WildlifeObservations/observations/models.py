@@ -257,6 +257,7 @@ class Identification(models.Model):
         REDO = 'Redo', _('Redo')
         YES = 'Yes', _('Yes')
         REVIEW = 'Review', _('Review')
+        CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
