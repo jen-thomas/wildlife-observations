@@ -34,20 +34,6 @@ class Command(BaseCommand):
         print("\n---------- Number of each stage identified ----------")
         for identification in species_reports.identifications_stage_count():
             if identification["stage"] == "Adult":
-                print("Adults:")
-                print("-", identification["confidence"], identification["count"])
+                print(identification["stage"], identification["confidence"], identification["count"])
             elif identification["stage"] == "Nymph":
                 print(identification["stage"], identification["confidence"], identification["count"])
-
-        print("\n---------- Number of each species identified ----------")
-        for row in species_reports.species_identified_count():
-            print(row["species_name"], row["count"])
-
-        number_confirmed_species = species_reports.number_confirmed_species_observed()
-        print("\nTotal number of confirmed species observed: ", number_confirmed_species)
-
-        number_unconfirmed_species = len(species_reports.unconfirmed_species_observed())
-        print("Total number of unconfirmed species observed: ", number_unconfirmed_species)
-        print("Unconfirmed species:")
-        for species in species_reports.unconfirmed_species_observed():
-            print(species)
