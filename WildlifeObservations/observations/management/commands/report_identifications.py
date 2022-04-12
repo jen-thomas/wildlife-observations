@@ -32,8 +32,12 @@ class Command(BaseCommand):
         print("Number of observations only identified to genus:", species_reports.identified_observations_to_genus_not_species_count())
 
         print("\n---------- Number of each stage identified ----------")
-        for stage in species_reports.identifications_stage_count():
-            print(stage["stage"], stage["count"])
+        for identification in species_reports.identifications_stage_count():
+            if identification["stage"] == "Adult":
+                print("Adults:")
+                print("-", identification["confidence"], identification["count"])
+            elif identification["stage"] == "Nymph":
+                print(identification["stage"], identification["confidence"], identification["count"])
 
         print("\n---------- Number of each species identified ----------")
         for row in species_reports.species_identified_count():

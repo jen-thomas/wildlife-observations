@@ -124,12 +124,13 @@ class SpeciesReport:
         [{'stage': 'Adult', 'count':30},
         {'stage': 'Nymph', 'count':60}]"""
 
-        qs = Identification.objects.values("stage").annotate(total=Count("stage"))
+        qs = Identification.objects.values("stage", "confidence").annotate(total=Count("stage"))
 
         result = []
 
         for identification in qs:
-            result.append({"stage": identification["stage"], "count": identification["total"]})
+            if identification["stage"] != None:
+                result.append({"stage": identification["stage"], "confidence": identification["confidence"], "count": identification["total"]})
 
         return result
 
