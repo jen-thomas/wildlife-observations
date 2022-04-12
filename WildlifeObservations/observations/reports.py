@@ -117,7 +117,7 @@ class SpeciesReport:
 
         return result
 
-    def identifications_stage(self):
+    def identifications_stage_count(self):
         """Return list of dictionaries of count of identifications of each stage.
 
         For example:

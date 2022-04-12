@@ -32,7 +32,7 @@ class Command(BaseCommand):
         print("Number of observations only identified to genus:", species_reports.identified_observations_to_genus_not_species_count())
 
         print("\n---------- Number of each stage identified ----------")
-        for stage in species_reports.identifications_stage():
+        for stage in species_reports.identifications_stage_count():
             print(stage["stage"], stage["count"])
 
         print("\n---------- Number of each species identified ----------")
