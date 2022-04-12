@@ -117,6 +117,23 @@ class SpeciesReport:
 
         return result
 
+    def identifications_stage_count(self):
+        """Return list of dictionaries of count of identifications of each stage, with each confidence level.
+
+        For example:
+        [{'stage': 'Adult', 'count':30},
+        {'stage': 'Nymph', 'count':60}]"""
+
+        qs = Identification.objects.values("stage").annotate(total=Count("stage"))
+
+        result = []
+
+        for identification in qs:
+            if identification["stage"] != None:
+                result.append({"stage": identification["stage"], "count": identification["total"]})
+
+        return result
+
     def identifications_stage_confidence_count(self):
         """Return list of dictionaries of count of identifications of each stage, with each confidence level.
 

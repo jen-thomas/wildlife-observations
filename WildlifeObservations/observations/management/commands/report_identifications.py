@@ -33,7 +33,11 @@ class Command(BaseCommand):
 
         print("\n---------- Number of each stage identified ----------")
 
+        print("\nStages identified:")
+        for identification in species_reports.identifications_stage_count():
+            print(identification["stage"], identification["count"])
 
+        print("\nStage with confidence:")
         for identification in species_reports.identifications_stage_confidence_count():
             if identification["stage"] == "Adult":
                 print(identification["stage"], identification["confidence"], identification["count"])
