@@ -258,6 +258,7 @@ class Identification(models.Model):
         YES = 'Yes', _('Yes')
         REVIEW = 'Review', _('Review')
         CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
+        SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)

@@ -36,10 +36,10 @@ class SpeciesReport:
 
         return qs
 
-    def number_unconfirmed_species_observed(self):
+    def unconfirmed_species_observed(self):
         """Returns the number of unconfirmed species (integer) that have been recorded."""
 
-        qs = len(set(Identification.objects.values_list("species__latin_name", flat=True)))
+        qs = set(Identification.objects.values_list("species__latin_name", flat=True))
 
         return qs
 
@@ -114,6 +114,22 @@ class SpeciesReport:
 
         for identification in qs:
             result.append({"suborder": identification["suborder__suborder"], "count": identification["total"]})
+
+        return result
+
+    def identifications_stage(self):
+        """Return list of dictionaries of count of identifications of each stage.
+
+        For example:
+        [{'stage': 'Adult', 'count':30},
+        {'stage': 'Nymph', 'count':60}]"""
+
+        qs = Identification.objects.values("stage").annotate(total=Count("stage"))
+
+        result = []
+
+        for identification in qs:
+            result.append({"stage": identification["stage"], "count": identification["total"]})
 
         return result
 
