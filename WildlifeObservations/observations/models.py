@@ -253,6 +253,7 @@ class Identification(models.Model):
     class Confidence(models.TextChoices):
         IN_PROGRESS = 'In_progress', _('In progress')
         CHECK = 'Check', _('Check')
+        CHECK_IN_MUSEUM= 'Check_in_museum', _('Check in museum')
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
         YES = 'Yes', _('Yes')
