@@ -57,6 +57,20 @@ class SpeciesReport:
 
         return distinct_observations_identified_count
 
+    def identified_observations_finalised_count(self):
+        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family, genus or species, that are finalised."""
+
+        qs_identified_to_family = Identification.objects.filter(
+            confidence__isnull=False).exclude(
+            confidence__in=(Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK, Identification.Confidence.CHECK_IN_MUSEUM))
+
+        distinct_observations_finalised_identified = qs_identified_to_family.values_list("observation__specimen_label",
+                                                                               flat=True).distinct()
+
+        distinct_observations_finalised_identified_count = distinct_observations_finalised_identified.count()
+
+        return distinct_observations_finalised_identified_count
+
     def identified_observations_to_species_count(self):
         """Return total number (integer) of individual observations identified to species."""
 

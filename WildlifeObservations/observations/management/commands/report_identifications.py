@@ -27,6 +27,8 @@ class Command(BaseCommand):
         print("Done:", done, "%")
         print("To do:", to_do, "%")
 
+        print("\nTotal number of observations with finalised identifications:", species_reports.identified_observations_finalised_count())
+
         print("\nNumber of unique observations identified to species:", species_reports.identified_observations_to_species_count())
         print("Number of unique observations identified to genus:", species_reports.identified_observations_to_genus_count())
         print("Number of observations only identified to genus:", species_reports.identified_observations_to_genus_not_species_count())
