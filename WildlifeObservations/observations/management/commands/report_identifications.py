@@ -41,8 +41,9 @@ class Command(BaseCommand):
         print("Number of unique observations identified to species, identification to CHECK:", len(counting_species_identified_todo['Check']))
         print("Number of unique observations identified to species, identification to REDO / IN PROGRESS:", len(counting_species_identified_todo['Redo']) + len(counting_species_identified_todo['InProgress']))
 
-        print("Number of observations only identified to genus:",
-              species_reports.identified_observations_to_genus_not_species_count())
+        counting_genus_identified = species_reports.identified_observations_to_genus_not_species()
+
+        print("Number of observations only identified to genus:", counting_genus_identified['Total'])
 
         print("\n---------- Number of each stage identified ----------")
 

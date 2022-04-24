@@ -152,33 +152,64 @@ class SpeciesReport:
 
         return {'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress, 'MissingConfirmation': missing_confirmation}
 
+    def identified_observations_to_genus_not_species(self):
+        """Return dictionary of observations that have been identified to genus, not species, with details of confidence."""
 
-    def identified_observations_to_genus_count(self):
-        """Return total number (integer) of individual observations identified to genus."""
+        identified_to_genus = Identification.objects.filter(genus__isnull=False).filter(species__isnull=True)
 
-        qs_identified_to_genus = Identification.objects.filter(genus__isnull=False).values(
-            "observation__specimen_label")
+        total_unique_observations_genus = len(set(identified_to_genus.values_list("observation__specimen_label", flat=True)))
 
-        identified_to_genus_count = qs_identified_to_genus.distinct().count()
+        specimen_labels = set()
 
-        return identified_to_genus_count
+        nymphs_hard_to_id = set()
+        cannot_id_further = set()
+        confirmed = set()
+        in_progress = set()
+        redo = set()
+        review = set()
+        check = set()
+        check_in_museum = set()
+        missing_confirmation = set()
 
-    def identified_observations_to_genus_not_species_count(self):
-        """Return total number (integer) of individual observations that have been identified to genus, not species.
+        for identification in identified_to_genus:
+            identification: Identification
 
-        Note that this query will likely need to be improved to take into account the identification confidence, given that not all will be certain and some will no doubt be counted here that are incorrect."""
+            if identification.observation.specimen_label in specimen_labels:  # only consider a specimen label if it has not already been added to the set
+                continue
 
-        qs_identified_to_genus = Identification.objects.filter(genus__isnull=False).values_list(
-            "observation__specimen_label", flat=True)
-        qs_identified_to_species = Identification.objects.filter(species__isnull=False).values_list(
-            "observation__specimen_label", flat=True)
-        obs_genus_set = set(qs_identified_to_genus)
-        obs_species_set = set(qs_identified_to_species)
+            specimen_labels.add(identification.observation.specimen_label)  # add the specimen labels to the set
 
-        genus_not_species = obs_genus_set - obs_species_set
-        species_not_genus = obs_species_set - obs_genus_set  # being used as a check only. In theory, this should be 0 if the command to complete the taxonomic hierarchy when selecting the lowest possible in an identification, is working correctly
+            # the confidences are added in order of concreteness. Confirmed is more important to consider, than the others
+            if identification.confidence == Identification.Confidence.CONFIRMED or identification.confidence == Identification.Confidence.YES:
+                confirmed.add(identification.observation.specimen_label)  # identifications that are confirmed
+            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:
+                nymphs_hard_to_id.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:
+                cannot_id_further.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.REVIEW:
+                review.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
+                check_in_museum.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CHECK:
+                check.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.REDO:
+                redo.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.IN_PROGRESS:
+                in_progress.add(identification.observation.specimen_label)
+            elif identification.confidence is None:
+                missing_confirmation.add(identification.observation.specimen_label)
+            else:
+                assert False
 
-        return len(genus_not_species)
+        return {'Total': total_unique_observations_genus, 'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation, 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress, 'MissingConfirmation': missing_confirmation}
+
+        # obs_genus_set = set(qs_identified_to_genus)
+        # obs_species_set = set(qs_identified_to_species)
+        #
+        # genus_not_species = obs_genus_set - obs_species_set
+        # species_not_genus = obs_species_set - obs_genus_set  # being used as a check only. In theory, this should be 0 if the command to complete the taxonomic hierarchy when selecting the lowest possible in an identification, is working correctly
+        #
+        # return len(genus_not_species)
 
     def observations_count(self):
         """Return total number (integer) of individual observations made."""
