@@ -20,9 +20,9 @@ class Command(BaseCommand):
 
         counting_suborders = species_reports.observations_suborder_count()
 
-        print("Caelifera:", len(counting_suborders['Caelifera']), ",",
+        print("Caelifera:", len(counting_suborders['Caelifera']), "=",
               100 * (len(counting_suborders['Caelifera']) / counting_observations).__round__(3), "%")
-        print("Ensifera:", len(counting_suborders['Ensifera']), ",",
+        print("Ensifera:", len(counting_suborders['Ensifera']), "=",
               100 * (len(counting_suborders['Ensifera']) / counting_observations).__round__(3), "%")
         print("Number of observations without an identification:",
               counting_observations - len(counting_suborders['Caelifera']) - len(counting_suborders['Ensifera']) - len(counting_suborders['todo']))
