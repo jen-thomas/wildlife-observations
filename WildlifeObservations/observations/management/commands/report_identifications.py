@@ -43,7 +43,20 @@ class Command(BaseCommand):
 
         counting_genus_identified = species_reports.identified_observations_to_genus_not_species()
 
-        print("Number of observations only identified to genus:", counting_genus_identified['Total'])
+        print("\nNumber of unique observations only identified to genus:", counting_genus_identified['Total'])
+        print("\nNumber of unique observations only identified to genus, identification CONFIRMED:", len(counting_genus_identified['Confirmed']))
+        print("Number of unique observations only identified to genus, identification to REVIEW:", len(counting_genus_identified['Review']))
+        print("Number of unique observations only identified to genus, identification CANNOT ID FURTHER:", len(counting_genus_identified['CannotIDfurther']))
+        print("Number of unique observations only identified to genus, identification NYMPHS HARD TO ID:", len(counting_genus_identified['NymphsIDhard']))
+        print("Number of unique observations only identified to genus, identification to CHECK AFTER MUSEUM:", len(counting_genus_identified['CheckMuseum']))
+        print("Number of unique observations only identified to genus, identification to CHECK:", len(counting_genus_identified['Check']))
+        print("Number of unique observations only identified to genus, identification to REDO:", len(counting_genus_identified['Redo']))
+        print("Number of unique observations only identified to genus, identification IN PROGRESS:", len(counting_genus_identified['InProgress']))
+        print("Number of unique observations only identified to genus, identification NO CONFIRMATION:", len(counting_genus_identified['NoConfirmation']))
+
+
+
+
 
         print("\n---------- Number of each stage identified ----------")
 
