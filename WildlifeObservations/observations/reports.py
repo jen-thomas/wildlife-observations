@@ -73,8 +73,8 @@ class SpeciesReport:
 
         return distinct_observations_finalised_identified_count
 
-    def identified_observations_to_species(self):
-        """Return dictionary of individual observations identified to species, with details of the confidence of the identification."""
+    def identified_observations_to_species_finalised(self):
+        """Return dictionary of individual observations identified to species that have been finalised, with details of the confidence of the identification."""
 
         identified_to_species = Identification.objects.filter(species__isnull=False).exclude(
             confidence__in=(
@@ -109,6 +109,49 @@ class SpeciesReport:
                 assert False
 
         return {'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation}
+
+    def identified_observations_to_species_todo(self):
+        """Return dictionary of individual observations identified to species that have not yet been finalised, with details of the confidence of the identification."""
+
+        identified_to_species = Identification.objects.filter(species__isnull=False).exclude(
+            confidence__in=(Identification.Confidence.CONFIRMED, Identification.Confidence.YES,
+                            Identification.Confidence.SMALL_NYMPH_HARD_TO_ID, Identification.Confidence.CANNOT_DETERMINE_FURTHER))
+
+        specimen_labels = set()
+
+        in_progress = set()
+        redo = set()
+        review = set()
+        check = set()
+        check_in_museum = set()
+        missing_confirmation = set()
+
+        for identification in identified_to_species:
+            identification: Identification
+
+            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
+                continue
+
+            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set
+
+            # the confidences are added in order of concreteness.
+            if identification.confidence == Identification.Confidence.REVIEW:
+                review.add(identification.observation.specimen_label) # identifications that are for review
+            elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
+                check_in_museum.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CHECK:
+                check.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.REDO:
+                redo.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.IN_PROGRESS:
+                in_progress.add(identification.observation.specimen_label)
+            elif identification.confidence is None:
+                missing_confirmation.add(identification.observation.specimen_label)
+            else:
+                assert False
+
+        return {'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress, 'MissingConfirmation': missing_confirmation}
+
 
     def identified_observations_to_genus_count(self):
         """Return total number (integer) of individual observations identified to genus."""
