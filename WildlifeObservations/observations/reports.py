@@ -122,14 +122,33 @@ class SpeciesReport:
         [{'suborder': 'Caelifera', 'count':30},
         {'suborder': 'Ensifera', 'count':60}]"""
 
-        qs = Identification.objects.values("suborder__suborder").annotate(total=Count("suborder"))
+        identifications = Identification.objects.all()
 
-        result = []
+        specimen_labels = set()
 
-        for identification in qs:
-            result.append({"suborder": identification["suborder__suborder"], "count": identification["total"]})
+        c = set()
+        e = set()
+        todo = set()
 
-        return result
+        for identification in identifications:
+            identification: Identification
+
+            if identification.observation.specimen_label in specimen_labels:
+                continue
+
+            specimen_labels.add(identification.observation.specimen_label)
+
+            if identification.suborder is None:
+                todo.add(identification.observation.specimen_label)
+            elif identification.suborder.suborder == 'Caelifera':
+                c.add(identification.observation.specimen_label)
+            elif identification.suborder.suborder == 'Ensifera':
+                e.add(identification.observation.specimen_label)
+            else:
+                assert False
+
+        return {'Caelifera': c, 'Ensifera': e, 'todo': todo}
+
 
     def identifications_stage_count(self):
         """Return list of dictionaries of count of identifications of each stage, with each confidence level.
