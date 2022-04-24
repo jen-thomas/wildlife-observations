@@ -62,10 +62,12 @@ class SpeciesReport:
 
         qs_identified_to_family = Identification.objects.filter(
             confidence__isnull=False).exclude(
-            confidence__in=(Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK, Identification.Confidence.CHECK_IN_MUSEUM))
+            confidence__in=(
+            Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK,
+            Identification.Confidence.CHECK_IN_MUSEUM))
 
         distinct_observations_finalised_identified = qs_identified_to_family.values_list("observation__specimen_label",
-                                                                               flat=True).distinct()
+                                                                                         flat=True).distinct()
 
         distinct_observations_finalised_identified_count = distinct_observations_finalised_identified.count()
 
@@ -117,6 +119,8 @@ class SpeciesReport:
 
     def observations_suborder_count(self):
         """Return list of dictionaries of total numbers of observations of each suborder that have been made.
+        Account for the possibility of multiple identifications of each observation.
+        Assume though, that each observation has only been identified as one suborder.
 
         For example:
         [{'suborder': 'Caelifera', 'count':30},
@@ -131,15 +135,15 @@ class SpeciesReport:
         todo = set()
 
         for identification in identifications:
-            identification: Identification
+            identification: Identification # explicitely define identification to come from the Identification model so that this is recognised by PyCharm
 
-            if identification.observation.specimen_label in specimen_labels:
+            if identification.observation.specimen_label in specimen_labels: # makes the specimen labels (observations) unique
                 continue
 
-            specimen_labels.add(identification.observation.specimen_label)
+            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set (this also makes sure they are unique)
 
             if identification.suborder is None:
-                todo.add(identification.observation.specimen_label)
+                todo.add(identification.observation.specimen_label) # identifications that do not have a suborder
             elif identification.suborder.suborder == 'Caelifera':
                 c.add(identification.observation.specimen_label)
             elif identification.suborder.suborder == 'Ensifera':
@@ -148,7 +152,6 @@ class SpeciesReport:
                 assert False
 
         return {'Caelifera': c, 'Ensifera': e, 'todo': todo}
-
 
     def identifications_stage_count(self):
         """Return list of dictionaries of count of identifications of each stage, with each confidence level.
@@ -181,7 +184,8 @@ class SpeciesReport:
 
         for identification in qs:
             if identification["stage"] != None:
-                result.append({"stage": identification["stage"], "confidence": identification["confidence"], "count": identification["total"]})
+                result.append({"stage": identification["stage"], "confidence": identification["confidence"],
+                               "count": identification["total"]})
 
         return result
 
