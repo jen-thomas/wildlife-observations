@@ -26,24 +26,16 @@ class Command(BaseCommand):
               100 * (len(counting_suborders['Ensifera']) / counting_observations).__round__(3), "%")
         print("Number of observations without an identification:",
               counting_observations - len(counting_suborders['Caelifera']) - len(counting_suborders['Ensifera']) - len(counting_suborders['todo']))
-        print("Number of identifications without a suborder:", len(counting_suborders['todo']))
 
         print("\n---------- Observations identified ----------")
 
-        done = (species_reports.identified_observations_count() / species_reports.observations_count()) * 100
-        to_do = 100 - done
-
-        print("Total number of observations identified:", species_reports.identified_observations_count())
-        print("Done:", done, "%")
-        print("To do:", to_do, "%")
-
-        print("\nTotal number of observations with finalised identifications:",
+        print("\nTotal number of observations with finalised identifications (yes, confirmed, cannot identify further, small nymphs hard to ID):",
               species_reports.identified_observations_finalised_count())
 
-        print("\nNumber of unique observations identified to species:",
-              species_reports.identified_observations_to_species_count())
-        print("Number of unique observations identified to genus:",
-              species_reports.identified_observations_to_genus_count())
+        counting_species_identified = species_reports.identified_observations_to_species()
+
+        print("\nNumber of unique observations identified to species:", len(counting_species_identified['Confirmed']))
+        
         print("Number of observations only identified to genus:",
               species_reports.identified_observations_to_genus_not_species_count())
 
@@ -59,3 +51,8 @@ class Command(BaseCommand):
                 print(identification["stage"], identification["confidence"], identification["count"])
             elif identification["stage"] == "Nymph":
                 print(identification["stage"], identification["confidence"], identification["count"])
+
+        print("\n-----THINGS TO CHECK-----")
+
+        print("\n-Number of identifications without a suborder:", len(counting_suborders['todo']), ":", counting_suborders['todo'])
+        print("\n-Number of observations identified to species which have been marked as cannot be ID'd further:", len(counting_species_identified['CannotIDfurther']), ":", counting_species_identified['CannotIDfurther'])

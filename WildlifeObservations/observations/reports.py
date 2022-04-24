@@ -73,15 +73,42 @@ class SpeciesReport:
 
         return distinct_observations_finalised_identified_count
 
-    def identified_observations_to_species_count(self):
-        """Return total number (integer) of individual observations identified to species."""
+    def identified_observations_to_species(self):
+        """Return dictionary of individual observations identified to species, with details of the confidence of the identification."""
 
-        qs_identified_to_species = Identification.objects.filter(species__isnull=False).values(
-            "observation__specimen_label")
+        identified_to_species = Identification.objects.filter(species__isnull=False).exclude(
+            confidence__in=(
+            Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK, Identification.Confidence.REVIEW,
+            Identification.Confidence.CHECK_IN_MUSEUM))
 
-        identified_to_species_count = qs_identified_to_species.distinct().count()
+        specimen_labels = set()
 
-        return identified_to_species_count
+        nymphs_hard_to_id = set()
+        cannot_id_further = set()
+        confirmed = set()
+        missing_confirmation = set()
+
+        for identification in identified_to_species:
+            identification: Identification
+
+            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
+                continue
+
+            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set
+
+            # the confidences are added in order of concreteness. Confirmed is more important to consider, than the others
+            if identification.confidence == Identification.Confidence.CONFIRMED or identification.confidence == Identification.Confidence.YES:
+                confirmed.add(identification.observation.specimen_label) # identifications that are confirmed
+            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:
+                nymphs_hard_to_id.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:
+                cannot_id_further.add(identification.observation.specimen_label)
+            elif identification.confidence is None:
+                missing_confirmation.add(identification.observation.specimen_label)
+            else:
+                assert False
+
+        return {'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation}
 
     def identified_observations_to_genus_count(self):
         """Return total number (integer) of individual observations identified to genus."""
@@ -137,7 +164,7 @@ class SpeciesReport:
         for identification in identifications:
             identification: Identification # explicitely define identification to come from the Identification model so that this is recognised by PyCharm
 
-            if identification.observation.specimen_label in specimen_labels: # makes the specimen labels (observations) unique
+            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
                 continue
 
             specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set (this also makes sure they are unique)
