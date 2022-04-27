@@ -42,10 +42,6 @@ class Command(BaseCommand):
         print("Total number of observations identified to species:", len(total_identifications_species_unique))
         print("\nNumber of unique observations identified to species, identification CONFIRMED:",
               len(counting_species_identified['Confirmed']))
-        print("Number of unique observations identified to species, identification CANNOT ID FURTHER:",
-              len(counting_species_identified['CannotIDfurther']))
-        print("Number of unique observations identified to species, identification NYMPHS HARD TO ID:",
-              len(counting_species_identified['NymphsIDhard']))
         print("Number of unique observations identified to species, identification to REVIEW:",
               len(counting_species_identified['Review']))
         print("Number of unique observations identified to species, identification to CHECK AFTER MUSEUM:",
@@ -54,6 +50,10 @@ class Command(BaseCommand):
               len(counting_species_identified['Check']))
         print("Number of unique observations identified to species, identification to REDO / IN PROGRESS:",
               len(counting_species_identified['Redo']))
+        print("Number of unique observations identified to species, identification CANNOT ID FURTHER:",
+              len(counting_species_identified['CannotIDfurther']))
+        print("Number of unique observations identified to species, identification NYMPHS HARD TO ID:",
+              len(counting_species_identified['NymphsIDhard']))
         print("Number of unique observations identified to species, identification IN PROGRESS:",
               len(counting_species_identified['InProgress']))
         print("Number of unique observations identified to species, identification MISSING CONFIRMATION:",

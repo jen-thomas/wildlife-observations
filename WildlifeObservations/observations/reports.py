@@ -97,8 +97,8 @@ class SpeciesReport:
         all_confirmed = set()
         all_nymphs_hard_to_id = set()
         all_cannot_id_further = set()
-        all_review = set()
         all_check_in_museum = set()
+        all_review = set()
         all_check = set()
         all_redo = set()
         all_in_progress = set()
@@ -125,10 +125,10 @@ class SpeciesReport:
                 # relevant for those that are identified to species, but left in just in case one appears due to a
                 # problem with data entry
                 all_cannot_id_further.add(identification.observation.specimen_label)
-            elif identification.confidence == Identification.Confidence.REVIEW:
-                all_review.add(identification.observation.specimen_label)  # identifications that are for review
             elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
                 all_check_in_museum.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.REVIEW:
+                all_review.add(identification.observation.specimen_label)  # identifications that are for review
             elif identification.confidence == Identification.Confidence.CHECK:
                 all_check.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.REDO:
@@ -140,13 +140,13 @@ class SpeciesReport:
             else:
                 assert False
 
-        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed
-        cannot_id_further = all_cannot_id_further - nymphs_hard_to_id
-        review = all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
-        check_in_museum = all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
-        check = all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
-        redo = all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
-        in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+        cannot_id_further = all_cannot_id_further - all_confirmed
+        check_in_museum = all_check_in_museum - all_confirmed # intentionally leaving out those that cannot be identified further
+        review = all_review - all_check_in_museum - all_confirmed
+        check = all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
+        redo = all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
+        in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
+        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed # intentionally removed nymphs that are hard to ID from the other sets
 
         return {'Confirmed': all_confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id,
                 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo,
