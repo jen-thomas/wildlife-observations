@@ -44,7 +44,8 @@ class SpeciesReport:
         return qs
 
     def identified_observations_count(self):
-        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family, genus or species."""
+        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family,
+        genus or species."""
 
         qs_identified_to_family = Identification.objects.filter(family__isnull=False).filter(
             confidence__isnull=False).exclude(
@@ -58,13 +59,14 @@ class SpeciesReport:
         return distinct_observations_identified_count
 
     def identified_observations_finalised_count(self):
-        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family, genus or species, that are finalised."""
+        """Return total number (integer) of individual (unique) observations identified to taxonomic level of family,
+        genus or species, that are finalised."""
 
         qs_identified_to_family = Identification.objects.filter(
             confidence__isnull=False).exclude(
             confidence__in=(
-            Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK,
-            Identification.Confidence.CHECK_IN_MUSEUM))
+                Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK,
+                Identification.Confidence.CHECK_IN_MUSEUM))
 
         distinct_observations_finalised_identified = qs_identified_to_family.values_list("observation__specimen_label",
                                                                                          flat=True).distinct()
@@ -73,91 +75,102 @@ class SpeciesReport:
 
         return distinct_observations_finalised_identified_count
 
-    def identified_observations_to_species_finalised(self):
-        """Return dictionary of individual observations identified to species that have been finalised, with details of the confidence of the identification."""
+    def identified_observations_to_species(self):
+        """Return dictionary of individual observations identified to species, with details of the confidence of the
+        identification.
 
-        identified_to_species = Identification.objects.filter(species__isnull=False).exclude(
-            confidence__in=(
-            Identification.Confidence.IN_PROGRESS, Identification.Confidence.REDO, Identification.Confidence.CHECK, Identification.Confidence.REVIEW,
-            Identification.Confidence.CHECK_IN_MUSEUM))
+        Observations with more than one identification should not be considered more than once, by adding them to a set
+        and checking this set before adding another identification for the same observation.
 
-        specimen_labels = set()
+        A hierarchy of "certainty" is used for the confidence level of the identification, which means that confirmed
+        identifications will be added to the set before those that are less certain, in cases where an observation has
+        multiple identifications with differing certainty.
 
-        nymphs_hard_to_id = set()
-        cannot_id_further = set()
-        confirmed = set()
-        missing_confirmation = set()
+        TODO: check that observations with multiple identifications that are confirmed, choose the same species / genus.
+        """
 
-        for identification in identified_to_species:
-            identification: Identification
+        identified_to_species = Identification.objects.filter(species__isnull=False)
 
-            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
-                continue
+        # specimen_labels = set()
 
-            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set
-
-            # the confidences are added in order of concreteness. Confirmed is more important to consider, than the others
-            if identification.confidence == Identification.Confidence.CONFIRMED or identification.confidence == Identification.Confidence.YES:
-                confirmed.add(identification.observation.specimen_label) # identifications that are confirmed
-            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:
-                nymphs_hard_to_id.add(identification.observation.specimen_label)
-            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:
-                cannot_id_further.add(identification.observation.specimen_label)
-            elif identification.confidence is None:
-                missing_confirmation.add(identification.observation.specimen_label)
-            else:
-                assert False
-
-        return {'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation}
-
-    def identified_observations_to_species_todo(self):
-        """Return dictionary of individual observations identified to species that have not yet been finalised, with details of the confidence of the identification."""
-
-        identified_to_species = Identification.objects.filter(species__isnull=False).exclude(
-            confidence__in=(Identification.Confidence.CONFIRMED, Identification.Confidence.YES,
-                            Identification.Confidence.SMALL_NYMPH_HARD_TO_ID, Identification.Confidence.CANNOT_DETERMINE_FURTHER))
-
-        specimen_labels = set()
-
-        in_progress = set()
-        redo = set()
-        review = set()
-        check = set()
-        check_in_museum = set()
-        missing_confirmation = set()
+        # confidence order of hierarchy
+        all_confirmed = set()
+        all_nymphs_hard_to_id = set()
+        all_cannot_id_further = set()
+        all_review = set()
+        all_check_in_museum = set()
+        all_check = set()
+        all_redo = set()
+        all_in_progress = set()
+        all_missing_confirmation = set()
 
         for identification in identified_to_species:
             identification: Identification
 
-            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
-                continue
-
-            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set
+            # if identification.observation.specimen_label in specimen_labels:  # only consider a specimen label if it
+            #     # has not already been added to the set. This avoids identifications being considered more than once.
+            #     continue
+            #
+            # specimen_labels.add(identification.observation.specimen_label)  # add the specimen labels to the set
 
             # the confidences are added in order of concreteness.
-            if identification.confidence == Identification.Confidence.REVIEW:
-                review.add(identification.observation.specimen_label) # identifications that are for review
+            if identification.confidence == Identification.Confidence.YES \
+                    or identification.confidence == Identification.Confidence.CONFIRMED:
+                all_confirmed.add(identification.observation.specimen_label)  # identifications that are confirmed
+            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:  # this is not really
+                # relevant for those that are identified to species, but left in just in case one appears due to a
+                # problem with data entry
+                all_nymphs_hard_to_id.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:  # this is not really
+                # relevant for those that are identified to species, but left in just in case one appears due to a
+                # problem with data entry
+                all_cannot_id_further.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.REVIEW:
+                all_review.add(identification.observation.specimen_label)  # identifications that are for review
             elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
-                check_in_museum.add(identification.observation.specimen_label)
+                all_check_in_museum.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.CHECK:
-                check.add(identification.observation.specimen_label)
+                all_check.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.REDO:
-                redo.add(identification.observation.specimen_label)
+                all_redo.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.IN_PROGRESS:
-                in_progress.add(identification.observation.specimen_label)
+                all_in_progress.add(identification.observation.specimen_label)
             elif identification.confidence is None:
-                missing_confirmation.add(identification.observation.specimen_label)
+                all_missing_confirmation.add(identification.observation.specimen_label)
             else:
                 assert False
 
-        return {'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress, 'MissingConfirmation': missing_confirmation}
+        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed
+        cannot_id_further = all_cannot_id_further - nymphs_hard_to_id
+        review = all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+        check_in_museum = all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+        check = all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+        redo = all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+        in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_nymphs_hard_to_id - all_confirmed
+
+        return {'Confirmed': all_confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id,
+                'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo,
+                'InProgress': in_progress, 'NoConfirmation': all_missing_confirmation}
+
+    def unique_observations_identified_to_species(self, dict_identifications_to_species):
+        """Gets the unique observations identified to species, from a dictionary of sets which
+        contains all of the identifications and their confidence level."""
+
+        unique_observations_from_identifications = set()
+
+        for key, specimen_labels in dict_identifications_to_species.items():
+            unique_observations_from_identifications.update(specimen_labels)
+
+        return unique_observations_from_identifications
 
     def identified_observations_to_genus_not_species(self):
-        """Return dictionary of observations that have been identified to genus, not species, with details of confidence."""
+        """Return dictionary of observations that have been identified to genus, not species, with details of
+        confidence."""
 
         identified_to_genus = Identification.objects.filter(genus__isnull=False).filter(species__isnull=True)
 
-        total_unique_observations_genus = len(set(identified_to_genus.values_list("observation__specimen_label", flat=True)))
+        total_unique_observations_genus = len(
+            set(identified_to_genus.values_list("observation__specimen_label", flat=True)))
 
         specimen_labels = set()
 
@@ -174,13 +187,15 @@ class SpeciesReport:
         for identification in identified_to_genus:
             identification: Identification
 
-            if identification.observation.specimen_label in specimen_labels:  # only consider a specimen label if it has not already been added to the set
+            if identification.observation.specimen_label in specimen_labels:  # only consider a specimen label if it
+                # has not already been added to the set
                 continue
 
             specimen_labels.add(identification.observation.specimen_label)  # add the specimen labels to the set
 
-            # the confidences are added in order of concreteness. Confirmed is more important to consider, than the others
-            if identification.confidence == Identification.Confidence.CONFIRMED or identification.confidence == Identification.Confidence.YES:
+            # the confidences are added in order of concreteness.
+            if identification.confidence == Identification.Confidence.CONFIRMED \
+                    or identification.confidence == Identification.Confidence.YES:
                 confirmed.add(identification.observation.specimen_label)  # identifications that are confirmed
             elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:
                 nymphs_hard_to_id.add(identification.observation.specimen_label)
@@ -201,15 +216,11 @@ class SpeciesReport:
             else:
                 assert False
 
-        return {'Total': total_unique_observations_genus, 'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation, 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress, 'MissingConfirmation': missing_confirmation}
-
-        # obs_genus_set = set(qs_identified_to_genus)
-        # obs_species_set = set(qs_identified_to_species)
-        #
-        # genus_not_species = obs_genus_set - obs_species_set
-        # species_not_genus = obs_species_set - obs_genus_set  # being used as a check only. In theory, this should be 0 if the command to complete the taxonomic hierarchy when selecting the lowest possible in an identification, is working correctly
-        #
-        # return len(genus_not_species)
+        return {'Total': total_unique_observations_genus, 'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further,
+                'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation, 'Review': review,
+                'Check': check,
+                'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress,
+                'MissingConfirmation': missing_confirmation}
 
     def observations_count(self):
         """Return set of individual observations made."""
@@ -242,15 +253,19 @@ class SpeciesReport:
         todo = set()
 
         for identification in identifications:
-            identification: Identification # explicitely define identification to come from the Identification model so that this is recognised by PyCharm
+            identification: Identification  # explicitely define identification to come from the Identification model
+            # so that this is recognised by PyCharm
 
-            if identification.observation.specimen_label in specimen_labels: # only consider a specimen label if it has not already been added to the set
+            if identification.observation.specimen_label in specimen_labels:  # only consider a specimen label if it
+                # has not already been added to the set
                 continue
 
-            specimen_labels.add(identification.observation.specimen_label) # add the specimen labels to the set (this also makes sure they are unique)
+            specimen_labels.add(
+                identification.observation.specimen_label)  # add the specimen labels to the set (this also makes sure
+            # they are unique)
 
             if identification.suborder is None:
-                todo.add(identification.observation.specimen_label) # identifications that do not have a suborder
+                todo.add(identification.observation.specimen_label)  # identifications that do not have a suborder
             elif identification.suborder.suborder == 'Caelifera':
                 c.add(identification.observation.specimen_label)
             elif identification.suborder.suborder == 'Ensifera':
@@ -362,9 +377,9 @@ class VisitReport:
             all_observation_db_ids_for_this_survey_identified = set(
                 Identification.objects.filter(observation__survey=survey).values_list('observation__id', flat=True))
 
-            observations_not_identified_db_ids = all_observation_db_ids_for_this_survey - all_observation_db_ids_for_this_survey_identified
+            observations_not_identified_db_ids = \
+                all_observation_db_ids_for_this_survey - all_observation_db_ids_for_this_survey_identified
 
-            # row['observations_not_identified'] = Observation.objects.filter(id__in=list(observations_not_identified_db_ids))
             row['observations_not_identified'] = len(observations_not_identified_db_ids)
 
             result.append(row)
