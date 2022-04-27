@@ -212,13 +212,14 @@ class SpeciesReport:
         # return len(genus_not_species)
 
     def observations_count(self):
-        """Return total number (integer) of individual observations made."""
+        """Return set of individual observations made."""
 
-        qs = Observation.objects.all().count()
+        qs = Observation.objects.all()
+        observations = set(qs)
 
-        return qs
+        return observations
 
-    def observations_suborder_count(self):
+    def observations_suborder(self):
         """Return list of dictionaries of total numbers of observations of each suborder that have been made.
         Account for the possibility of multiple identifications of each observation.
         Assume though, that each observation has only been identified as one suborder.
