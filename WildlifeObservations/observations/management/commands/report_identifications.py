@@ -39,6 +39,9 @@ class Command(BaseCommand):
 
         total_identifications_species_unique = species_reports.unique_observations_identified_to_species(counting_species_identified)
 
+        identifications_to_check = species_reports.get_species_from_specimen_label_confidence_set(counting_species_identified, 'Check')
+        list_identifications_to_check = sorted(identifications_to_check, key=lambda x: x[1])
+
         print("Total number of observations identified to species:", len(total_identifications_species_unique))
         print("\nNumber of unique observations identified to species, identification CONFIRMED:",
               len(counting_species_identified['Confirmed']))
@@ -108,3 +111,6 @@ class Command(BaseCommand):
 
         print("\n-ID'd to species to REVIEW:", len(counting_species_identified['Review']), ":",
               counting_species_identified['Review'])
+        print("\n-ID'd to species to CHECK:")
+        for element in list_identifications_to_check:
+            print(element)

@@ -152,6 +152,25 @@ class SpeciesReport:
                 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo,
                 'InProgress': in_progress, 'NoConfirmation': all_missing_confirmation}
 
+    def get_species_from_specimen_label_confidence_set(self, dict_set_specimen_labels, confidence):
+        """Get a set containing specimen labels and get the species to which each has been identified with a specified
+        confidence, from a dictionary which contains a number of sets. The keys of the dictionaries are the confidence
+        levels. This command also takes into account the confidence with which the identification has been made,
+        so this can be used in selecting the set from the dictionary, as well as getting the correct identification for
+        the observations.
+
+        The confidence should be as written in the Identification model."""
+
+        set_specimen_labels = dict_set_specimen_labels[confidence]
+
+        unique_identifications = set()
+
+        for label in set_specimen_labels:
+            identifications = Identification.objects.filter(observation__specimen_label=label).filter(confidence__exact=confidence)
+            unique_identifications.update(identifications.values_list("observation__specimen_label", "species__latin_name"))
+
+        return unique_identifications
+
     def unique_observations_identified_to_species(self, dict_identifications_to_species):
         """Gets the unique observations identified to species, from a dictionary of sets which
         contains all of the identifications and their confidence level."""
