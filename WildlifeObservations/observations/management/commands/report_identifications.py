@@ -73,5 +73,6 @@ class Command(BaseCommand):
 
         print("\n-----THINGS TO CHECK-----")
 
+        print("\n-Number of observations without an identification:", len(counting_observations) - len(counting_suborders['Caelifera']) - len(counting_suborders['Ensifera']) - len(counting_suborders['todo']), ":", counting_observations - counting_suborders['Caelifera'] - counting_suborders['Ensifera'] - counting_suborders['todo'])
         print("\n-Number of identifications without a suborder:", len(counting_suborders['todo']), ":", counting_suborders['todo'])
         print("\n-Number of observations identified to species which have been marked as cannot be ID'd further:", len(counting_species_identified_finalised['CannotIDfurther']), ":", counting_species_identified_finalised['CannotIDfurther'])

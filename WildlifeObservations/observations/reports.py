@@ -215,7 +215,12 @@ class SpeciesReport:
         """Return set of individual observations made."""
 
         qs = Observation.objects.all()
-        observations = set(qs)
+        observations = set()
+
+        for observation in qs:
+            observation: Observation
+
+            observations.add(observation.specimen_label)
 
         return observations
 
