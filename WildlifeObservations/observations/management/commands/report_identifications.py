@@ -114,3 +114,6 @@ class Command(BaseCommand):
         print("\n-ID'd to species to CHECK:")
         for element in list_identifications_to_check:
             print(element)
+
+        print("\n-ID'd to species to REDO:", len(counting_species_identified['Redo']), ":",
+              counting_species_identified['Redo'])
