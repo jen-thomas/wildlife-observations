@@ -4,8 +4,14 @@ from django.core.management.base import BaseCommand
 
 from ...models import Site
 
-header_site = ['area', 'site_name', 'altitude_band_m']
+header_site = ['area', 'site_name', 'altitude_band_m', 'altitude_start_source']
 
+
+def field_or_na(model, field_name):
+    if model is None:
+        return ''
+    else:
+        return getattr(model, field_name)
 
 def export_csv(file_path):
     """
@@ -30,6 +36,10 @@ def export_csv(file_path):
             row['area'] = site.area
             row['site_name'] = site.site_name
             row['altitude_band_m'] = site.altitude_band
+
+            row['altitude_start_source'] = field_or_na(site.altitude_start_source, 'name')
+
+
 
             csv_writer.writerow(row)
 

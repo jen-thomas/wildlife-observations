@@ -26,20 +26,24 @@ def export_csv(file_path):
         surveys = Survey.objects.all().order_by('visit__site__site_name', 'visit__date', 'start_time')
 
         for survey in surveys:
+
+            survey_site_name = survey.visit.site.site_name
+            survey_date = survey.visit.date
+
             row = {}
 
-            row['site_name'] = survey.visit.site.site_name
-            row['date_cest'] = survey.visit.date
+            row['site_name'] = survey_site_name
+            row['date_cest'] = survey_date
             row['start_time_cest'] = survey.start_time
             row['end_time_cest'] = survey.end_time
             row['method'] = survey.method
             row['repeat'] = survey.repeat
-            row['cloud_coverage_start'] = MeteorologyConditions.cloud_coverage_start # TODO correct this
-            row['wind_start'] = MeteorologyConditions.wind_start
-            row['rain_start'] = MeteorologyConditions.rain_start
-            row['cloud_coverage_end'] = MeteorologyConditions.cloud_coverage_end
-            row['wind_end'] = MeteorologyConditions.wind_end
-            row['rain_end'] = MeteorologyConditions.rain_end
+            row['cloud_coverage_start'] = survey.meteorologyconditions.cloud_coverage_start
+            row['wind_start'] = survey.meteorologyconditions.wind_start
+            row['rain_start'] = survey.meteorologyconditions.rain_start
+            row['cloud_coverage_end'] = survey.meteorologyconditions.cloud_coverage_end
+            row['wind_end'] = survey.meteorologyconditions.wind_end
+            row['rain_end'] = survey.meteorologyconditions.rain_end
 
             csv_writer.writerow(row)
 
