@@ -9,11 +9,16 @@ header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 're
 
 
 def export_csv(file_path):
+    '''Export data from a query into a CSV file which has a specified path and filename.
+
+    Using an ORM query, get some data from the database and export specified fields into a CSV file which uses a set
+    of headers.
+    '''
+
     with open(file_path, 'w') as file:
         headers = header_observations
 
         csv_writer = csv.DictWriter(file, headers)
-
         csv_writer.writeheader()
 
         observations = Observation.objects.all().order_by('specimen_label')
@@ -21,11 +26,10 @@ def export_csv(file_path):
         for observation in observations:
 
             specimen = observation.specimen_label
-
             identifications = Identification.objects.filter(observation__specimen_label=specimen)
 
-            for identification in identifications:
-                if identification.confidence == Identification.Confidence.CONFIRMED:
+            for identification in identifications: # each observation may have many identifications with different certainties.
+                if identification.confidence == Identification.Confidence.CONFIRMED: # select the confirmed identification only.
                     selected_identification = identification
                 else:
                     pass
@@ -56,15 +60,20 @@ def export_csv(file_path):
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
+        '''Set up input arguments to be added by the user.'''
+
         parser.add_argument('output_directory', type=str, help='Path to the file or - for stdout')
         parser.add_argument('file_basename', type=str, help='File basename')
 
     def handle(self, *args, **options):
+        '''Use the input arguments and run the functions specified in the command.'''
+
         path = options['output_directory']
         file_name = options['file_basename']
         file_path = f'{path}/{file_name}.csv'
 
-        if file_path == '-':
-            file_path = '/dev/stdout'
+        # TODO what should I do with this code so that I can still use the dev/stdout option (currently there need to be two input arguments)
+        if path == '-':
+            file_path = '/dev/stdout' # prints the output to the console rather than writing it to a file
 
         export_csv(file_path)

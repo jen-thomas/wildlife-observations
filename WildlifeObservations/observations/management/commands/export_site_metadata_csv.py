@@ -8,6 +8,12 @@ header_site = ['area', 'site_name', 'altitude_band_m']
 
 
 def export_csv(file_path):
+    '''Export data from a query into a CSV file which has a specified path and filename.
+
+    Using an ORM query, get some data from the database and export specified fields into a CSV file which uses a set
+    of headers.
+    '''
+
     with open(file_path, 'w') as file:
         headers = header_site
 
