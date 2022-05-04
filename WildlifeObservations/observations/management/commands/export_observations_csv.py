@@ -28,6 +28,7 @@ def export_csv(file_path):
                 if identification.confidence == Identification.Confidence.CONFIRMED:
                     selected_identification = identification
                 else:
+                    pass
                     # TODO what should go here?
 
             # TODO check that the species / genus, sex and stage of the final identification is the same if there is more than one identification that was CONFIRMED
@@ -46,6 +47,8 @@ def export_csv(file_path):
             row['family'] = identification.family.family
             row['genus'] = identification.genus.genus
             row['species'] = identification.species.latin_name
+
+            # TODO what should be done if one of the above fields is empty?
 
             csv_writer.writerow(row)
 
