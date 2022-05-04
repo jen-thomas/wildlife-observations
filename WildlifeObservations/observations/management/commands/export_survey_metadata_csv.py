@@ -27,7 +27,7 @@ def export_csv(file_path):
             row['end_time_cest'] = survey.end_time
             row['method'] = survey.method
             row['repeat'] = survey.repeat
-            row['cloud_coverage_start'] = MeteorologyConditions.cloud_coverage_start
+            row['cloud_coverage_start'] = MeteorologyConditions.cloud_coverage_start # TODO correct this
             row['wind_start'] = MeteorologyConditions.wind_start
             row['rain_start'] = MeteorologyConditions.rain_start
             row['cloud_coverage_end'] = MeteorologyConditions.cloud_coverage_end
