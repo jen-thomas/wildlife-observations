@@ -9,11 +9,12 @@ header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 're
 
 
 def export_csv(file_path):
-    '''Export data from a query into a CSV file which has a specified path and filename.
+    """
+    Export data from a query into a CSV file which has a specified path and filename.
 
     Using an ORM query, get some data from the database and export specified fields into a CSV file which uses a set
     of headers.
-    '''
+    """
 
     with open(file_path, 'w') as file:
         headers = header_observations
@@ -60,13 +61,13 @@ def export_csv(file_path):
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        '''Set up input arguments to be added by the user.'''
+        """Set up input arguments to be added by the user."""
 
         parser.add_argument('output_directory', type=str, help='Path to the file or - for stdout')
         parser.add_argument('file_basename', type=str, help='File basename')
 
     def handle(self, *args, **options):
-        '''Use the input arguments and run the functions specified in the command.'''
+        """Use the input arguments and run the functions specified in the command."""
 
         path = options['output_directory']
         file_name = options['file_basename']

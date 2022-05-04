@@ -2,9 +2,9 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from ...models import Site
+from ...models import VegetationStructure, Plot
 
-header_site = ['area', 'site_name', 'altitude_band_m']
+header_survey = []
 
 
 def export_csv(file_path):
@@ -16,20 +16,20 @@ def export_csv(file_path):
     """
 
     with open(file_path, 'w') as file:
-        headers = header_site
+        headers = header_survey
 
         csv_writer = csv.DictWriter(file, headers)
 
         csv_writer.writeheader()
 
-        sites = Site.objects.all().order_by('area', 'altitude_band')
+        vegetation_surveys = VegetationStructure.objects.all().order_by('')
 
-        for site in sites:
+        for survey in vegetation_surveys:
             row = {}
 
-            row['area'] = site.area
-            row['site_name'] = site.site_name
-            row['altitude_band_m'] = site.altitude_band
+            row['site_name'] = survey.visit.site.site_name
+            row['date_cest'] = survey.visit.date
+
 
             csv_writer.writerow(row)
 
