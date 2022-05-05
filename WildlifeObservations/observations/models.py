@@ -292,7 +292,10 @@ class Identification(models.Model):
             self.genus = self.species.genus
 
         if self.genus is not None:
-            self.family = self.genus.family
+            self.subfamily = self.genus.subfamily
+
+        if self.subfamily is not None:
+            self.family = self.subfamily.family
 
         if self.family is not None:
             self.suborder = self.family.suborder

@@ -7,7 +7,7 @@ from ...models import Observation, Identification
 from ...utils import field_or_empty_string
 
 header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'repeat', 'sex', 'stage', 'id_confidence',
-                       'suborder', 'family', 'genus', 'species']
+                       'suborder', 'family', 'subfamily', 'genus', 'species']
 
 
 def export_csv(output_file):
@@ -51,6 +51,8 @@ def export_csv(output_file):
         row['suborder'] = selected_identification.suborder.suborder  # shouldn't be null
         row['family'] = field_or_empty_string(selected_identification.family,
                                               'family')  # can be null if the identification cannot be determined to this taxonomic level
+        row['subfamily'] = field_or_empty_string(selected_identification.subfamily,
+                                                 'subfamily')  # can be null if the identification cannot be determined to this taxonomic level
         row['genus'] = field_or_empty_string(selected_identification.genus,
                                              'genus')  # can be null if the identification cannot be determined to this taxonomic level
         row['species'] = field_or_empty_string(selected_identification.species,
