@@ -55,8 +55,8 @@ class SurveyAdmin(admin.ModelAdmin):
 
 class ObservationAdmin(admin.ModelAdmin):
     list_display = (
-    'specimen_label', 'survey', 'status', 'length_head_abdomen', 'length_head_tegmina', 'original_preservation',
-    'current_preservation', 'notes',)
+        'specimen_label', 'survey', 'status', 'length_head_abdomen', 'length_head_tegmina', 'original_preservation',
+        'current_preservation', 'notes',)
     ordering = ('specimen_label', 'survey', 'status', 'original_preservation', 'current_preservation',)
     search_fields = ('specimen_label', 'survey__visit__site__site_name', 'status', 'length_head_abdomen',)
 
@@ -70,13 +70,16 @@ class PhotographAdmin(admin.ModelAdmin):
 
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
-        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
-        'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
+        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'specimen_status', 'identification_guide',
+        'sex',
+        'stage', 'confidence', 'confidence_reason', 'notebook', 'date_of_identification', 'comments',)
     ordering = (
-        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
+        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'identification_guide', 'sex', 'stage',
+        'confidence', 'confidence_reason',)
     search_fields = (
-        'observation__specimen_label', 'species__latin_name', 'genus__genus', 'subfamily__subfamily', 'family__family', 'suborder__suborder',
-        'identification_guide__title', 'sex', 'stage', 'confidence',)
+        'observation__specimen_label', 'species__latin_name', 'genus__genus', 'subfamily__subfamily', 'family__family',
+        'suborder__suborder',
+        'identification_guide__title', 'sex', 'stage', 'confidence', 'confidence_reason',)
     raw_id_fields = ('observation',)
 
     def specimen_status(self, obj):

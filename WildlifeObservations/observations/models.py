@@ -272,6 +272,13 @@ class Identification(models.Model):
         CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
         SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
 
+    class ConfidenceReason(models.TextChoices):
+        ID_CERTAIN = 'ID_certain', _('ID certain')
+        ID_UNCERTAIN = 'ID_uncertain', _('ID uncertain')
+        ID_INCOMPLETE = 'ID_incomplete', _('ID incomplete')
+        ID_NEEDS_CONFIRMATION = 'ID_needs_confirmation', _('ID needs confirmation')
+        ID_INCORRECT = 'ID_incorrect', _('ID incorrect')
+
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
     genus = models.ForeignKey(TaxonomyGenus, on_delete=models.PROTECT, null=True, blank=True)
@@ -283,6 +290,7 @@ class Identification(models.Model):
     sex = models.CharField(max_length=7, choices=Sex.choices, null=True, blank=True)
     stage = models.CharField(max_length=7, choices=Stage.choices, null=True, blank=True)
     confidence = models.CharField(max_length=30, choices=Confidence.choices, null=True, blank=True)
+    confidence_reason = models.CharField(max_length=30, choices=ConfidenceReason.choices, null=True, blank=True)
     date_of_identification = models.DateField(null=True, blank=True)
     notebook = models.CharField(max_length=10)
     comments = models.TextField(max_length=1000, null=True, blank=True)
