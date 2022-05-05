@@ -218,7 +218,7 @@ class TaxonomySubfamily(models.Model):
 
 class TaxonomyGenus(models.Model):
     genus = models.CharField(max_length=255, unique=True)
-    subfamily = models.ForeignKey(TaxonomySubfamily, on_delete=models.PROTECT)
+    subfamily = models.ForeignKey(TaxonomySubfamily, on_delete=models.PROTECT, null=True, blank=True)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
 
     def __str__(self):
