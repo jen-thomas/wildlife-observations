@@ -114,9 +114,9 @@ class TaxonomySubfamilyAdmin(admin.ModelAdmin):
 
 
 class TaxonomyGenusAdmin(admin.ModelAdmin):
-    list_display = ('family', 'subfamily', 'genus',)
-    ordering = ('family', 'subfamily', 'genus',)
-    search_fields = ('family__family', 'subfamily__subfamily', 'genus',)
+    list_display = ('subfamily', 'genus',)
+    ordering = ('subfamily', 'genus',)
+    search_fields = ('subfamily__subfamily', 'genus',)
 
 
 class TaxonomySpeciesAdmin(admin.ModelAdmin):
