@@ -4,7 +4,7 @@ import csv
 from django.core.management.base import BaseCommand
 
 from ...models import Observation, Identification
-from ...utils import field_or_na
+from ...utils import field_or_empty_string
 
 header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'repeat', 'sex', 'stage', 'id_confidence',
                        'suborder', 'family', 'genus', 'species']
@@ -27,12 +27,12 @@ def export_csv(output_file):
 
     for observation in observations:
 
-        identifications = observation.identification_set.all() # get all identifications for this observation
+        identifications = observation.identification_set.all()  # get all identifications for this observation
 
         selected_identification = None
 
-        for identification in identifications: # each observation may have many identifications with different certainties.
-            if identification.confidence == Identification.Confidence.CONFIRMED: # select the confirmed identification only.
+        for identification in identifications:  # each observation may have many identifications with different certainties.
+            if identification.confidence == Identification.Confidence.CONFIRMED:  # select the confirmed identification only.
                 selected_identification = identification
                 break
 
@@ -45,15 +45,16 @@ def export_csv(output_file):
         row['date_cest'] = observation.survey.visit.date
         row['method'] = observation.survey.method
         row['repeat'] = observation.survey.repeat
-        row['sex'] = field_or_na(selected_identification, 'sex') # TODO add this to the following lines
-        row['stage'] = identification.stage
-        row['id_confidence'] = identification.confidence
-        row['suborder'] = identification.suborder.suborder
-        row['family'] = identification.family.family
-        row['genus'] = identification.genus.genus
-        row['species'] = identification.species.latin_name
-
-        # TODO what should be done if one of the above fields is empty?
+        row['sex'] = selected_identification.sex  # shouldn't be null
+        row['stage'] = selected_identification.stage  # shouldn't be null
+        row['id_confidence'] = selected_identification.confidence  # shouldn't be null
+        row['suborder'] = selected_identification.suborder.suborder  # shouldn't be null
+        row['family'] = field_or_empty_string(selected_identification.family,
+                                              'family')  # can be null if the identification cannot be determined to this taxonomic level
+        row['genus'] = field_or_empty_string(selected_identification.genus,
+                                             'genus')  # can be null if the identification cannot be determined to this taxonomic level
+        row['species'] = field_or_empty_string(selected_identification.species,
+                                               'latin_name')  # can be null if the identification cannot be determined to this taxonomic level
 
         csv_writer.writerow(row)
 

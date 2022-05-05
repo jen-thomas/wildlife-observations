@@ -1,4 +1,4 @@
-def field_or_na(model, field_name):
+def field_or_empty_string(model, field_name):
     if model is None:
         return ''
     else:
