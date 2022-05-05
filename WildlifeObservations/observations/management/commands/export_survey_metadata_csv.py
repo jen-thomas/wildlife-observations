@@ -3,7 +3,7 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from ...models import Survey, MeteorologyConditions
+from ...models import Survey
 
 header_survey = ['site_name', 'date_cest', 'start_time_cest', 'end_time_cest', 'method', 'repeat',
                  'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end']
@@ -11,7 +11,7 @@ header_survey = ['site_name', 'date_cest', 'start_time_cest', 'end_time_cest', '
 
 def export_csv(output_file):
     """
-    Export data from a query into a CSV file which has a specified path and filename.
+    Export data from a query into a CSV file which has a specified output file.
 
     Using an ORM query, get some data from the database and export specified fields into a CSV file which uses a set
     of headers.
@@ -20,20 +20,16 @@ def export_csv(output_file):
     headers = header_survey
 
     csv_writer = csv.DictWriter(output_file, headers)
-
     csv_writer.writeheader()
 
     surveys = Survey.objects.all().order_by('visit__site__site_name', 'visit__date', 'start_time')
 
     for survey in surveys:
 
-        survey_site_name = survey.visit.site.site_name
-        survey_date = survey.visit.date
-
         row = {}
 
-        row['site_name'] = survey_site_name
-        row['date_cest'] = survey_date
+        row['site_name'] = survey.visit.site.site_name
+        row['date_cest'] = survey.visit.date
         row['start_time_cest'] = survey.start_time
         row['end_time_cest'] = survey.end_time
         row['method'] = survey.method
