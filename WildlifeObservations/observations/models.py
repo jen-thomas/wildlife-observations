@@ -205,6 +205,17 @@ class TaxonomyFamily(models.Model):
         verbose_name_plural = 'Taxonomy families'
 
 
+class TaxonomySubfamily(models.Model):
+    subfamily = models.CharField(max_length=255, unique=True)
+    family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return "{}".format(self.subfamily)
+
+    class Meta:
+        verbose_name_plural = 'Taxonomy subfamilies'
+
+
 class TaxonomyGenus(models.Model):
     genus = models.CharField(max_length=255, unique=True)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT)
