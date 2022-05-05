@@ -107,6 +107,12 @@ class TaxonomyFamilyAdmin(admin.ModelAdmin):
     search_fields = ('suborder__suborder', 'family',)
 
 
+class TaxonomySubfamilyAdmin(admin.ModelAdmin):
+    list_display = ('family', 'subfamily',)
+    ordering = ('family', 'subfamily',)
+    search_fields = ('family__family', 'subfamily')
+
+
 class TaxonomyGenusAdmin(admin.ModelAdmin):
     list_display = ('family', 'genus',)
     ordering = ('family', 'genus',)
@@ -178,6 +184,7 @@ admin.site.register(models.TaxonomyClass, TaxonomyClassAdmin)
 admin.site.register(models.TaxonomyOrder, TaxonomyOrderAdmin)
 admin.site.register(models.TaxonomySuborder, TaxonomySuborderAdmin)
 admin.site.register(models.TaxonomyFamily, TaxonomyFamilyAdmin)
+admin.site.register(models.TaxonomySubfamily, TaxonomySubfamilyAdmin)
 admin.site.register(models.TaxonomyGenus, TaxonomyGenusAdmin)
 admin.site.register(models.TaxonomySpecies, TaxonomySpeciesAdmin)
 admin.site.register(models.IdentificationGuide, IdentificationGuideAdmin)
