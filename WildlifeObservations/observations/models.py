@@ -275,6 +275,7 @@ class Identification(models.Model):
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
     genus = models.ForeignKey(TaxonomyGenus, on_delete=models.PROTECT, null=True, blank=True)
+    subfamily = models.ForeignKey(TaxonomySubfamily, on_delete=models.PROTECT, null=True, blank=True)
     family = models.ForeignKey(TaxonomyFamily, on_delete=models.PROTECT, null=True, blank=True)
     suborder = models.ForeignKey(TaxonomySuborder, on_delete=models.PROTECT, null=True, blank=True)
     identification_notes = models.TextField(max_length=2048, null=True, blank=True)
