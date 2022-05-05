@@ -70,12 +70,12 @@ class PhotographAdmin(admin.ModelAdmin):
 
 class IdentificationAdmin(admin.ModelAdmin):
     list_display = (
-        'observation', 'species', 'genus', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
+        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'specimen_status', 'identification_guide', 'sex',
         'stage', 'confidence', 'notebook', 'date_of_identification', 'comments',)
     ordering = (
-        'observation', 'species', 'genus', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
+        'observation', 'species', 'genus', 'subfamily', 'family', 'suborder', 'identification_guide', 'sex', 'stage', 'confidence',)
     search_fields = (
-        'observation__specimen_label', 'species__latin_name', 'genus__genus', 'family__family', 'suborder__suborder',
+        'observation__specimen_label', 'species__latin_name', 'genus__genus', 'subfamily__subfamily', 'family__family', 'suborder__suborder',
         'identification_guide__title', 'sex', 'stage', 'confidence',)
     raw_id_fields = ('observation',)
 
@@ -114,9 +114,9 @@ class TaxonomySubfamilyAdmin(admin.ModelAdmin):
 
 
 class TaxonomyGenusAdmin(admin.ModelAdmin):
-    list_display = ('family', 'genus',)
-    ordering = ('family', 'genus',)
-    search_fields = ('family__family', 'genus',)
+    list_display = ('family', 'subfamily', 'genus',)
+    ordering = ('family', 'subfamily', 'genus',)
+    search_fields = ('family__family', 'subfamily__subfamily', 'genus',)
 
 
 class TaxonomySpeciesAdmin(admin.ModelAdmin):
