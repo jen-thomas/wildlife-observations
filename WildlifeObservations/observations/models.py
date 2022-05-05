@@ -278,6 +278,8 @@ class Identification(models.Model):
         ID_INCOMPLETE = 'ID_incomplete', _('ID incomplete')
         ID_NEEDS_CONFIRMATION = 'ID_needs_confirmation', _('ID needs confirmation')
         ID_INCORRECT = 'ID_incorrect', _('ID incorrect')
+        CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
+        SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
