@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -264,7 +265,7 @@ class Identification(models.Model):
     class Confidence(models.TextChoices):
         IN_PROGRESS = 'In_progress', _('In progress')
         CHECK = 'Check', _('Check')
-        CHECK_IN_MUSEUM= 'Check_in_museum', _('Check in museum')
+        CHECK_IN_MUSEUM = 'Check_in_museum', _('Check in museum')
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
         YES = 'Yes', _('Yes')
@@ -319,7 +320,13 @@ class Identification(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(
             name="%(app_label)s_%(class)s_specimen_guide_species_date_unique_relationships",
-            fields=['observation', 'identification_guide', 'species', 'date_of_identification'])]
+            fields=['observation', 'identification_guide', 'species', 'date_of_identification']),
+
+            models.CheckConstraint(name="%(app_label)s_%(class)s_check_confirmed_confidence_reasons",
+                                   check=Q(confidence='Confirmed') & Q(
+                                       confidence_reason__in=('Small_nymph_hard_to_ID',
+                                                              'Cannot_determine_further',
+                                                              'ID_certain')))]
 
 
 class Plot(models.Model):
