@@ -16,3 +16,8 @@ class Command(BaseCommand):
         print(len(identification_checks.check_identification_has_sex()), "results:\n")
         for identification in identification_checks.check_identification_has_sex():
             print(identification['specimen_label'])
+
+        print("\n***** Identifications without a stage *****")
+        print(len(identification_checks.check_identification_has_stage()), "results:\n")
+        for identification in identification_checks.check_identification_has_stage():
+            print(identification['specimen_label'])

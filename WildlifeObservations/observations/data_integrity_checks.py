@@ -27,3 +27,20 @@ class IdentificationDataChecks:
             identifications_missing_sex.append({"specimen_label": identification.observation.specimen_label})
 
         return identifications_missing_sex
+
+    def check_identification_has_stage(self):
+        """
+        Returns list of dictionaries of the identifications that do not have a stage.
+
+        e.g.    [{"specimen_label": TOR08 20211005 H1 C001},
+                {"specimen_label": TAV09 20211006 N1 C008}]
+        """
+
+        identifications = Identification.objects.filter(stage__isnull=True)
+
+        identifications_missing_stage = []
+
+        for identification in identifications:
+            identifications_missing_stage.append({"specimen_label": identification.observation.specimen_label})
+
+        return identifications_missing_stage
