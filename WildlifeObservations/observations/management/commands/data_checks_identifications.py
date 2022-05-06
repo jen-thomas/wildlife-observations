@@ -26,3 +26,8 @@ class Command(BaseCommand):
         print(len(identification_checks.check_identification_has_confidence()), "results:\n")
         for identification in identification_checks.check_identification_has_confidence():
             print(identification['specimen_label'])
+
+        print("\n***** Observations without an identification *****")
+        print(len(identification_checks.find_observations_without_identification()), "results:\n")
+        for observation in identification_checks.find_observations_without_identification():
+            print(observation)

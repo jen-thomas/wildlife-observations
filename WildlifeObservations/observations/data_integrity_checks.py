@@ -64,3 +64,31 @@ class IdentificationDataChecks:
 
         return identifications_missing_confidence
 
+
+    def find_observations_without_identification(self):
+        """
+        Returns a list of dictionaries of the observations that do not have any identifications.
+
+        e.g.    [{"specimen_label": TOR08 20211005 H1 C001},
+        {"specimen_label": TAV09 20211006 N1 C008}]
+        """
+
+        observations = Observation.objects.all().values_list('specimen_label', flat=True)
+        identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
+
+        observations_set = set()
+        for observation in observations:
+            observation: Observation
+
+            observations_set.add(observation)
+
+        identifications_set = set()
+        for identification in identifications:
+            identification: Identification
+
+            identifications_set.add(identification) # creating a set of the identifications, deals with the duplicates
+
+        # get all of the observations that do not have the specimen label in the identifications
+        observations_without_identifications = observations_set - identifications_set
+
+        return observations_without_identifications
