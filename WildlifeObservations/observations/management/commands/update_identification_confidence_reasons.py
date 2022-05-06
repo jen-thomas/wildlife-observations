@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.db.models import Q
 
 from ...models import Identification
 
+
+# Some lines in this command have been commented out because they were used with choices in the models which have now
+# been deprecated. They have been left here in this state in case they are needed for future reference.
 
 # def confidence_yes_to_confirmed():
 #     get_identifications_with_confidence_without_reasons(Identification.Confidence.YES).update(
@@ -61,7 +63,6 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-
         # confidence_yes_to_confirmed()
         confirmed_add_reason()
         check_add_reason()
