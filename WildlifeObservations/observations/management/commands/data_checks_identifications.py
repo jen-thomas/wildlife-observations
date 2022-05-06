@@ -21,3 +21,8 @@ class Command(BaseCommand):
         print(len(identification_checks.check_identification_has_stage()), "results:\n")
         for identification in identification_checks.check_identification_has_stage():
             print(identification['specimen_label'])
+
+        print("\n***** Identifications without a confidence *****")
+        print(len(identification_checks.check_identification_has_confidence()), "results:\n")
+        for identification in identification_checks.check_identification_has_confidence():
+            print(identification['specimen_label'])

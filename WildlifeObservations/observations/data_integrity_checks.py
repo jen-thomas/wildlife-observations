@@ -28,6 +28,7 @@ class IdentificationDataChecks:
 
         return identifications_missing_sex
 
+
     def check_identification_has_stage(self):
         """
         Returns list of dictionaries of the identifications that do not have a stage.
@@ -44,3 +45,22 @@ class IdentificationDataChecks:
             identifications_missing_stage.append({"specimen_label": identification.observation.specimen_label})
 
         return identifications_missing_stage
+
+
+    def check_identification_has_confidence(self):
+        """
+        Returns list of dictionaries of the identifications that do not have a confidence.
+
+        e.g.    [{"specimen_label": TOR08 20211005 H1 C001},
+                {"specimen_label": TAV09 20211006 N1 C008}]
+        """
+
+        identifications = Identification.objects.filter(confidence__isnull=True)
+
+        identifications_missing_confidence = []
+
+        for identification in identifications:
+            identifications_missing_confidence.append({"specimen_label": identification.observation.specimen_label})
+
+        return identifications_missing_confidence
+
