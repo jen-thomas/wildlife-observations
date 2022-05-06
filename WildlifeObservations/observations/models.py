@@ -268,10 +268,10 @@ class Identification(models.Model):
         CHECK_IN_MUSEUM = 'Check_in_museum', _('Check in museum')
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
-        YES = 'Yes', _('Yes')
+        # YES = 'Yes', _('Yes')
         REVIEW = 'Review', _('Review')
-        CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
-        SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
+        # CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
+        # SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
 
     class ConfidenceReason(models.TextChoices):
         ID_CERTAIN = 'ID_certain', _('ID certain')

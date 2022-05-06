@@ -5,9 +5,9 @@ from django.db.models import Q
 from ...models import Identification
 
 
-def confidence_yes_to_confirmed():
-    get_identifications_with_confidence_without_reasons(Identification.Confidence.YES).update(
-        confidence=Identification.Confidence.CONFIRMED)
+# def confidence_yes_to_confirmed():
+#     get_identifications_with_confidence_without_reasons(Identification.Confidence.YES).update(
+#         confidence=Identification.Confidence.CONFIRMED)
 
 
 def confirmed_add_reason():
@@ -40,16 +40,16 @@ def inprogress_add_reason():
         confidence_reason=Identification.ConfidenceReason.ID_INCOMPLETE)
 
 
-def confidence_nymph_to_reason():
-    get_identifications_with_confidence_without_reasons(Identification.Confidence.SMALL_NYMPH_HARD_TO_ID).update(
-        confidence=Identification.Confidence.CONFIRMED,
-        confidence_reason=Identification.ConfidenceReason.SMALL_NYMPH_HARD_TO_ID)
-
-
-def confidence_cannot_det_to_reason():
-    get_identifications_with_confidence_without_reasons(Identification.Confidence.CANNOT_DETERMINE_FURTHER).update(
-        confidence=Identification.Confidence.CONFIRMED,
-        confidence_reason=Identification.Confidence.CANNOT_DETERMINE_FURTHER)
+# def confidence_nymph_to_reason():
+#     get_identifications_with_confidence_without_reasons(Identification.Confidence.SMALL_NYMPH_HARD_TO_ID).update(
+#         confidence=Identification.Confidence.CONFIRMED,
+#         confidence_reason=Identification.ConfidenceReason.SMALL_NYMPH_HARD_TO_ID)
+#
+#
+# def confidence_cannot_det_to_reason():
+#     get_identifications_with_confidence_without_reasons(Identification.Confidence.CANNOT_DETERMINE_FURTHER).update(
+#         confidence=Identification.Confidence.CONFIRMED,
+#         confidence_reason=Identification.Confidence.CANNOT_DETERMINE_FURTHER)
 
 
 def get_identifications_with_confidence_without_reasons(confidence):
@@ -62,12 +62,12 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
 
-        confidence_yes_to_confirmed()
+        # confidence_yes_to_confirmed()
         confirmed_add_reason()
         check_add_reason()
         check_museum_add_reason()
         review_add_reason()
         redo_add_reason()
         inprogress_add_reason()
-        confidence_nymph_to_reason()
-        confidence_cannot_det_to_reason()
+        # confidence_nymph_to_reason()
+        # confidence_cannot_det_to_reason()
