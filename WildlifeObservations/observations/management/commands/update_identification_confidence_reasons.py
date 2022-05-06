@@ -16,8 +16,12 @@ def confirmed_add_reason():
 
 
 def check_add_reason():
-    get_identifications_with_confidence_without_reasons(
-        Q(confidence=Identification.Confidence.CHECK) | Q(confidence=Identification.Confidence.CHECK_IN_MUSEUM)).update(
+    get_identifications_with_confidence_without_reasons(Identification.Confidence.CHECK).update(
+        confidence_reason=Identification.ConfidenceReason.ID_NEEDS_CONFIRMATION)
+
+
+def check_museum_add_reason():
+    get_identifications_with_confidence_without_reasons(Identification.Confidence.CHECK_IN_MUSEUM).update(
         confidence_reason=Identification.ConfidenceReason.ID_NEEDS_CONFIRMATION)
 
 
@@ -61,6 +65,7 @@ class Command(BaseCommand):
         confidence_yes_to_confirmed()
         confirmed_add_reason()
         check_add_reason()
+        check_museum_add_reason()
         review_add_reason()
         redo_add_reason()
         inprogress_add_reason()
