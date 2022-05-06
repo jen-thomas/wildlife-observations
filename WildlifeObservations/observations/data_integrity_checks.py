@@ -148,9 +148,9 @@ class IdentificationDataChecks:
         confirmed_identifications_different_stage = set()
 
         for confirmed_identification in confirmed_identifications:
-            distinct_stagees = Identification.objects.filter(
+            distinct_stages = Identification.objects.filter(
                 observation__specimen_label=confirmed_identification).values_list('stage').distinct()
-            if len(distinct_stagees) > 1:
+            if len(distinct_stages) > 1:
                 confirmed_identifications_different_stage.add(confirmed_identification)
 
         return confirmed_identifications_different_stage
