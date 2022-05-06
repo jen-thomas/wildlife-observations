@@ -123,29 +123,33 @@ class IdentificationDataChecks:
         identifications differs.
         """
 
-        confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
+        confirmed_identifications = Identification.objects.filter(
+            confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
 
         confirmed_identifications_different_sex = set()
 
         for confirmed_identification in confirmed_identifications:
-            distinct_sexes = Identification.objects.filter(observation__specimen_label=confirmed_identification).values_list('sex').distinct()
+            distinct_sexes = Identification.objects.filter(
+                observation__specimen_label=confirmed_identification).values_list('sex').distinct()
             if len(distinct_sexes) > 1:
                 confirmed_identifications_different_sex.add(confirmed_identification)
 
         return confirmed_identifications_different_sex
-    
+
     def check_confirmed_identifications_stage(self):
         """
         Returns a set of identifications that have confirmed identifications but the stage in these confirmed
         identifications differs.
         """
 
-        confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
+        confirmed_identifications = Identification.objects.filter(
+            confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
 
         confirmed_identifications_different_stage = set()
 
         for confirmed_identification in confirmed_identifications:
-            distinct_stagees = Identification.objects.filter(observation__specimen_label=confirmed_identification).values_list('stage').distinct()
+            distinct_stagees = Identification.objects.filter(
+                observation__specimen_label=confirmed_identification).values_list('stage').distinct()
             if len(distinct_stagees) > 1:
                 confirmed_identifications_different_stage.add(confirmed_identification)
 
