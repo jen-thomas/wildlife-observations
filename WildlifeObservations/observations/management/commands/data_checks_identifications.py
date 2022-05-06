@@ -36,3 +36,8 @@ class Command(BaseCommand):
         print(len(identification_checks.find_observations_without_confirmed_identification()), "results:\n")
         for observation in identification_checks.find_observations_without_confirmed_identification():
             print(observation)
+
+        print("\n***** Confirmed identifications with different sexes *****")
+        print(len(identification_checks.check_confirmed_identifications_sex()), "results:\n")
+        for identification in identification_checks.check_confirmed_identifications_sex():
+            print(identification)
