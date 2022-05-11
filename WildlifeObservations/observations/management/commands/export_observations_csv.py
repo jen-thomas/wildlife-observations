@@ -54,12 +54,12 @@ def export_csv(output_file):
             row['stage'] = confirmed_identification.stage  # shouldn't be null
             row['id_confidence'] = confirmed_identification.confidence  # shouldn't be null
             row['suborder'] = confirmed_identification.suborder.suborder  # shouldn't be null
-            row['family'] = field_or_empty_string(confirmed_identification.family, 'family')  # can be null if the identification
-            # cannot be determined to this taxonomic level
-            row['subfamily'] = field_or_empty_string(confirmed_identification.subfamily, 'subfamily')  # can be null if the
+            row['family'] = field_or_empty_string(confirmed_identification.family, 'family')  # can be null if the
             # identification cannot be determined to this taxonomic level
-            row['genus'] = field_or_empty_string(confirmed_identification.genus, 'genus')  # can be null if the identification
-            # cannot be determined to this taxonomic level
+            row['subfamily'] = field_or_empty_string(confirmed_identification.subfamily, 'subfamily')  # can be null
+            # if the identification cannot be determined to this taxonomic level
+            row['genus'] = field_or_empty_string(confirmed_identification.genus, 'genus')  # can be null if the
+            # identification cannot be determined to this taxonomic level
             row['species'] = field_or_empty_string(confirmed_identification.species, 'latin_name')  # can be null if the
             # identification cannot be determined to this taxonomic level
 
