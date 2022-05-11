@@ -1,6 +1,6 @@
 from django.db.models import Q, Count
 
-from .models import Identification, Observation
+from .models import Identification, Observation, Survey, MeteorologyConditions
 
 
 class IdentificationDataChecks:
@@ -216,3 +216,37 @@ class IdentificationDataChecks:
                 inconsistent_identifications.append(inconsistent_identification)
 
         return inconsistent_identifications
+
+
+class SurveyDataChecks:
+    def __init__(self):
+        pass
+
+    def find_surveys_without_met_conditions(self):
+        """
+        Returns a set of surveys for which there is no meteorological data.
+        """
+        
+        surveys = Survey.objects.all().values_list('visit__site__site_name', 'visit__date', 'method', 'repeat')
+        met_conditions = MeteorologyConditions.objects.all().values_list('survey__visit__site__site_name',
+                                                                         'survey__visit__date', 'survey__method',
+                                                                         'survey__repeat')
+
+        surveys_set = set()
+
+        for survey in surveys:
+            survey: Survey
+
+            surveys_set.add(survey)
+
+        met_conditions_surveys_set = set()
+
+        for surveyed_met_conditions in met_conditions:
+            surveyed_met_conditions: MeteorologyConditions
+
+            met_conditions_surveys_set.add(surveyed_met_conditions)
+
+        # get all of the surveys that do not have meteorological condition data
+        surveys_without_met_conditions = met_conditions_surveys_set - surveys_set
+
+        return surveys_without_met_conditions
