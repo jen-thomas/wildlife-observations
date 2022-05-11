@@ -226,7 +226,7 @@ class SurveyDataChecks:
         """
         Returns a set of surveys for which there is no meteorological data.
         """
-        
+
         surveys = Survey.objects.all().values_list('visit__site__site_name', 'visit__date', 'method', 'repeat')
         met_conditions = MeteorologyConditions.objects.all().values_list('survey__visit__site__site_name',
                                                                          'survey__visit__date', 'survey__method',
@@ -247,6 +247,6 @@ class SurveyDataChecks:
             met_conditions_surveys_set.add(surveyed_met_conditions)
 
         # get all of the surveys that do not have meteorological condition data
-        surveys_without_met_conditions = met_conditions_surveys_set - surveys_set
+        surveys_without_met_conditions = surveys_set - met_conditions_surveys_set
 
         return surveys_without_met_conditions
