@@ -324,15 +324,13 @@ class Identification(models.Model):
 
             # add constraints to ensure only allowed combinations of confidence and confidence reason
             models.CheckConstraint(name="%(app_label)s_%(class)s_check_confidence_reasons",
-                                   check=Q(Q(confidence='Confirmed') & Q(confidence_reason__in=('Small_nymph_hard_to_ID', 'Cannot_determine_further', 'ID_certain')))
-                                        |
-                                        Q(Q(confidence__in=('Check', 'Check_in_museum')) & Q(confidence_reason='ID_needs_confirmation'))
-                                        |
-                                        Q(Q(confidence='In_progress') & Q(confidence_reason='ID_incomplete'))
-                                        |
-                                        Q(Q(confidence='Review') & Q(confidence_reason='ID_uncertain'))
-                                        |
-                                        Q(Q(confidence='Redo') & Q(confidence_reason='ID_incorrect'))
+                                   check=Q(Q(confidence='Confirmed') & Q(confidence_reason__in=(
+                                   'Small_nymph_hard_to_ID', 'Cannot_determine_further', 'ID_certain')))
+                                         | Q(Q(confidence__in=('Check', 'Check_in_museum')) &
+                                           Q(confidence_reason='ID_needs_confirmation'))
+                                         | Q(Q(confidence='In_progress') & Q(confidence_reason='ID_incomplete'))
+                                         | Q(Q(confidence='Review') & Q(confidence_reason='ID_uncertain'))
+                                         | Q(Q(confidence='Redo') & Q(confidence_reason='ID_incorrect'))
                                    )]
 
 
