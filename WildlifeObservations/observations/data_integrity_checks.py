@@ -94,8 +94,9 @@ class IdentificationDataChecks:
         """
 
         all_identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
-        confirmed_identifications = Identification.objects.filter(
-            confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
+        confirmed_identifications = self.get_qs_confirmed_identifications()
+
+        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
         all_identifications_set = set()
         confirmed_identifications_set = set()
@@ -106,7 +107,7 @@ class IdentificationDataChecks:
             all_identifications_set.add(
                 identification)  # adding the identifications to the set accounts for the duplicate specimen labels
 
-        for identification in confirmed_identifications:
+        for identification in confirmed_identifications_qs:
             identification: Identification
 
             confirmed_identifications_set.add(
@@ -123,12 +124,12 @@ class IdentificationDataChecks:
         identifications differs.
         """
 
-        confirmed_identifications = Identification.objects.filter(
-            confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
+        confirmed_identifications = self.get_qs_confirmed_identifications()
+        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
         confirmed_identifications_different_sex = set()
 
-        for confirmed_identification in confirmed_identifications:
+        for confirmed_identification in confirmed_identifications_qs:
             distinct_sexes = Identification.objects.filter(
                 observation__specimen_label=confirmed_identification).values_list('sex').distinct()
             if len(distinct_sexes) > 1:
@@ -141,13 +142,12 @@ class IdentificationDataChecks:
         Returns a set of identifications that have confirmed identifications but the stage in these confirmed
         identifications differs.
         """
-
-        confirmed_identifications = Identification.objects.filter(
-            confidence=Identification.Confidence.CONFIRMED).values_list('observation__specimen_label', flat=True)
+        confirmed_identifications = self.get_qs_confirmed_identifications()
+        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
         confirmed_identifications_different_stage = set()
 
-        for confirmed_identification in confirmed_identifications:
+        for confirmed_identification in confirmed_identifications_qs:
             distinct_stages = Identification.objects.filter(
                 observation__specimen_label=confirmed_identification).values_list('stage').distinct()
             if len(distinct_stages) > 1:
