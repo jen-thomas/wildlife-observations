@@ -16,6 +16,17 @@ def export_csv(output_file):
 
     Using an ORM query, get some data from the database and export specified fields into a CSV file which uses a set
     of headers.
+
+    If all observations have been identified, then the export of observations and identifications can consider just the
+    finalised, confirmed identifications.
+    - Where there are observations that have not been identified, these should be encountered in the data integrity
+    checks.
+    - Where there are observations that have an identification but the identification has not been confirmed, then
+    these should also be encountered in the data integrity checks.
+    - Where there is more than one confirmed identification for a particular observation, any conflicting differences
+    in taxonomy should be encountered in the data integrity checks.
+    - Where there is more than one confirmed identification for a particular observation, only one should be selected
+    for the output.
     """
 
     headers = header_observations
@@ -23,42 +34,36 @@ def export_csv(output_file):
     csv_writer = csv.DictWriter(output_file, headers)
     csv_writer.writeheader()
 
-    observations = Observation.objects.all().order_by('specimen_label')
+    confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED)
 
-    for observation in observations:
+    selected_identification_specimen_label = set()
 
-        identifications = observation.identification_set.all()  # get all identifications for this observation
+    for confirmed_identification in confirmed_identifications:
+        if confirmed_identification.observation.specimen_label in selected_identification_specimen_label:
+            break
+        else:
+            row = {}
 
-        selected_identification = None
+            row['specimen_label'] = confirmed_identification.observation.specimen_label
+            print(row['specimen_label'])
+            row['site_name'] = confirmed_identification.observation.survey.visit.site.site_name
+            row['date_cest'] = confirmed_identification.observation.survey.visit.date
+            row['method'] = confirmed_identification.observation.survey.method
+            row['repeat'] = confirmed_identification.observation.survey.repeat
+            row['sex'] = confirmed_identification.sex  # shouldn't be null
+            row['stage'] = confirmed_identification.stage  # shouldn't be null
+            row['id_confidence'] = confirmed_identification.confidence  # shouldn't be null
+            row['suborder'] = confirmed_identification.suborder.suborder  # shouldn't be null
+            row['family'] = field_or_empty_string(confirmed_identification.family, 'family')  # can be null if the identification
+            # cannot be determined to this taxonomic level
+            row['subfamily'] = field_or_empty_string(confirmed_identification.subfamily, 'subfamily')  # can be null if the
+            # identification cannot be determined to this taxonomic level
+            row['genus'] = field_or_empty_string(confirmed_identification.genus, 'genus')  # can be null if the identification
+            # cannot be determined to this taxonomic level
+            row['species'] = field_or_empty_string(confirmed_identification.species, 'latin_name')  # can be null if the
+            # identification cannot be determined to this taxonomic level
 
-        for identification in identifications:  # each observation may have many identifications with different certainties.
-            if identification.confidence == Identification.Confidence.CONFIRMED:  # select the confirmed identification only.
-                selected_identification = identification
-                break
-
-        # TODO check that the species / genus, sex and stage of the final identification is the same if there is more than one identification that was CONFIRMED. Put this in a report.
-
-        row = {}
-
-        row['specimen_label'] = observation.specimen_label
-        row['site_name'] = observation.survey.visit.site.site_name
-        row['date_cest'] = observation.survey.visit.date
-        row['method'] = observation.survey.method
-        row['repeat'] = observation.survey.repeat
-        row['sex'] = selected_identification.sex  # shouldn't be null
-        row['stage'] = selected_identification.stage  # shouldn't be null
-        row['id_confidence'] = selected_identification.confidence  # shouldn't be null
-        row['suborder'] = selected_identification.suborder.suborder  # shouldn't be null
-        row['family'] = field_or_empty_string(selected_identification.family,
-                                              'family')  # can be null if the identification cannot be determined to this taxonomic level
-        row['subfamily'] = field_or_empty_string(selected_identification.subfamily,
-                                                 'subfamily')  # can be null if the identification cannot be determined to this taxonomic level
-        row['genus'] = field_or_empty_string(selected_identification.genus,
-                                             'genus')  # can be null if the identification cannot be determined to this taxonomic level
-        row['species'] = field_or_empty_string(selected_identification.species,
-                                               'latin_name')  # can be null if the identification cannot be determined to this taxonomic level
-
-        csv_writer.writerow(row)
+            csv_writer.writerow(row)
 
 
 class Command(BaseCommand):
