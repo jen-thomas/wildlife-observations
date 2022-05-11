@@ -46,3 +46,8 @@ class Command(BaseCommand):
         print(len(identification_checks.check_confirmed_identifications_stage()), "results:\n")
         for identification in identification_checks.check_confirmed_identifications_stage():
             print(identification)
+
+        print("\n***** Confirmed identifications with different taxonomy *****")
+        print(len(identification_checks.check_confirmed_identifications_taxonomy()), "results:\n")
+        for identification in identification_checks.check_confirmed_identifications_taxonomy():
+            print(identification)

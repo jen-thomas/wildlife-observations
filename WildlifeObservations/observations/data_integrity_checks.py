@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from .models import Identification, Observation
 
@@ -154,3 +154,65 @@ class IdentificationDataChecks:
                 confirmed_identifications_different_stage.add(confirmed_identification)
 
         return confirmed_identifications_different_stage
+
+    def identification_inconsistency(self, identification1, identification2):
+        """
+        Compares two identifications according to the different levels of taxonomy and return those that are
+        inconsistent at the same level. Return dictionary of the inconsistent identifcation with the observation
+        specimen label and the field that is inconsistent.
+
+        A non-empty field and null are considered to be inconsistent for the purposes of this function.
+        """
+
+        inconsistent_identification = {}
+
+        for field in ['species', 'genus', 'subfamily', 'family', 'suborder']:
+            if getattr(identification1, field) != getattr(identification2, field):
+                inconsistent_identification['specimen_label'] = identification1.observation.specimen_label
+                inconsistent_identification['field'] = field
+
+                return inconsistent_identification
+
+        return None
+
+    def get_qs_confirmed_identifications(self):
+        """
+        Returns a queryset of all confirmed identifications.
+        """
+        confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED)
+
+        return confirmed_identifications
+
+    def get_confirmed_identifications_to_check_taxonomy(self, confirmed_identifications):
+        """
+        Returns a list of querysets that are the identifications for which more than one identification exists, for a
+        particular observation. These are the identifications that need to be compared to check if they have a
+        consistent taxonomy.
+        """
+        multiple_confirmed_identifications_for_observation = confirmed_identifications.values(
+            'observation__specimen_label').annotate(number_ids=Count('observation__specimen_label')).filter(
+            number_ids__gt=1)
+
+        identifications_to_check = []
+        for observation in multiple_confirmed_identifications_for_observation:
+            identifications_to_check.append(confirmed_identifications.filter(
+                observation__specimen_label=observation['observation__specimen_label']))
+
+        return identifications_to_check
+
+    def check_confirmed_identifications_taxonomy(self):
+        """
+        Returns a list of dictionaries of the specimen labels which have inconsistent confirmed identifications.
+        """
+        confirmed_identifications = self.get_qs_confirmed_identifications()
+
+        identifications_to_check = self.get_confirmed_identifications_to_check_taxonomy(confirmed_identifications)
+
+        inconsistent_identifications = []
+        for qs_of_identifications in identifications_to_check:
+            inconsistent_identification = self.identification_inconsistency(qs_of_identifications[0],
+                                                                            qs_of_identifications[1])
+            if inconsistent_identification != None:
+                inconsistent_identifications.append(inconsistent_identification)
+
+        return inconsistent_identifications
