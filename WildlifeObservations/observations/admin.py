@@ -62,10 +62,9 @@ class ObservationAdmin(admin.ModelAdmin):
 
 
 class PhotographAdmin(admin.ModelAdmin):
-    list_display = ('filepath', 'observation',)
-    ordering = ('filepath', 'observation',)
-    search_fields = ('filepath', 'observation__specimen_label',)
-    raw_id_fields = ('observation',)
+    list_display = ('filepath',)
+    ordering = ('filepath',)
+    search_fields = ('filepath',)
 
 
 class IdentificationAdmin(admin.ModelAdmin):
