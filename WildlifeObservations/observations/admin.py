@@ -62,10 +62,10 @@ class ObservationAdmin(admin.ModelAdmin):
 
 
 class PhotographAdmin(admin.ModelAdmin):
-    list_display = ('filepath', 'observation', 'observation_list',)
+    list_display = ('filepath', 'observation_list',)
     ordering = ('filepath', 'observation',)
-    search_fields = ('filepath', 'observation', 'observation_list')
-    filter_vertical = ('observations',)
+    search_fields = ('filepath', 'observation_list')
+    filter_horizontal = ('observation',)
 
     def observation_list(self, obj):
         return ', '.join([str(observation) for observation in obj.observation.all()])
