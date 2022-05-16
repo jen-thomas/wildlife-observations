@@ -155,7 +155,7 @@ class Observation(models.Model):
 
 
 class Photograph(models.Model):
-    filepath = models.FilePathField(path=None, match=None, recursive=False, max_length=300, unique=True)
+    filepath = models.CharField(max_length=300, unique=True)
     observation = models.ManyToManyField(Observation)
     created_on = models.DateTimeField(default=timezone.now)
 
