@@ -156,7 +156,7 @@ class Observation(models.Model):
 
 class Photograph(models.Model):
     filepath = models.FilePathField(path=None, match=None, recursive=False, max_length=300, unique=True)
-    #observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
+    observation = models.ManyToManyField(Observation, on_delete=models.PROTECT)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
