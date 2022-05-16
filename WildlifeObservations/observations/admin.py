@@ -64,7 +64,7 @@ class ObservationAdmin(admin.ModelAdmin):
 class PhotographAdmin(admin.ModelAdmin):
     list_display = ('filepath', 'observation_list',)
     ordering = ('filepath', 'observation',)
-    search_fields = ('filepath', 'observation_list')
+    search_fields = ('filepath', 'observation__specimen_label')
     filter_horizontal = ('observation',)
 
     def observation_list(self, obj):
