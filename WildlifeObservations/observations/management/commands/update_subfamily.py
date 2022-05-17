@@ -24,7 +24,8 @@ def update_subfamily():
     for identification in identifications_to_update:
         identification_subfamily = TaxonomyGenus.objects.get(genus=identification.genus).subfamily
         identification.subfamily = identification_subfamily
-        identification.subfamily.save()
+        identification.save()
+
         print("Updating ", identification.observation.specimen_label, "with ", identification_subfamily)
 
 
