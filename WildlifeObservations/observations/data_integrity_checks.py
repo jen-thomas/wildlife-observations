@@ -130,7 +130,7 @@ class IdentificationDataChecks:
 
         all_identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
         confirmed_identifications = self.get_qs_confirmed_identifications()
-        finalised_identifications = self.get_qs_confirmed_identifications()
+        finalised_identifications = self.get_qs_finalised_identifications()
 
         confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
         finalised_identifications_qs = finalised_identifications.values_list('observation__specimen_label', flat=True)
