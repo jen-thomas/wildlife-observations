@@ -262,6 +262,21 @@ class IdentificationDataChecks:
 
         return inconsistent_identifications
 
+    def observations_with_confirmed_and_finalised_identifications(self):
+        """
+        Return a list of observations which have both confirmed and finalised identifications.
+
+        These can then be sorted through manually to ensure that there are none with this case, thereby ensuring that
+        observations do not have conflicting identifications and are not used incorrectly in the analysis.
+        """
+
+        confirmed_identifications_qs = self.get_qs_confirmed_identifications()
+        finalised_identifications_qs = self.get_qs_finalised_identifications()
+
+        observations_with_confirmed_and_finalised_identifications = confirmed_identifications_qs.intersection(finalised_identifications_qs).values_list('observation__specimen_label')
+
+        return observations_with_confirmed_and_finalised_identifications
+
 
 class SurveyDataChecks:
     def __init__(self):

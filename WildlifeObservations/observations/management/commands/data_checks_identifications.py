@@ -56,3 +56,8 @@ class Command(BaseCommand):
         print(len(identification_checks.check_confirmed_identifications_taxonomy()), "results:\n")
         for identification in identification_checks.check_confirmed_identifications_taxonomy():
             print(identification)
+
+        print("\n***** Observations with confirmed and finalised identifications *****")
+        print(len(identification_checks.observations_with_confirmed_and_finalised_identifications()), "results:\n")
+        for identification in identification_checks.observations_with_confirmed_and_finalised_identifications():
+            print(identification)
