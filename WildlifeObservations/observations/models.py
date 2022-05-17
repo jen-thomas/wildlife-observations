@@ -268,10 +268,8 @@ class Identification(models.Model):
         CHECK_IN_MUSEUM = 'Check_in_museum', _('Check in museum')
         CONFIRMED = 'Confirmed', _('Confirmed')
         REDO = 'Redo', _('Redo')
-        # YES = 'Yes', _('Yes')
         REVIEW = 'Review', _('Review')
-        # CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
-        # SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
+        FINALISED = 'Finalised', _('Finalised')
 
     class ConfidenceReason(models.TextChoices):
         ID_CERTAIN = 'ID_certain', _('ID certain')
@@ -281,6 +279,7 @@ class Identification(models.Model):
         ID_INCORRECT = 'ID_incorrect', _('ID incorrect')
         CANNOT_DETERMINE_FURTHER = 'Cannot_determine_further', _('Cannot determine further')
         SMALL_NYMPH_HARD_TO_ID = 'Small_nymph_hard_to_ID', _('Small nymph hard to ID')
+        CANNOT_SPLIT_FURTHER = 'Cannot_split_further', _('Cannot split further')
 
     observation = models.ForeignKey(Observation, on_delete=models.PROTECT)
     species = models.ForeignKey(TaxonomySpecies, on_delete=models.PROTECT, null=True, blank=True)
@@ -331,6 +330,7 @@ class Identification(models.Model):
                                          | Q(Q(confidence='In_progress') & Q(confidence_reason='ID_incomplete'))
                                          | Q(Q(confidence='Review') & Q(confidence_reason='ID_uncertain'))
                                          | Q(Q(confidence='Redo') & Q(confidence_reason='ID_incorrect'))
+                                         | Q(Q(confidence='Finalised') & Q(confidence_reason='Cannot_split_further'))
                                    )]
 
 
