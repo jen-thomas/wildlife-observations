@@ -12,7 +12,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         identification_checks = IdentificationDataChecks()
 
-        print("***** Identifications without a sex (all stages) *****")
+        print("***** Identifications without a sex (adults only) *****")
+        print(len(identification_checks.check_identification_has_sex_adults_only()), "results:\n")
+        for identification in identification_checks.check_identification_has_sex_adults_only():
+            print(identification['specimen_label'])
+
+        print("\n***** Identifications without a sex (all stages) *****")
         print(len(identification_checks.check_identification_has_sex()), "results:\n")
         for identification in identification_checks.check_identification_has_sex():
             print(identification['specimen_label'])
