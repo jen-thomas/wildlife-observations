@@ -129,24 +129,19 @@ class IdentificationDataChecks:
         """
 
         all_identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
-        confirmed_identifications = self.get_qs_confirmed_identifications()
-        finalised_identifications = self.get_qs_finalised_identifications()
+        finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
 
-        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
-        finalised_identifications_qs = finalised_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
         all_identifications_set = set()
-        confirmed_identifications_set = set()
-        finalised_identifications_set = set()
+        finalised_and_confirmed_identifications_set = set()
 
         all_identifications_set = self.add_identifications_to_set(all_identifications_set, all_identifications)
-        confirmed_identifications_set = self.add_identifications_to_set(confirmed_identifications_set,
-                                                                        confirmed_identifications_qs)
-        finalised_identifications_set = self.add_identifications_to_set(finalised_identifications_set,
-                                                                        finalised_identifications_qs)
+        finalised_and_confirmed_identifications_set = self.add_identifications_to_set(finalised_and_confirmed_identifications_set,
+                                                                        finalised_and_confirmed_identifications_qs)
 
         observations_without_confirmation_or_finalisation = \
-            all_identifications_set - confirmed_identifications_set - finalised_identifications_set  # as this is
+            all_identifications_set - finalised_and_confirmed_identifications_set  # as this is
         # reduced to distinct specimen labels, these are equivalent to the observations
 
         return observations_without_confirmation_or_finalisation
@@ -223,6 +218,14 @@ class IdentificationDataChecks:
         finalised_identifications = Identification.objects.filter(confidence=Identification.Confidence.FINALISED)
 
         return finalised_identifications
+
+    def get_all_finalised_and_confirmed_identifications(self):
+        """
+        Returns a queryset of all finalised and confirmed identifications.
+        """
+        finalised_and_confirmed_identifications = self.get_qs_finalised_identifications() | self.get_qs_confirmed_identifications()
+
+        return finalised_and_confirmed_identifications
 
     def get_confirmed_identifications_to_check_taxonomy(self, confirmed_identifications):
         """
