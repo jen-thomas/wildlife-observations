@@ -47,9 +47,9 @@ class Command(BaseCommand):
         for identification in identification_checks.check_finalised_confirmed_identifications_sex():
             print(identification)
 
-        print("\n***** Confirmed identifications with different stages *****")
-        print(len(identification_checks.check_confirmed_identifications_stage()), "results:\n")
-        for identification in identification_checks.check_confirmed_identifications_stage():
+        print("\n***** Finalised/confirmed identifications with different stages *****")
+        print(len(identification_checks.check_finalised_confirmed_identifications_stage()), "results:\n")
+        for identification in identification_checks.check_finalised_confirmed_identifications_stage():
             print(identification)
 
         print("\n***** Confirmed identifications with different taxonomy *****")

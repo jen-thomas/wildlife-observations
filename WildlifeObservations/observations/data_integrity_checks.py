@@ -165,23 +165,24 @@ class IdentificationDataChecks:
 
         return finalised_confirmed_identifications_different_sex
 
-    def check_confirmed_identifications_stage(self):
+    def check_finalised_confirmed_identifications_stage(self):
         """
-        Returns a set of identifications that have confirmed identifications but the stage in these confirmed
-        identifications differs.
+        Returns a set of identifications that have confirmed or finalised identifications but the stage in these
+        confirmed or finalised identifications differs.
         """
-        confirmed_identifications = self.get_qs_confirmed_identifications()
-        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
-        confirmed_identifications_different_stage = set()
+        finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
-        for confirmed_identification in confirmed_identifications_qs:
+        finalised_and_confirmed_identifications_different_stage = set()
+
+        for finalised_confirmed_identification in finalised_and_confirmed_identifications_qs:
             distinct_stages = Identification.objects.filter(
-                observation__specimen_label=confirmed_identification).values_list('stage').distinct()
+                observation__specimen_label=finalised_confirmed_identification).values_list('stage').distinct()
             if len(distinct_stages) > 1:
-                confirmed_identifications_different_stage.add(confirmed_identification)
+                finalised_and_confirmed_identifications_different_stage.add(finalised_confirmed_identification)
 
-        return confirmed_identifications_different_stage
+        return finalised_and_confirmed_identifications_different_stage
 
     def identification_inconsistency(self, identification1, identification2):
         """
