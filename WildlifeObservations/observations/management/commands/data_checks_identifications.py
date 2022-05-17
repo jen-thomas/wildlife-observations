@@ -42,9 +42,9 @@ class Command(BaseCommand):
         for observation in identification_checks.find_observations_without_confirmed_or_finalised_identification():
             print(observation)
 
-        print("\n***** Confirmed identifications with different sexes *****")
-        print(len(identification_checks.check_confirmed_identifications_sex()), "results:\n")
-        for identification in identification_checks.check_confirmed_identifications_sex():
+        print("\n***** Finalised/confirmed identifications with different sexes *****")
+        print(len(identification_checks.check_finalised_confirmed_identifications_sex()), "results:\n")
+        for identification in identification_checks.check_finalised_confirmed_identifications_sex():
             print(identification)
 
         print("\n***** Confirmed identifications with different stages *****")

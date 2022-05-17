@@ -146,24 +146,24 @@ class IdentificationDataChecks:
 
         return observations_without_confirmation_or_finalisation
 
-    def check_confirmed_identifications_sex(self):
+    def check_finalised_confirmed_identifications_sex(self):
         """
-        Returns a set of identifications that have confirmed identifications but the sex in these confirmed
-        identifications differs.
+        Returns a set of identifications that have confirmed or finalised identifications but the sex in these confirmed
+        or finalised identifications differs.
         """
 
-        confirmed_identifications = self.get_qs_confirmed_identifications()
-        confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
 
-        confirmed_identifications_different_sex = set()
+        finalised_confirmed_identifications_different_sex = set()
 
-        for confirmed_identification in confirmed_identifications_qs:
+        for finalised_confirmed_identification in finalised_and_confirmed_identifications_qs:
             distinct_sexes = Identification.objects.filter(
-                observation__specimen_label=confirmed_identification).values_list('sex').distinct()
+                observation__specimen_label=finalised_confirmed_identification).values_list('sex').distinct()
             if len(distinct_sexes) > 1:
-                confirmed_identifications_different_sex.add(confirmed_identification)
+                finalised_confirmed_identifications_different_sex.add(finalised_confirmed_identification)
 
-        return confirmed_identifications_different_sex
+        return finalised_confirmed_identifications_different_sex
 
     def check_confirmed_identifications_stage(self):
         """
