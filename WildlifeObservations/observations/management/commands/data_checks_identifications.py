@@ -37,9 +37,9 @@ class Command(BaseCommand):
         for observation in identification_checks.find_observations_without_identification():
             print(observation)
 
-        print("\n***** Observations without a confirmed identification *****")
-        print(len(identification_checks.find_observations_without_confirmed_identification()), "results:\n")
-        for observation in identification_checks.find_observations_without_confirmed_identification():
+        print("\n***** Observations without a confirmed or finalised identification *****")
+        print(len(identification_checks.find_observations_without_confirmed_or_finalised_identification()), "results:\n")
+        for observation in identification_checks.find_observations_without_confirmed_or_finalised_identification():
             print(observation)
 
         print("\n***** Confirmed identifications with different sexes *****")

@@ -109,36 +109,47 @@ class IdentificationDataChecks:
 
         return observations_without_identifications
 
-    def find_observations_without_confirmed_identification(self):
+    def add_identifications_to_set(self, set, qs):
+        """
+        Add identifications from a queryset into a set. Return the set.
+        """
+
+        for identification in qs:
+            identification: Identification
+
+            set.add(identification)
+
+        return set
+
+    def find_observations_without_confirmed_or_finalised_identification(self):
         """
         Returns a set of the observations that do not have any identifications that have a confidence
-        that is confirmed. This query will only consider observations that have at least one identification.
+        that is confirmed or finalised. This query will only consider observations that have at least one
+        identification.
         """
 
         all_identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
         confirmed_identifications = self.get_qs_confirmed_identifications()
+        finalised_identifications = self.get_qs_confirmed_identifications()
 
         confirmed_identifications_qs = confirmed_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_identifications_qs = finalised_identifications.values_list('observation__specimen_label', flat=True)
 
         all_identifications_set = set()
         confirmed_identifications_set = set()
+        finalised_identifications_set = set()
 
-        for identification in all_identifications:
-            identification: Identification
+        all_identifications_set = self.add_identifications_to_set(all_identifications_set, all_identifications)
+        confirmed_identifications_set = self.add_identifications_to_set(confirmed_identifications_set,
+                                                                        confirmed_identifications_qs)
+        finalised_identifications_set = self.add_identifications_to_set(finalised_identifications_set,
+                                                                        finalised_identifications_qs)
 
-            all_identifications_set.add(
-                identification)  # adding the identifications to the set accounts for the duplicate specimen labels
-
-        for identification in confirmed_identifications_qs:
-            identification: Identification
-
-            confirmed_identifications_set.add(
-                identification)  # adding the identifications to the set accounts for the duplicate specimen labels
-
-        observations_without_confirmation = all_identifications_set - confirmed_identifications_set  # as this is
+        observations_without_confirmation_or_finalisation = \
+            all_identifications_set - confirmed_identifications_set - finalised_identifications_set  # as this is
         # reduced to distinct specimen labels, these are equivalent to the observations
 
-        return observations_without_confirmation
+        return observations_without_confirmation_or_finalisation
 
     def check_confirmed_identifications_sex(self):
         """
@@ -204,6 +215,14 @@ class IdentificationDataChecks:
         confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED)
 
         return confirmed_identifications
+
+    def get_qs_finalised_identifications(self):
+        """
+        Returns a queryset of all finalised identifications.
+        """
+        finalised_identifications = Identification.objects.filter(confidence=Identification.Confidence.FINALISED)
+
+        return finalised_identifications
 
     def get_confirmed_identifications_to_check_taxonomy(self, confirmed_identifications):
         """
