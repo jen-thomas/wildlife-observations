@@ -141,12 +141,12 @@ class SpeciesReport:
                 assert False
 
         cannot_id_further = all_cannot_id_further - all_confirmed
-        check_in_museum = all_check_in_museum - all_confirmed # intentionally leaving out those that cannot be identified further
+        check_in_museum = all_check_in_museum - all_confirmed  # intentionally leaving out those that cannot be identified further
         review = all_review - all_check_in_museum - all_confirmed
         check = all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
         redo = all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
         in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
-        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed # intentionally removed nymphs that are hard to ID from the other sets
+        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed  # intentionally removed nymphs that are hard to ID from the other sets
 
         return {'Confirmed': all_confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id,
                 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo,
@@ -166,8 +166,10 @@ class SpeciesReport:
         unique_identifications = set()
 
         for label in set_specimen_labels:
-            identifications = Identification.objects.filter(observation__specimen_label=label).filter(confidence__exact=confidence)
-            unique_identifications.update(identifications.values_list("observation__specimen_label", "species__latin_name"))
+            identifications = Identification.objects.filter(observation__specimen_label=label).filter(
+                confidence__exact=confidence)
+            unique_identifications.update(
+                identifications.values_list("observation__specimen_label", "species__latin_name"))
 
         return unique_identifications
 
@@ -404,3 +406,81 @@ class VisitReport:
             result.append(row)
 
         return result
+
+
+class SurveyReport:
+    def __init__(self):
+        pass
+
+    def get_survey_object(self, site_name, date, method, repeat):
+        """
+        Get a survey object for the specified site, date, method and repeat.
+
+        Return the survey object.
+        """
+        survey_object = Survey.objects.get(visit__site__site_name=site_name, visit__date=date, method=method,
+                                           repeat=repeat)
+
+        return survey_object
+
+    def summarise_survey_suborder(self, survey):
+        """
+        Summarise the numbers of each suborder observed for the specified survey, where the identifications are
+        finalised or confirmed, only.
+
+        Return a queryset of the suborder and total number of each observed.
+
+        Note that some observations may not have a finalised or confirmed identification, or in some cases there may
+        be both. Data integrity checks however, should pick up these anomalies and be checked.
+
+        For example:
+        [{'Caelifera':7, 'Ensifera':2, 'No information':2},
+        {'Caelifera':17, 'Ensifera':5, 'No information':5}]
+        """
+        identifications_for_survey = self.list_survey_identifications(survey)
+        confirmed_finalised_identifications = identifications_for_survey.filter(
+            Q(Q(confidence=Identification.Confidence.CONFIRMED) | Q(confidence=Identification.Confidence.FINALISED)))
+
+        caelifera = set()
+        ensifera = set()
+        no_info = set()
+
+        for identification in confirmed_finalised_identifications:
+            identification: Identification
+
+            if identification.suborder is None:
+                no_info.add(identification.observation.specimen_label)  # identifications that do not have a suborder
+                # (this implies their suborder has not been specified but in this situation, this should not occur as
+                # the identifications have been confirmed or finalised)
+            elif identification.suborder.suborder == 'Caelifera':
+                caelifera.add(identification.observation.specimen_label)
+            elif identification.suborder.suborder == 'Ensifera':
+                ensifera.add(identification.observation.specimen_label)
+            else:
+                assert False
+
+        return {'Caelifera': caelifera, 'Ensifera': ensifera, 'No information': no_info}
+
+    def list_survey_observations(self, survey):
+        """
+        Get all observations for a specified survey.
+
+        Return a queryset of the observations.
+        """
+        pass
+
+    def list_survey_identifications(self, survey):
+        """
+        Get all identifications for the observations of a specified survey.
+
+        Return a queryset of the identifications.
+        """
+        identifications_for_survey = Identification.objects.filter(observation__survey=survey)
+
+        return identifications_for_survey
+
+    def summarise_survey_species(self, survey):
+        """
+        Summarise the species observed during a specific survey.
+        """
+        pass
