@@ -515,7 +515,8 @@ class SurveyReport:
 
         for identification in confirmed_finalised_identifications:
             if identification.species:
-                confirmed_finalised_taxa.append(identification.species.species)
+                print(identification.species)
+                confirmed_finalised_taxa.append(identification.species.latin_name)
             elif identification.genus:
                 confirmed_finalised_taxa.append(identification.genus.genus)
             elif identification.subfamily:
