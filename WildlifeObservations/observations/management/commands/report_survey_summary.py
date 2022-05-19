@@ -18,9 +18,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         survey_reports = SurveyReport()
 
-        survey = survey_reports.get_survey_object(options['site_name'], options['date'], options['method'], options['repeat'])
+        survey = survey_reports.get_survey_object(options['site_name'], options['date'], options['method'],
+                                                  options['repeat'])
 
-        print("\nSummary of suborders observed during this survey (confirmed and finalised identifications only):", survey)
+        print("\nSummary of suborders observed during this survey (confirmed and finalised identifications "
+              "only):", survey)
         for suborder, observations in survey_reports.summarise_survey_suborder(survey).items():
             print(suborder, len(observations))
 
@@ -28,13 +30,13 @@ class Command(BaseCommand):
         for taxa, count in survey_reports.summarise_survey_confirmed_finalised_taxa(survey):
             print(taxa, count)
 
-        print("\nList of observations for this survey:", survey)
+        print("\nObservations for this survey (number in brackets: number of "
+              "identifications for the observation):", survey)
         print("Total:", len(survey_reports.list_survey_observations(survey)))
-        for row in survey_reports.list_survey_observations(survey):
-            print(row)
+        for observation_id_summary in survey_reports.list_observations_count_identifications(survey):
+            print(observation_id_summary['observation'], "(", observation_id_summary['count'], ")")
 
         print("\nList of identifications for this survey:", survey)
         print("Total:", len(survey_reports.list_survey_identifications(survey)))
         for row in survey_reports.list_survey_identifications(survey):
             print(row)
-

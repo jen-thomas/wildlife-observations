@@ -471,6 +471,28 @@ class SurveyReport:
 
         return observations
 
+    def get_identifications_for_observation(self, observation):
+        """
+        Get all identifications for an observation. Return queryset of the identifications.
+        """
+        identifications = Identification.objects.filter(observation=observation)
+
+        return identifications
+
+    def list_observations_count_identifications(self, survey):
+        """
+        Get all observations for a particular survey and count all identifications that each observation has. All
+        identifications should be included. Return dictionary of observations and count of identifications.
+        """
+        observations = self.list_survey_observations(survey)
+
+        summary_observations_identifications = []
+        for observation in observations:
+            summary_observations_identifications.append(
+                {"observation": observation, "count": self.get_identifications_for_observation(observation).count()})
+
+        return summary_observations_identifications
+
     def list_survey_identifications(self, survey):
         """
         Get all identifications for the observations of a specified survey.
