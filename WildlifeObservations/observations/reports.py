@@ -404,21 +404,3 @@ class VisitReport:
             result.append(row)
 
         return result
-
-    def summarise_survey(self):
-        """Return a list of dictionaries of the number of each observations recorded during each survey.
-
-        For example:
-        [{'survey': 'TOR03 20210719 N1', 'count':15},
-        {'survey': 'TOR05 20210719 H1', 'count':23}]"""
-
-        qs = Observation.objects.values("survey").annotate(total=Count("survey"))
-
-        result = []
-
-        for survey in qs:
-            survey_id = survey["observation__survey"]
-            survey_obj = Survey.objects.get(id=survey_id)
-            result.append({"survey": survey_obj, "count": survey["total"]})
-
-        return result

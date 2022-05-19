@@ -22,10 +22,6 @@ class Command(BaseCommand):
         for row in visit_reports.summarise_visits():
             print(row['site_name'], row["count"])
 
-        # print("\nSummary of observations from each survey.")
-        # for row in visit_reports.summarise_survey():
-        #     print(row['survey'], ":", row['count'])
-
         print("\nSummary of suborders observed during each survey.")
         for row in visit_reports.summarise_suborder_survey():
             print(row['survey'], 'Caelifera:', row['Caelifera'], 'Ensifera:', row['Ensifera'], 'Unknown:', row['observations_not_identified'])
