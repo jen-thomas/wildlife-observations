@@ -467,7 +467,9 @@ class SurveyReport:
 
         Return a queryset of the observations.
         """
-        pass
+        observations = Observation.objects.filter(survey=survey)
+
+        return observations
 
     def list_survey_identifications(self, survey):
         """
