@@ -21,8 +21,7 @@ class Command(BaseCommand):
         survey = survey_reports.get_survey_object(options['site_name'], options['date'], options['method'],
                                                   options['repeat'])
 
-        print("\nSummary of suborders observed during this survey (confirmed and finalised identifications "
-              "only):", survey)
+        print("\nSummary of suborders observed during this survey (from all identifications):", survey)
         for suborder, observations in survey_reports.summarise_survey_suborder(survey).items():
             print(suborder, len(observations))
 

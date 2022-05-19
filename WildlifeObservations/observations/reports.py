@@ -425,33 +425,29 @@ class SurveyReport:
 
     def summarise_survey_suborder(self, survey):
         """
-        Summarise the numbers of each suborder observed for the specified survey, where the identifications are
-        finalised or confirmed, only.
+        Summarise the numbers of each suborder observed for the specified survey. This query will consider all
+        identifications and get one per observation. Data integrity checks will look for the cases where there are no
+        suborders for an observation or there are conflicting suborders for an observation.
 
         Return a queryset of the suborder and total number of each observed.
-
-        Note that some observations may not have a finalised or confirmed identification, or in some cases there may
-        be both. Data integrity checks however, should pick up these anomalies and be checked.
 
         For example:
         [{'Caelifera':7, 'Ensifera':2, 'No information':2},
         {'Caelifera':17, 'Ensifera':5, 'No information':5}]
         """
         identifications_for_survey = self.list_survey_identifications(survey)
-        confirmed_finalised_identifications = identifications_for_survey.filter(
-            Q(Q(confidence=Identification.Confidence.CONFIRMED) | Q(confidence=Identification.Confidence.FINALISED)))
 
         caelifera = set()
         ensifera = set()
         no_info = set()
 
-        for identification in confirmed_finalised_identifications:
+        for identification in identifications_for_survey:
             identification: Identification
 
             if identification.suborder is None:
                 no_info.add(identification.observation.specimen_label)  # identifications that do not have a suborder
                 # (this implies their suborder has not been specified but in this situation, this should not occur as
-                # the identifications have been confirmed or finalised)
+                # all observation should have a suborder - this is checked by the data integrity checks)
             elif identification.suborder.suborder == 'Caelifera':
                 caelifera.add(identification.observation.specimen_label)
             elif identification.suborder.suborder == 'Ensifera':
@@ -515,7 +511,6 @@ class SurveyReport:
 
         for identification in confirmed_finalised_identifications:
             if identification.species:
-                print(identification.species)
                 confirmed_finalised_taxa.append(identification.species.latin_name)
             elif identification.genus:
                 confirmed_finalised_taxa.append(identification.genus.genus)
