@@ -1,4 +1,4 @@
-from re import sub
+import collections
 
 from django.db.models import Count, Q
 
@@ -481,8 +481,28 @@ class SurveyReport:
 
         return identifications_for_survey
 
-    def summarise_survey_species(self, survey):
+    def summarise_survey_confirmed_finalised_taxa(self, survey):
         """
-        Summarise the species observed during a specific survey.
+        Summarise the confirmed or finalised taxa observed during a specific survey.
         """
-        pass
+        identifications_for_survey = self.list_survey_identifications(survey)
+        confirmed_finalised_identifications = identifications_for_survey.filter(
+            Q(Q(confidence=Identification.Confidence.CONFIRMED) | Q(confidence=Identification.Confidence.FINALISED)))
+
+        confirmed_finalised_taxa = []
+
+        for identification in confirmed_finalised_identifications:
+            if identification.species:
+                confirmed_finalised_taxa.append(identification.species.species)
+            elif identification.genus:
+                confirmed_finalised_taxa.append(identification.genus.genus)
+            elif identification.subfamily:
+                confirmed_finalised_taxa.append(identification.subfamily.subfamily)
+            elif identification.family:
+                confirmed_finalised_taxa.append(identification.family.family)
+            elif identification.suborder:
+                confirmed_finalised_taxa.append(identification.suborder.suborder)
+
+        summarised_taxa = collections.Counter(confirmed_finalised_taxa).most_common()
+
+        return summarised_taxa
