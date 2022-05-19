@@ -310,3 +310,26 @@ class SurveyDataChecks:
         surveys_without_met_conditions = surveys_set - met_conditions_surveys_set
 
         return surveys_without_met_conditions
+
+class ObservationDataChecks:
+    def __init__(self):
+        pass
+
+    def find_observations_without_suborder(self):
+        """
+        Get all observations that do not yet have a suborder. Return a set.
+        """
+        all_identifications_with_suborder = Identification.objects.filter(suborder__isnull=False).values('observation__specimen_label')
+        all_observations = Observation.objects.all().values('specimen_label')
+
+        all_identifications_with_suborder_set = set()
+        for identification in all_identifications_with_suborder:
+            all_identifications_with_suborder_set.add(identification['observation__specimen_label'])
+
+        all_observations_set = set()
+        for observation in all_observations:
+            all_observations_set.add(observation['specimen_label'])
+
+        observations_without_suborder = all_observations_set - all_identifications_with_suborder_set
+
+        return observations_without_suborder
