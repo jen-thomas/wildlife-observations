@@ -3,14 +3,41 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from ...models import Observation, Identification
+from ...models import Identification
 from ...utils import field_or_empty_string
 
 header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'repeat', 'sex', 'stage', 'id_confidence',
                        'suborder', 'family', 'subfamily', 'genus', 'species']
 
 
-def export_csv(output_file):
+def get_row_for_identification(identification):
+    row = {}
+
+    row['specimen_label'] = identification.observation.specimen_label
+    print(row['specimen_label'])
+    row['site_name'] = identification.observation.survey.visit.site.site_name
+    row['date_cest'] = identification.observation.survey.visit.date
+    row['method'] = identification.observation.survey.method
+    row['repeat'] = identification.observation.survey.repeat
+    row['sex'] = identification.sex  # shouldn't be null
+    row['stage'] = identification.stage  # shouldn't be null
+    row['id_confidence'] = identification.confidence  # shouldn't be null
+    row['suborder'] = identification.suborder.suborder  # shouldn't be null
+    row['family'] = field_or_empty_string(identification.family, 'family')  # can be null if the identification cannot
+    # be determined to this taxonomic level
+    row['subfamily'] = field_or_empty_string(identification.subfamily,
+                                             'subfamily')  # can be null if the identification cannot be determined to
+    # this taxonomic level
+    row['genus'] = field_or_empty_string(identification.genus, 'genus')  # can be null if the identification cannot be
+    # determined to this taxonomic level
+    row['species'] = field_or_empty_string(identification.species,
+                                           'latin_name')  # can be null if the identification cannot be determined to
+    # this taxonomic level
+
+    return row
+
+
+def export_csv(output_file, practice_sites):
     """
     Export data from a query into a CSV file which has a specified output file.
 
@@ -18,7 +45,9 @@ def export_csv(output_file):
     of headers.
 
     If all observations have been identified, then the export of observations and identifications can consider just the
-    finalised, confirmed identifications.
+    confirmed and finalised identifications.
+    - Observations should not have both confirmed and finalised identifications. These should be encountered
+    in the data integrity checks.
     - Where there are observations that have not been identified, these should be encountered in the data integrity
     checks.
     - Where there are observations that have an identification but the identification has not been confirmed, then
@@ -26,7 +55,10 @@ def export_csv(output_file):
     - Where there is more than one confirmed identification for a particular observation, any conflicting differences
     in taxonomy should be encountered in the data integrity checks.
     - Where there is more than one confirmed identification for a particular observation, only one should be selected
-    for the output.
+    for the output. Where there is more than one, the data integrity checks will ensure the confirmed identifications
+    are for the same taxa.
+
+    Observations from 'practice' sites, are excluded from the export.
     """
 
     headers = header_observations
@@ -34,34 +66,35 @@ def export_csv(output_file):
     csv_writer = csv.DictWriter(output_file, headers)
     csv_writer.writeheader()
 
-    confirmed_identifications = Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED)
+    # deal with confirmed identifications first, because there must only be one identification exported for each of these
+    confirmed_identifications = Identification.objects.exclude(
+        observation__survey__visit__site__site_name__in=practice_sites).filter(confidence=Identification.Confidence.CONFIRMED)
+    print("Number of confirmed ids:", confirmed_identifications.count())
 
+
+    # creating a set of the specimen labels ensures that only one confirmed identification for the same observation
+    # should be exported. It is then also used as an extra check to make sure that no finalised identifications can be
+    # exported if a confirmed identification for the same observation has been exported. This case should be accounted
+    # for though in the data integrity checks.
     selected_identification_specimen_label = set()
 
     for confirmed_identification in confirmed_identifications:
-        if confirmed_identification.observation.specimen_label in selected_identification_specimen_label:
-            break
-        else:
-            row = {}
+        if confirmed_identification.observation.specimen_label not in selected_identification_specimen_label:
+            row = get_row_for_identification(confirmed_identification)
+            selected_identification_specimen_label.add(confirmed_identification.observation.specimen_label)
 
-            row['specimen_label'] = confirmed_identification.observation.specimen_label
-            print(row['specimen_label'])
-            row['site_name'] = confirmed_identification.observation.survey.visit.site.site_name
-            row['date_cest'] = confirmed_identification.observation.survey.visit.date
-            row['method'] = confirmed_identification.observation.survey.method
-            row['repeat'] = confirmed_identification.observation.survey.repeat
-            row['sex'] = confirmed_identification.sex  # shouldn't be null
-            row['stage'] = confirmed_identification.stage  # shouldn't be null
-            row['id_confidence'] = confirmed_identification.confidence  # shouldn't be null
-            row['suborder'] = confirmed_identification.suborder.suborder  # shouldn't be null
-            row['family'] = field_or_empty_string(confirmed_identification.family, 'family')  # can be null if the
-            # identification cannot be determined to this taxonomic level
-            row['subfamily'] = field_or_empty_string(confirmed_identification.subfamily, 'subfamily')  # can be null
-            # if the identification cannot be determined to this taxonomic level
-            row['genus'] = field_or_empty_string(confirmed_identification.genus, 'genus')  # can be null if the
-            # identification cannot be determined to this taxonomic level
-            row['species'] = field_or_empty_string(confirmed_identification.species, 'latin_name')  # can be null if the
-            # identification cannot be determined to this taxonomic level
+            csv_writer.writerow(row)
+    print("Number of specimen labels after confirmed ids: ", len(selected_identification_specimen_label))
+
+    # there could be more than one finalised identification that should be exported, so allow for more than one with
+    # the same specimen label
+    finalised_identifications = Identification.objects.filter(confidence=Identification.Confidence.FINALISED).exclude(
+        observation__survey__visit__site__site_name__in=practice_sites)
+    print("Number of finalised ids:", finalised_identifications.count())
+
+    for finalised_identification in finalised_identifications:
+        if finalised_identification.observation.specimen_label not in selected_identification_specimen_label:
+            row = get_row_for_identification(finalised_identification)
 
             csv_writer.writerow(row)
 
@@ -70,6 +103,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('output_file', type=argparse.FileType('w'), help='Path to the file or - for stdout')
+        parser.add_argument('--practice_sites', type=str, nargs="*",
+                            help='Site names of the practice sites to exclude from the export')
 
     def handle(self, *args, **options):
-        export_csv(options['output_file'])
+        export_csv(options['output_file'], options['practice_sites'])

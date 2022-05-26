@@ -131,14 +131,16 @@ class IdentificationDataChecks:
         all_identifications = Identification.objects.all().values_list('observation__specimen_label', flat=True)
         finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
 
-        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list(
+            'observation__specimen_label', flat=True)
 
         all_identifications_set = set()
         finalised_and_confirmed_identifications_set = set()
 
         all_identifications_set = self.add_identifications_to_set(all_identifications_set, all_identifications)
-        finalised_and_confirmed_identifications_set = self.add_identifications_to_set(finalised_and_confirmed_identifications_set,
-                                                                        finalised_and_confirmed_identifications_qs)
+        finalised_and_confirmed_identifications_set = self.add_identifications_to_set(
+            finalised_and_confirmed_identifications_set,
+            finalised_and_confirmed_identifications_qs)
 
         observations_without_confirmation_or_finalisation = \
             all_identifications_set - finalised_and_confirmed_identifications_set  # as this is
@@ -153,7 +155,8 @@ class IdentificationDataChecks:
         """
 
         finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
-        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list(
+            'observation__specimen_label', flat=True)
 
         finalised_confirmed_identifications_different_sex = set()
 
@@ -172,7 +175,8 @@ class IdentificationDataChecks:
         """
 
         finalised_and_confirmed_identifications = self.get_all_finalised_and_confirmed_identifications()
-        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list('observation__specimen_label', flat=True)
+        finalised_and_confirmed_identifications_qs = finalised_and_confirmed_identifications.values_list(
+            'observation__specimen_label', flat=True)
 
         finalised_and_confirmed_identifications_different_stage = set()
 
@@ -273,7 +277,8 @@ class IdentificationDataChecks:
         confirmed_identifications_qs = self.get_qs_confirmed_identifications()
         finalised_identifications_qs = self.get_qs_finalised_identifications()
 
-        observations_with_confirmed_and_finalised_identifications = confirmed_identifications_qs.intersection(finalised_identifications_qs).values_list('observation__specimen_label')
+        observations_with_confirmed_and_finalised_identifications = confirmed_identifications_qs.intersection(
+            finalised_identifications_qs).values_list('observation__specimen_label')
 
         return observations_with_confirmed_and_finalised_identifications
 
@@ -311,6 +316,7 @@ class SurveyDataChecks:
 
         return surveys_without_met_conditions
 
+
 class ObservationDataChecks:
     def __init__(self):
         pass
@@ -319,7 +325,8 @@ class ObservationDataChecks:
         """
         Get all observations that do not yet have a suborder. Return a set.
         """
-        all_identifications_with_suborder = Identification.objects.filter(suborder__isnull=False).values('observation__specimen_label')
+        all_identifications_with_suborder = Identification.objects.filter(suborder__isnull=False).values(
+            'observation__specimen_label')
         all_observations = Observation.objects.all().values('specimen_label')
 
         all_identifications_with_suborder_set = set()

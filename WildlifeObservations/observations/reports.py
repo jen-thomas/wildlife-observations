@@ -31,8 +31,7 @@ class SpeciesReport:
     def number_confirmed_species_observed(self):
         """Returns the number of confirmed species (integer) that have been recorded."""
 
-        qs = len(set(Identification.objects.filter(Q(confidence=Identification.Confidence.YES) | Q(
-            confidence=Identification.Confidence.CONFIRMED)).values_list("species__latin_name", flat=True)))
+        qs = len(set(Identification.objects.filter(confidence=Identification.Confidence.CONFIRMED).values_list("species__latin_name", flat=True)))
 
         return qs
 
