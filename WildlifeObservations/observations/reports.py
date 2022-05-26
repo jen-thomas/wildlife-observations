@@ -36,7 +36,7 @@ class SpeciesReport:
         return qs
 
     def unconfirmed_species_observed(self):
-        """Returns the number of unconfirmed species (integer) that have been recorded."""
+        """Returns a set of all species that have been recorded. They have not necessarily been confirmed."""
 
         qs = set(Identification.objects.values_list("species__latin_name", flat=True))
 
