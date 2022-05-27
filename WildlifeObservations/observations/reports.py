@@ -94,8 +94,7 @@ class SpeciesReport:
 
         # confidence order of hierarchy
         all_confirmed = set()
-        all_nymphs_hard_to_id = set()
-        all_cannot_id_further = set()
+        all_finalised = set()
         all_check_in_museum = set()
         all_review = set()
         all_check = set()
@@ -113,17 +112,10 @@ class SpeciesReport:
             # specimen_labels.add(identification.observation.specimen_label)  # add the specimen labels to the set
 
             # the confidences are added in order of concreteness.
-            if identification.confidence == Identification.Confidence.YES \
-                    or identification.confidence == Identification.Confidence.CONFIRMED:
+            if identification.confidence == Identification.Confidence.CONFIRMED:
                 all_confirmed.add(identification.observation.specimen_label)  # identifications that are confirmed
-            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:  # this is not really
-                # relevant for those that are identified to species, but left in just in case one appears due to a
-                # problem with data entry
-                all_nymphs_hard_to_id.add(identification.observation.specimen_label)
-            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:  # this is not really
-                # relevant for those that are identified to species, but left in just in case one appears due to a
-                # problem with data entry
-                all_cannot_id_further.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.FINALISED:
+                    all_finalised.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
                 all_check_in_museum.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.REVIEW:
@@ -139,15 +131,14 @@ class SpeciesReport:
             else:
                 assert False
 
-        cannot_id_further = all_cannot_id_further - all_confirmed
+        finalised = all_finalised - all_confirmed
         check_in_museum = all_check_in_museum - all_confirmed  # intentionally leaving out those that cannot be identified further
-        review = all_review - all_check_in_museum - all_confirmed
-        check = all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
-        redo = all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
-        in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_cannot_id_further - all_confirmed
-        nymphs_hard_to_id = all_nymphs_hard_to_id - all_confirmed  # intentionally removed nymphs that are hard to ID from the other sets
+        review = all_review - all_check_in_museum - all_finalised - all_confirmed
+        check = all_check - all_check_in_museum - all_review - all_finalised - all_confirmed
+        redo = all_redo - all_check - all_check_in_museum - all_review - all_finalised - all_confirmed
+        in_progress = all_in_progress - all_redo - all_check - all_check_in_museum - all_review - all_finalised - all_confirmed
 
-        return {'Confirmed': all_confirmed, 'CannotIDfurther': cannot_id_further, 'NymphsIDhard': nymphs_hard_to_id,
+        return {'Confirmed': all_confirmed, 'Finalised': finalised,
                 'Review': review, 'Check': check, 'CheckMuseum': check_in_museum, 'Redo': redo,
                 'InProgress': in_progress, 'NoConfirmation': all_missing_confirmation}
 
@@ -194,8 +185,7 @@ class SpeciesReport:
 
         specimen_labels = set()
 
-        nymphs_hard_to_id = set()
-        cannot_id_further = set()
+        finalised = set()
         confirmed = set()
         in_progress = set()
         redo = set()
@@ -214,13 +204,10 @@ class SpeciesReport:
             specimen_labels.add(identification.observation.specimen_label)  # add the specimen labels to the set
 
             # the confidences are added in order of concreteness.
-            if identification.confidence == Identification.Confidence.CONFIRMED \
-                    or identification.confidence == Identification.Confidence.YES:
+            if identification.confidence == Identification.Confidence.CONFIRMED:
                 confirmed.add(identification.observation.specimen_label)  # identifications that are confirmed
-            elif identification.confidence == Identification.Confidence.SMALL_NYMPH_HARD_TO_ID:
-                nymphs_hard_to_id.add(identification.observation.specimen_label)
-            elif identification.confidence == Identification.Confidence.CANNOT_DETERMINE_FURTHER:
-                cannot_id_further.add(identification.observation.specimen_label)
+            elif identification.confidence == Identification.Confidence.FINALISED:
+                finalised.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.REVIEW:
                 review.add(identification.observation.specimen_label)
             elif identification.confidence == Identification.Confidence.CHECK_IN_MUSEUM:
@@ -236,9 +223,8 @@ class SpeciesReport:
             else:
                 assert False
 
-        return {'Total': total_unique_observations_genus, 'Confirmed': confirmed, 'CannotIDfurther': cannot_id_further,
-                'NymphsIDhard': nymphs_hard_to_id, 'NoConfirmation': missing_confirmation, 'Review': review,
-                'Check': check,
+        return {'Total': total_unique_observations_genus, 'Confirmed': confirmed, 'Finalised': finalised,
+                'NoConfirmation': missing_confirmation, 'Review': review,'Check': check,
                 'CheckMuseum': check_in_museum, 'Redo': redo, 'InProgress': in_progress,
                 'MissingConfirmation': missing_confirmation}
 
