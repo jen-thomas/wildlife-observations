@@ -161,7 +161,7 @@ class IdentificationDataChecks:
         finalised_confirmed_identifications_different_sex = set()
 
         for finalised_confirmed_identification in finalised_and_confirmed_identifications_qs:
-            distinct_sexes = Identification.objects.filter(
+            distinct_sexes = finalised_and_confirmed_identifications.filter(
                 observation__specimen_label=finalised_confirmed_identification).values_list('sex').distinct()
             if len(distinct_sexes) > 1:
                 finalised_confirmed_identifications_different_sex.add(finalised_confirmed_identification)
@@ -181,7 +181,7 @@ class IdentificationDataChecks:
         finalised_and_confirmed_identifications_different_stage = set()
 
         for finalised_confirmed_identification in finalised_and_confirmed_identifications_qs:
-            distinct_stages = Identification.objects.filter(
+            distinct_stages = finalised_and_confirmed_identifications.filter(
                 observation__specimen_label=finalised_confirmed_identification).values_list('stage').distinct()
             if len(distinct_stages) > 1:
                 finalised_and_confirmed_identifications_different_stage.add(finalised_confirmed_identification)
