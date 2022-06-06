@@ -5,8 +5,8 @@ from django.core.management.base import BaseCommand
 
 from ...models import Site
 
-header_site = ['area', 'site_name', 'altitude_band_m', 'latitude_start_n', 'longitude_start_e', 'altitude_start_m',
-               'latitude_end_n', 'longitude_end_e', 'altitude_end_m', 'transect_length_m']
+header_site = ['area', 'site_name', 'elevational_band_m', 'latitude_start_n', 'longitude_start_e', 'elevation_start_m',
+               'latitude_end_n', 'longitude_end_e', 'elevation_end_m', 'transect_length_m']
 
 
 def export_csv(output_file):
@@ -29,13 +29,13 @@ def export_csv(output_file):
 
         row['area'] = site.area
         row['site_name'] = site.site_name
-        row['altitude_band_m'] = site.altitude_band
+        row['elevational_band_m'] = site.altitude_band
         row['latitude_start_n'] = site.latitude_start
         row['longitude_start_e'] = site.longitude_start
-        row['altitude_start_m'] = site.altitude_start
+        row['elevation_start_m'] = site.altitude_start
         row['latitude_end_n'] = site.latitude_end
         row['longitude_end_e'] = site.longitude_end
-        row['altitude_end_m'] = site.altitude_end
+        row['elevation_end_m'] = site.altitude_end
         row['transect_length_m'] = site.transect_length
 
         csv_writer.writerow(row)
