@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 
 from ...models import Survey
 
-header_survey = ['site_name', 'date_cest', 'start_time_cest', 'end_time_cest', 'method', 'repeat',
+header_survey = ['site_name', 'date_cest', 'start_time_cest', 'end_time_cest', 'method', 'method_repeat',
                  'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end']
 
 
@@ -33,7 +33,7 @@ def export_csv(output_file):
         row['start_time_cest'] = survey.start_time
         row['end_time_cest'] = survey.end_time
         row['method'] = survey.method
-        row['repeat'] = survey.repeat
+        row['method_repeat'] = survey.repeat
         row['cloud_coverage_start'] = survey.meteorologyconditions.cloud_coverage_start
         row['wind_start'] = survey.meteorologyconditions.wind_start
         row['rain_start'] = survey.meteorologyconditions.rain_start
