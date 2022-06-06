@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from ...models import Identification
 from ...utils import field_or_empty_string
 
-header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'repeat', 'sex', 'stage', 'id_confidence',
+header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'method_repeat', 'sex', 'stage', 'id_confidence',
                        'suborder', 'family', 'subfamily', 'genus', 'species']
 
 
@@ -18,7 +18,7 @@ def get_row_for_identification(identification):
     row['site_name'] = identification.observation.survey.visit.site.site_name
     row['date_cest'] = identification.observation.survey.visit.date
     row['method'] = identification.observation.survey.method
-    row['repeat'] = identification.observation.survey.repeat
+    row['method_repeat'] = identification.observation.survey.repeat
     row['sex'] = identification.sex  # shouldn't be null
     row['stage'] = identification.stage  # shouldn't be null
     row['id_confidence'] = identification.confidence  # shouldn't be null
