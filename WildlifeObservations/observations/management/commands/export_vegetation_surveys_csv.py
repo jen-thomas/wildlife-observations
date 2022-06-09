@@ -3,14 +3,14 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from ...models import VegetationStructure, Plot
+from ...models import VegetationStructure
 
 header_vegetation_survey = ['site_name', 'date_cest', 'plot_distance_from_start_m', 'percentage_vegetation_cover',
                             'percentage_bare_ground', 'percentage_rock', 'height_75percent', 'max_height',
                             'density_01', 'density_02', 'density_03', 'density_04', 'density_05']
 
 
-def export_csv(output_file):
+def export_csv(output_file, practice_sites):
     """
     Export data from a query into a CSV file which has a specified output file.
 
@@ -23,7 +23,7 @@ def export_csv(output_file):
     csv_writer = csv.DictWriter(output_file, headers)
     csv_writer.writeheader()
 
-    vegetation_surveys = VegetationStructure.objects.all()
+    vegetation_surveys = VegetationStructure.objects.exclude(plot__visit__site__site_name__in=practice_sites)
 
     for vegetation_survey in vegetation_surveys:
 
@@ -50,6 +50,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('output_file', type=argparse.FileType('w'), help='Path to the file or - for stdout')
+        parser.add_argument('--practice_sites', type=str, nargs="*",
+                            help='Site names of the practice sites to exclude from the export')
 
     def handle(self, *args, **options):
-        export_csv(options['output_file'])
+        export_csv(options['output_file'], options['practice_sites'])
