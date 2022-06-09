@@ -9,7 +9,7 @@ header_survey = ['site_name', 'date_cest', 'start_time_cest', 'end_time_cest', '
                  'cloud_coverage_start', 'wind_start', 'rain_start', 'cloud_coverage_end', 'wind_end', 'rain_end']
 
 
-def export_csv(output_file):
+def export_csv(output_file, practice_sites):
     """
     Export data from a query into a CSV file which has a specified output file.
 
@@ -22,10 +22,10 @@ def export_csv(output_file):
     csv_writer = csv.DictWriter(output_file, headers)
     csv_writer.writeheader()
 
-    surveys = Survey.objects.all().order_by('visit__site__site_name', 'visit__date', 'start_time')
+    surveys = Survey.objects.exclude(visit__site__site_name__in=practice_sites).order_by('visit__site__site_name',
+                                                                                         'visit__date', 'start_time')
 
     for survey in surveys:
-
         row = {}
 
         row['site_name'] = survey.visit.site.site_name
@@ -48,6 +48,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('output_file', type=argparse.FileType('w'), help='Path to the file or - for stdout')
+        parser.add_argument('--practice_sites', type=str, nargs="*",
+                            help='Site names of the practice sites to exclude from the export')
 
     def handle(self, *args, **options):
-        export_csv(options['output_file'])
+        export_csv(options['output_file'], options['practice_sites'])
