@@ -9,7 +9,7 @@ header_site = ['area', 'site_name', 'elevational_band_m', 'latitude_start_n', 'l
                'latitude_end_n', 'longitude_end_e', 'elevation_end_m', 'transect_length_m']
 
 
-def export_csv(output_file):
+def export_csv(output_file, practice_sites):
     """
     Export data from a query into a CSV file which has a specified output file.
 
@@ -22,7 +22,7 @@ def export_csv(output_file):
     csv_writer = csv.DictWriter(output_file, headers)
     csv_writer.writeheader()
 
-    sites = Site.objects.all().order_by('area', 'altitude_band')
+    sites = Site.objects.exclude(site_name__in=practice_sites).order_by('area', 'altitude_band')
 
     for site in sites:
         row = {}
@@ -45,6 +45,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('output_file', type=argparse.FileType('w'), help='Path to the file or - for stdout')
+        parser.add_argument('--practice_sites', type=str, nargs="*",
+                            help='Site names of the practice sites to exclude from the export')
 
     def handle(self, *args, **options):
-        export_csv(options['output_file'])
+        export_csv(options['output_file'], options['practice_sites'])
