@@ -1,6 +1,6 @@
 from django.db.models import Q, Count
 
-from .models import Identification, Observation, Survey, MeteorologyConditions
+from .models import Identification, Observation, Survey, MeteorologyConditions, Site
 
 
 class IdentificationDataChecks:
@@ -67,15 +67,18 @@ class IdentificationDataChecks:
 
         return identifications_missing_stage
 
-    def check_identification_has_confidence(self):
+    def check_identification_has_confidence(self, practice_sites):
         """
         Returns list of dictionaries of the identifications that do not have a confidence.
 
         e.g.    [{"specimen_label": TOR08 20211005 H1 C001},
                 {"specimen_label": TAV09 20211006 N1 C008}]
+
+        Ignore the specimens from practice sites. These will not be included in the analysis.
         """
 
-        identifications = Identification.objects.filter(confidence__isnull=True)
+        identifications = Identification.objects.filter(confidence__isnull=True).exclude(
+            observation__survey__visit__site__site_name__in=practice_sites)
 
         identifications_missing_confidence = []
 
@@ -147,6 +150,19 @@ class IdentificationDataChecks:
         # reduced to distinct specimen labels, these are equivalent to the observations
 
         return observations_without_confirmation_or_finalisation
+
+    def get_unconfirmed_unfinalised_adults(self, observations_without_confirmation_or_finalisation):
+        """
+        Using the set of observations that do not have a confirmed or finalised identification, get only the adults.
+
+        Return a queryset of these adults.
+        """
+
+        adults_unconfirmed_unfinalised = Observation.objects.filter(
+            specimen_label__in=observations_without_confirmation_or_finalisation).filter(
+            identification__stage=Identification.Stage.ADULT)
+
+        return adults_unconfirmed_unfinalised
 
     def check_finalised_confirmed_identifications_sex(self):
         """
