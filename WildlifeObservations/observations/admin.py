@@ -176,7 +176,7 @@ class VegetationStructureAdmin(admin.ModelAdmin):
     ordering = ('plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
                 'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
     search_fields = (
-        'plot__plot', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
+        'plot__visit__site__site_name', 'percentage_vegetation_cover', 'percentage_bare_ground', 'percentage_rock', 'height_75percent',
         'max_height', 'density_01', 'density_02', 'density_03', 'density_04', 'density_05',)
 
 
