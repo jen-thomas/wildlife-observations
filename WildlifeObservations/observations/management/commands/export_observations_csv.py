@@ -6,8 +6,8 @@ from django.core.management.base import BaseCommand
 from ...models import Identification
 from ...utils import field_or_empty_string
 
-header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'method_repeat', 'sex', 'stage', 'id_confidence',
-                       'suborder', 'family', 'subfamily', 'genus', 'species']
+header_observations = ['specimen_label', 'site_name', 'date_cest', 'method', 'method_repeat', 'sex', 'stage',
+                       'id_confidence', 'suborder', 'family', 'subfamily', 'genus', 'species']
 
 
 def get_row_for_identification(identification):
