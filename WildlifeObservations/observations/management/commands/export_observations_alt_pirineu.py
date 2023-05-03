@@ -11,6 +11,12 @@ header_observations = ['specimen_label', 'site_name', 'date_cest', 'sex', 'speci
 
 
 def get_row_for_identification(identification):
+    """
+    Get the attributes of each identification.
+
+    Return a dictionary.
+    """
+
     row = {}
 
     row['specimen_label'] = identification.observation.specimen_label
@@ -18,35 +24,42 @@ def get_row_for_identification(identification):
     row['date_cest'] = identification.observation.survey.visit.date
     row['sex'] = identification.sex  # shouldn't be null
     row['species'] = field_or_empty_string(identification.species, 'latin_name')  # can be null if the identification
-    # cannot be determined to this taxonomic level
+    # cannot be determined to this taxonomic level, but these should be removed by the filter
 
     return row
 
 
-def get_observations(practice_sites):
+def get_identifications_to_species(identifications):
+    """
+    Exclude all identifications where the species is null.
 
-    selected_identification_specimen_label = set()
+    Return a queryset of the identifications where species is not null.
+    """
+
+    ids_species = identifications.exclude(species__isnull=True)
+
+    return ids_species
+
+
+def get_observations(practice_sites):
+    """
+    Get all observations for each of the sites, excluding those found at the practice sites.
+
+    Conditions applied to the observations obtained are:
+    - species is not null
+    - identification is confirmed
+
+    Return list of confirmed identifications.
+    """
+
     selected_identifications = []
 
     confirmed_identifications = export_observations_csv.get_confirmed_observations(practice_sites)
-                                                                                                                                                                                                                                                             
-    for confirmed_identification in confirmed_identifications:
-        if confirmed_identification.observation.specimen_label not in selected_identification_specimen_label:
-            row = get_row_for_identification(confirmed_identification)
-            selected_identification_specimen_label.add(confirmed_identification.observation.specimen_label)
-            selected_identifications.append(row)
+    confirmed_ids_species = get_identifications_to_species(confirmed_identifications)
 
-    print("Number of specimen labels after confirmed ids: ", len(selected_identification_specimen_label))
-
-    # do not include finalised identifications because these are not definitive
-    # finalised_identifications = export_observations_csv.get_finalised_observations(practice_sites)
-    #
-    # print("Number of finalised ids:", finalised_identifications.count())
-    #
-    # for finalised_identification in finalised_identifications:
-    #     if finalised_identification.observation.specimen_label not in selected_identification_specimen_label:
-    #         row = get_row_for_identification(finalised_identification)
-    #         selected_identifications.append(row)
+    for confirmed_identification in confirmed_ids_species:
+        row = get_row_for_identification(confirmed_identification)
+        selected_identifications.append(row)
 
     print("Number of selected identifications:", len(selected_identifications))
 
@@ -54,6 +67,11 @@ def get_observations(practice_sites):
 
 
 def export_csv(output_file, identifications):
+    """
+    Export a CSV of the chosen identifications.
+
+    Output the CSV file.
+    """
 
     headers = header_observations
 
@@ -75,5 +93,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         selected_identifications = get_observations(options['practice_sites'])
         export_csv(options['output_file'], selected_identifications)
-
-
