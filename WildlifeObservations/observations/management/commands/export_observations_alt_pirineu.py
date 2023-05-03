@@ -2,12 +2,13 @@ import argparse
 import csv
 
 from django.core.management.base import BaseCommand
+from django.db.models import Count
 
 from . import export_observations_csv
 from ...models import Identification
 from ...utils import field_or_empty_string
 
-header_observations = ['specimen_label', 'site_name', 'date_cest', 'sex', 'species']
+header_observations = ['site_name', 'date_cest', 'species', 'sex', 'count']
 
 
 def get_row_for_identification(identification):
@@ -19,12 +20,11 @@ def get_row_for_identification(identification):
 
     row = {}
 
-    row['specimen_label'] = identification.observation.specimen_label
-    row['site_name'] = identification.observation.survey.visit.site.site_name
-    row['date_cest'] = identification.observation.survey.visit.date
-    row['sex'] = identification.sex  # shouldn't be null
-    row['species'] = field_or_empty_string(identification.species, 'latin_name')  # can be null if the identification
-    # cannot be determined to this taxonomic level, but these should be removed by the filter
+    row['site_name'] = identification['observation__survey__visit__site__site_name']
+    row['date_cest'] = identification['observation__survey__visit__date']
+    row['species'] = identification['species__latin_name']
+    row['sex'] = identification['sex']
+    row['count'] = identification['count']
 
     return row
 
@@ -39,6 +39,19 @@ def get_identifications_to_species(identifications):
     ids_species = identifications.exclude(species__isnull=True)
 
     return ids_species
+
+
+def summarise_observations(identifications):
+    """
+    Summarise the observations by species, date, site, age and sex, then count the number of each records within each
+    of these groups.
+
+    Return a queryset of the summarised data.
+    """
+
+    ids_summarised = identifications.values('observation__survey__visit__site__site_name', 'observation__survey__visit__date', 'species__latin_name', 'sex').annotate(count = Count('species'))
+
+    return ids_summarised
 
 
 def get_observations(practice_sites):
@@ -56,9 +69,10 @@ def get_observations(practice_sites):
 
     confirmed_identifications = export_observations_csv.get_confirmed_observations(practice_sites)
     confirmed_ids_species = get_identifications_to_species(confirmed_identifications)
+    summarised_ids = summarise_observations(confirmed_ids_species)
 
-    for confirmed_identification in confirmed_ids_species:
-        row = get_row_for_identification(confirmed_identification)
+    for summarised_id in summarised_ids:
+        row = get_row_for_identification(summarised_id)
         selected_identifications.append(row)
 
     print("Number of selected identifications:", len(selected_identifications))
