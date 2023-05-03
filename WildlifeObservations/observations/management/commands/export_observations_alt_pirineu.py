@@ -5,8 +5,6 @@ from django.core.management.base import BaseCommand
 from django.db.models import Count
 
 from . import export_observations_csv
-from ...models import Identification
-from ...utils import field_or_empty_string
 
 header_observations = ['site_name', 'date_cest', 'species', 'sex', 'count']
 
