@@ -1,12 +1,24 @@
 import argparse
 import csv
 
+from pyproj import Transformer
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
 from . import export_observations_csv
 
-header_observations = ['site_name', 'date_cest', 'species', 'sex', 'count']
+header_observations = ['date_cest', 'x', 'y',  'site_name', 'altitude',  'species', 'sex', 'count']
+
+
+def convert_latlon_to_utm(latitude, longitude):
+
+    # Create a transformer
+    transformer = Transformer.from_crs("epsg:4326", "epsg:32631")
+
+    # Use the transform function to convert
+    easting, northing = transformer.transform(latitude, longitude)
+
+    return easting, northing
 
 
 def get_row_for_identification(identification):
@@ -18,7 +30,22 @@ def get_row_for_identification(identification):
 
     row = {}
 
+    latitude = identification['observation__survey__visit__site__latitude_start']\
+                      + ((identification['observation__survey__visit__site__latitude_end']
+                          - identification['observation__survey__visit__site__latitude_start']) / 2)
+    longitude = identification['observation__survey__visit__site__longitude_start']\
+                      + ((identification['observation__survey__visit__site__longitude_end']
+                          - identification['observation__survey__visit__site__longitude_start']) / 2)
+
+    coords = convert_latlon_to_utm(latitude, longitude)
+
+    row['x'] = '{:06.0f}'.format(coords[0])
+    row['y'] = '{:07.0f}'.format(coords[1])
+
     row['site_name'] = identification['observation__survey__visit__site__site_name']
+    row['altitude'] = identification['observation__survey__visit__site__altitude_start']\
+                      + ((identification['observation__survey__visit__site__altitude_end']
+                          - identification['observation__survey__visit__site__altitude_start']) / 2)
     row['date_cest'] = identification['observation__survey__visit__date']
     row['species'] = identification['species__latin_name']
     row['sex'] = identification['sex']
@@ -47,7 +74,15 @@ def summarise_observations(identifications):
     Return a queryset of the summarised data.
     """
 
-    ids_summarised = identifications.values('observation__survey__visit__site__site_name', 'observation__survey__visit__date', 'species__latin_name', 'sex').annotate(count = Count('species'))
+    ids_summarised = identifications.values('observation__survey__visit__site__site_name',
+                                            'observation__survey__visit__site__latitude_start',
+                                            'observation__survey__visit__site__latitude_end',
+                                            'observation__survey__visit__site__longitude_start',
+                                            'observation__survey__visit__site__longitude_end',
+                                            'observation__survey__visit__site__altitude_start',
+                                            'observation__survey__visit__site__altitude_end',
+                                            'observation__survey__visit__date', 'species__latin_name', 'sex')\
+        .annotate(count = Count('species'))
 
     return ids_summarised
 
