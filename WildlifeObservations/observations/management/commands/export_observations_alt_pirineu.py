@@ -7,7 +7,7 @@ from django.db.models import Count
 
 from . import export_observations_csv
 
-header_observations = ['date_cest', 'x', 'y',  'site_name', 'altitude',  'species', 'sex', 'count']
+header_observations = ['species', 'date_cest', 'x', 'y', 'altitude', 'site_name', 'count', 'sex']
 
 
 def convert_latlon_to_utm(latitude, longitude):
