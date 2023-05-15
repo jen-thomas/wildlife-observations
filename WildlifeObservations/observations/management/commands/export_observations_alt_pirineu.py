@@ -30,6 +30,7 @@ def get_row_for_identification(identification):
 
     row = {}
 
+    # Convert lat lon to UTM coordinates
     latitude = identification['observation__survey__visit__site__latitude_start']\
                       + ((identification['observation__survey__visit__site__latitude_end']
                           - identification['observation__survey__visit__site__latitude_start']) / 2)
@@ -42,13 +43,20 @@ def get_row_for_identification(identification):
     row['x'] = '{:06.0f}'.format(coords[0])
     row['y'] = '{:07.0f}'.format(coords[1])
 
+    # Convert male and female into the codes required for Alt Pirineu form
+    if identification['sex'] == "Female":
+        row['sex'] = 2
+    elif identification['sex'] == "Male":
+        row['sex'] = 1
+    else:
+        row['sex'] = 0
+
     row['site_name'] = identification['observation__survey__visit__site__site_name']
     row['altitude'] = identification['observation__survey__visit__site__altitude_start']\
                       + ((identification['observation__survey__visit__site__altitude_end']
                           - identification['observation__survey__visit__site__altitude_start']) / 2)
     row['date_cest'] = identification['observation__survey__visit__date']
     row['species'] = identification['species__latin_name']
-    row['sex'] = identification['sex']
     row['count'] = identification['count']
 
     return row
