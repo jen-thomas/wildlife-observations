@@ -52,9 +52,9 @@ def get_row_for_identification(identification):
         row['sex'] = 0
 
     row['site_name'] = identification['observation__survey__visit__site__site_name']
-    row['altitude'] = identification['observation__survey__visit__site__altitude_start']\
+    row['altitude'] = '{:.0f}'.format(identification['observation__survey__visit__site__altitude_start']\
                       + ((identification['observation__survey__visit__site__altitude_end']
-                          - identification['observation__survey__visit__site__altitude_start']) / 2)
+                          - identification['observation__survey__visit__site__altitude_start']) / 2))
     row['date_cest'] = identification['observation__survey__visit__date']
     row['species'] = identification['species__latin_name']
     row['count'] = identification['count']
