@@ -37,6 +37,39 @@ def get_row_for_identification(identification):
     return row
 
 
+def get_confirmed_observations(practice_sites):
+    """
+    Get all observations that have been confirmed.
+
+    Exclude observations from practice sites and only include those that have an identification confidence as CONFIRMED.
+
+    Return query set of confirmed identifications.
+    """
+
+    confirmed_identifications = Identification.objects.exclude(
+        observation__survey__visit__site__site_name__in=practice_sites).filter(
+        confidence=Identification.Confidence.CONFIRMED)
+
+    return confirmed_identifications
+
+
+def get_finalised_observations(practice_sites):
+    """
+        Get all observations that have been finalised.
+
+        Exclude observations from practice sites and only include those that have an identification confidence as
+        FINALISED. Note that there may be more than one finalised identification for each observation.
+
+        Return query set of finalised identifications.
+        """
+
+    finalised_identifications = Identification.objects.exclude(
+        observation__survey__visit__site__site_name__in=practice_sites).filter(
+        confidence=Identification.Confidence.FINALISED)
+
+    return finalised_identifications
+
+
 def export_csv(output_file, practice_sites):
     """
     Export data from a query into a CSV file which has a specified output file.
@@ -70,9 +103,7 @@ def export_csv(output_file, practice_sites):
     # There must only be one identification exported for each observation, where the observation has a confirmed
     # identification. Note that this can be to any taxonomic level.
 
-    confirmed_identifications = Identification.objects.exclude(
-        observation__survey__visit__site__site_name__in=practice_sites).filter(
-        confidence=Identification.Confidence.CONFIRMED)
+    confirmed_identifications = get_confirmed_observations(practice_sites)
 
     # Creating a set of the specimen labels ensures that only one confirmed identification for the same observation
     # should be exported. Data integrity checks will ensure that if there is more than one confirmed identification
@@ -94,9 +125,7 @@ def export_csv(output_file, practice_sites):
     # the same specimen label, but check that they are not in the set of observations that have confirmed
     # identifications.
 
-    finalised_identifications = Identification.objects.exclude(
-        observation__survey__visit__site__site_name__in=practice_sites).filter(
-        confidence=Identification.Confidence.FINALISED)
+    finalised_identifications = get_finalised_observations(practice_sites)
     print("Number of finalised ids:", finalised_identifications.count())
 
     for finalised_identification in finalised_identifications:
